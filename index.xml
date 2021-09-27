@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>blog</title><link>https://example.com/</link><description>Recent content on blog</description><generator>Hugo -- gohugo.io</generator><copyright>Copyright ©</copyright><lastBuildDate>Sun, 26 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://example.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Why Isn't Functional Programming the Norm? – Richard Feldman</title><link>https://example.com/post/why-isnt-functional-programming-the-norm/</link><pubDate>Sun, 26 Sep 2021 00:00:00 +0000</pubDate><guid>https://example.com/post/why-isnt-functional-programming-the-norm/</guid><description>
+&lt;p>&lt;a href="https://www.youtube.com/watch?v=QyJZzq0v7Z4">Why Isn't Functional Programming the Norm? – Richard Feldman&lt;/a>&lt;/p>
+&lt;h2 id="part-1">Part 1&lt;/h2>
+&lt;p>2:00m&lt;/p>
+&lt;p>Killer app:&lt;/p>
+&lt;ul>
+&lt;li>Ruby -&amp;gt; Rails&lt;/li>
+&lt;li>PHP -&amp;gt; making HTML dynamically&lt;/li>
+&lt;li>C -&amp;gt; system programing&lt;/li>
+&lt;/ul>
+&lt;p>6:00m
+Potential killer apps&lt;/p>
+&lt;ul>
+&lt;li>ELm -&amp;gt; elm-ui&lt;/li>
+&lt;li>Clojure -&amp;gt; Datomic&lt;/li>
+&lt;li>ReasonML -&amp;gt; revery&lt;/li>
+&lt;/ul>
+&lt;h3 id="platforms-exclusivity">Platforms exclusivity&lt;/h3>
+&lt;ul>
+&lt;li>ObjC Swift -&amp;gt; Iphone sales&lt;/li>
+&lt;li>JavaScript -&amp;gt; platform applications web
+&lt;ul>
+&lt;li>java slow&lt;/li>
+&lt;li>flash&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>C# -&amp;gt; Windows 95
+&lt;ul>
+&lt;li>Microsoft does not like java because of multiplatform&lt;/li>
+&lt;li>Visual Studio and Visual Studio Code IDEs&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="quick-upgrade-apps">Quick upgrade apps&lt;/h3>
+&lt;p>Considerations: benefits, familiarity, learning curve, ecosystem access, code migration effort&lt;/p>
+&lt;ul>
+&lt;li>Typescript and CoffeeScript -&amp;gt; close to javascript but better&lt;/li>
+&lt;li>C++ -&amp;gt; C&lt;/li>
+&lt;li>Kotlin -&amp;gt; Java&lt;/li>
+&lt;/ul>
+&lt;p>13:00m
+JavaScripts vs Lisp in web -&amp;gt; Sum microsystems spend $ in marketing
+Perl vs Python and Ruby&lt;/p>
+&lt;h3 id="other-popular-factors">Other popular factors&lt;/h3>
+&lt;ul>
+&lt;li>Syntax&lt;/li>
+&lt;li>Job market&lt;/li>
+&lt;li>Community&lt;/li>
+&lt;/ul>
+&lt;p>most popular langs OO (excepts C):&lt;/p>
+&lt;h2 id="part-2">Part 2&lt;/h2>
+&lt;h3 id="oo-features">OO features&lt;/h3>
+&lt;p>19:00m&lt;/p>
+&lt;p>Go:&lt;/p>
+&lt;ul>
+&lt;li>Supports OO style&lt;/li>
+&lt;li>No inheritance&lt;/li>
+&lt;li>Objects and methods ara syntax sugar for struts and procedures&lt;/li>
+&lt;/ul>
+&lt;h3 id="modular-programming">Modular programming&lt;/h3>
+&lt;p>23:00m&lt;/p>
+&lt;ul>
+&lt;li>Modules -&amp;gt; C++20&lt;/li>
+&lt;/ul>
+&lt;p>26:00m
+Object Oriented - Alan key definition&lt;/p>
+&lt;p>30:00m
+C with classes -&amp;gt; C++&lt;/p>
+&lt;p>33:00m
+C++ vs java vs C#&lt;/p>
+&lt;p>34:30m
+Python
+Ruby -&amp;gt; better than perl and python&lt;/p>
+&lt;h2 id="part-3---style">Part 3 - Style&lt;/h2>
+&lt;p>Function programming style&lt;/p>
+&lt;p>Why is not the FP style the normal ??&lt;/p>
+&lt;ul>
+&lt;li>Kotlin, swift, python, javascript, java and c++ -&amp;gt; more functional adding new features&lt;/li>
+&lt;li>hybrid is the norm -&amp;gt; you can use both in the most popular languages&lt;/li>
+&lt;/ul>
+&lt;h2 id="part-4---why-isnt-functional-programming-the-norm">Part 4 - Why Isn't Functional Programming the Norm?&lt;/h2>
+&lt;p>Why -&amp;gt; 40:00m
+OO the norm ? -&amp;gt; 41:00m&lt;/p>
+&lt;h2 id="qa">Q&amp;amp;A&lt;/h2></description></item></channel></rss>
