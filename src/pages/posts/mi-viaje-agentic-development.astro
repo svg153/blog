@@ -1,0 +1,397 @@
+---
+const data = {
+  title: "Mi viaje con el desarrollo agéntico: de Copilot a agentes autónomos",
+  description: "Cómo pasé de escribir un post de LinkedIn a contar toda la historia del desarrollo agéntico — y por qué creo que esto va a cambiar cómo construimos software.",
+  date: "2025-07-02",
+  tags: ["AI","Agents","DevOps"],
+  readingTime: "8",
+  featured: true
+};
+
+const tagConfig = { class: 'tag-ai', label: 'AI & Agents' };
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={data.description || data.title} />
+    <meta property="og:title" content={data.title} />
+    <meta property="og:description" content={data.description || ''} />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content={"https://svg153.github.io/blog" + Astro.url.pathname} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>{data.title} — Sergio Valverde</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      :root {
+        --color-fg-default: #f0f6fc;
+        --color-fg-muted: #8b949e;
+        --color-canvas-default: #0d1117;
+        --color-canvas-subtle: #161b22;
+        --color-border-default: #30363d;
+        --color-accent-fg: #58a6ff;
+        --font-stack-text: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+        --font-stack-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+        --max-width: 768px;
+        --card-radius: 6px;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: var(--font-stack-text);
+        background: var(--color-canvas-default);
+        color: var(--color-fg-default);
+        line-height: 1.7;
+        -webkit-font-smoothing: antialiased;
+      }
+      a { color: var(--color-accent-fg); }
+      .header {
+        background: var(--color-canvas-default);
+        border-bottom: 1px solid var(--color-border-default);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .header-inner {
+        max-width: 1264px;
+        margin: 0 auto;
+        padding: 16px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .header-logo {
+        display: flex; align-items: center; gap: 12px;
+        font-size: 20px; font-weight: 600; color: var(--color-fg-default);
+        text-decoration: none;
+      }
+      .header-logo:hover { text-decoration: none; }
+      .header-logo svg { fill: var(--color-fg-default); }
+      .header-nav { display: flex; align-items: center; gap: 24px; }
+      .header-nav a {
+        color: var(--color-fg-muted); font-size: 14px; font-weight: 500;
+        text-decoration: none; transition: color 0.2s;
+      }
+      .header-nav a:hover { color: var(--color-fg-default); text-decoration: none; }
+      .back-link {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 24px 32px 0;
+      }
+      .back-link a {
+        color: var(--color-fg-muted);
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .back-link a:hover { color: var(--color-fg-default); }
+      .article {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 32px 32px 80px;
+      }
+      .article-header { margin-bottom: 32px; }
+      .article-tag {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-bottom: 16px;
+        width: fit-content;
+      }
+      .tag-ai { color: #f778ba; background: rgba(247, 120, 186, 0.1); }
+      .tag-devops { color: #1d9bf0; background: rgba(29, 155, 240, 0.1); }
+      .tag-platform { color: #a371f7; background: rgba(163, 113, 247, 0.1); }
+      .tag-security { color: #d29922; background: rgba(210, 153, 34, 0.1); }
+      .tag-general { color: #3fb950; background: rgba(63, 185, 80, 0.1); }
+      .article-header h1 {
+        font-size: 36px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.25;
+        margin-bottom: 16px;
+      }
+      .article-meta {
+        font-size: 14px;
+        color: var(--color-fg-muted);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .article-meta a { color: var(--color-fg-muted); }
+      .article-meta a:hover { color: var(--color-accent-fg); }
+      .meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--color-fg-muted); }
+      .article-content { font-size: 16px; line-height: 1.8; }
+      .article-content h2 {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 40px 0 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--color-border-default);
+      }
+      .article-content h3 {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 32px 0 12px;
+      }
+      .article-content p { margin-bottom: 20px; }
+      .article-content ul, .article-content ol {
+        margin-bottom: 20px;
+        padding-left: 24px;
+      }
+      .article-content li { margin-bottom: 8px; }
+      .article-content a { color: var(--color-accent-fg); text-decoration: underline; }
+      .article-content code {
+        font-family: var(--font-stack-mono);
+        background: var(--color-canvas-subtle);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      .article-content pre {
+        background: var(--color-canvas-subtle);
+        border: 1px solid var(--color-border-default);
+        border-radius: var(--card-radius);
+        padding: 16px;
+        overflow-x: auto;
+        margin-bottom: 20px;
+      }
+      .article-content pre code {
+        background: none;
+        padding: 0;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .article-content blockquote {
+        border-left: 3px solid var(--color-border-default);
+        padding-left: 16px;
+        margin: 20px 0;
+        color: var(--color-fg-muted);
+      }
+      .article-content img {
+        max-width: 100%;
+        border-radius: var(--card-radius);
+        margin: 20px 0;
+      }
+      .article-content hr {
+        border: none;
+        border-top: 1px solid var(--color-border-default);
+        margin: 32px 0;
+      }
+      .article-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      .article-content th, .article-content td {
+        border: 1px solid var(--color-border-default);
+        padding: 8px 12px;
+        text-align: left;
+      }
+      .article-content th {
+        background: var(--color-canvas-subtle);
+        font-weight: 600;
+      }
+      .article-tags {
+        margin-top: 48px;
+        padding-top: 24px;
+        border-top: 1px solid var(--color-border-default);
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .article-tags a {
+        font-size: 13px;
+        color: var(--color-fg-muted);
+        text-decoration: none;
+      }
+      .footer {
+        border-top: 1px solid var(--color-border-default);
+        padding: 40px 32px;
+        text-align: center;
+      }
+      .footer-inner { max-width: 1264px; margin: 0 auto; }
+      .footer-links {
+        display: flex; justify-content: center; gap: 24px; margin-bottom: 16px;
+      }
+      .footer-links a { color: var(--color-fg-muted); font-size: 13px; }
+      .footer-copy { color: var(--color-fg-muted); font-size: 12px; }
+      @media (max-width: 768px) {
+        .header-inner { padding: 12px 16px; }
+        .header-nav { gap: 12px; }
+        .article { padding: 24px 16px 60px; }
+        .back-link { padding: 16px 16px 0; }
+        .article-header h1 { font-size: 28px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-inner">
+        <a href="/" class="header-logo">
+          <svg height="32" viewBox="0 0 16 16" width="32" aria-hidden="true">
+            <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+          </svg>
+          Sergio Valverde
+        </a>
+        <nav class="header-nav">
+          <a href="/">Blog</a>
+          <a href="/about/">About</a>
+          <a href="https://github.com/svg153" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://linkedin.com/in/svg153" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://twitter.com/svg153" target="_blank" rel="noopener">X</a>
+          <a href="https://www.tiktok.com/@svg153dev" target="_blank" rel="noopener">TikTok</a>
+        </nav>
+      </div>
+    </header>
+    <a href="/" class="back-link">← Back to all posts</a>
+    <article class="article">
+      <div class="article-header">
+        <span class="article-tag {tagConfig.class}">{tagConfig.label}</span>
+        <h1>{data.title}</h1>
+        <div class="article-meta">
+          <a href="https://github.com/svg153">Sergio Valverde</a>
+          <span class="meta-dot"></span>
+          <time datetime={data.date}>{new Date(data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+          {data.readingTime && <>
+            <span class="meta-dot"></span>
+            <span>{data.readingTime} min read</span>
+          </>}
+        </div>
+      </div>
+      <div class="article-content">
+        
+        Hace unas horas empecé a escribir lo que iba a ser un post de LinkedIn. Una idea rápida, algo ligero. Pero me encontré escribiendo esto — un artículo completo sobre mi viaje con el desarrollo agéntico. Y creo que eso dice algo importante sobre lo que está pasando.
+        
+        ## El punto de partida
+        
+        Todo empezó como siempre empieza hoy en día: con **GitHub Copilot**. Como muchos de vosotros, lo uso a diario. Es una herramienta increíble que me ahorra horas de trabajo. Pero hay algo que no me terminaba de convencer: **Copilot es reactivo**. Tú le pides algo, él te lo da. No va más allá.
+        
+        ## La evolución
+        
+        Lo primero que hice fue explorar **Claude Code** y **Cursor**. La diferencia es notable: estos tools no solo completan código, sino que **entienden el contexto** de tu proyecto. Pueden refactorizar múltiples archivos, entender dependencias, y mantener la coherencia.
+        
+        Pero seguían siendo herramientas — no agentes.
+        
+        ## El salto a agentes autónomos
+        
+        La verdadera revolución empezó cuando empecé a experimentar con **agentes que podían tomar decisiones por sí mismos**. No solo completan código: **planifican, ejecutan, verifican y corrigen**.
+        
+        ### Mi primer experimento real
+        
+        El primer proyecto donde usé un agente autónomo fue para automatizar la revisión de PRs en uno de mis repositorios. El agente:
+        
+        1. **Leía** todos los cambios del PR
+        2. **Analizaba** la arquitectura del proyecto
+        3. **Identificaba** posibles problemas (bugs, security issues, performance)
+        4. **Generaba** un review detallado con sugerencias concretas
+        5. **Proponía** los fixes directamente como commits
+        
+        Todo esto sin que yo tuviera que supervisar cada paso.
+        
+        ## Lo que aprendí
+        
+        ### 1. Los agentes no reemplazan desarrolladores — los potencian
+        
+        Esto es clave. No se trata de que un agente escriba todo el software. Se trata de que **el agente se encargue de lo repetitivo** y el desarrollador se enfoque en lo que realmente importa: **arquitectura, diseño, y decisiones complejas**.
+        
+        ### 2. La prompt engineering es ahora una skill de primer nivel
+        
+        No, no hablo de escribir prompts para ChatGPT. Hablo de **saber especificar contexto, restricciones, y objetivos** de forma que un agente pueda ejecutar correctamente. Esto es exactamente lo que siempre hemos hecho como ingenieros: **definir requisitos claros**.
+        
+        ### 3. La calidad del output depende de la calidad del input
+        
+        Si le das a un agente un repo sin estructura, sin tests, sin documentación... va a hacer un trabajo mediocre. Si le das un repo bien estructurado con tests y documentación... puede hacer magia. **La infraestructura de software importa más que nunca.**
+        
+        ## El caso de uso: Platform Engineering
+        
+        Como Platform Engineer, veo un potencial enorme aquí. Imagina:
+        
+        - Un agente que **monitorea** tu infraestructura y **repara** problemas automáticamente
+        - Un agente que **reviewea** tus Terraform plans y **detecta** configuraciones inseguras
+        - Un agente que **genera** documentación basada en el código real
+        - Un agente que **optimiza** tus pipelines de CI/CD basándose en métricas reales
+        
+        No es futurismo. Esto ya se puede hacer.
+        
+        ## Mi stack actual
+        
+        Esto es lo que uso ahora en mi flujo de trabajo diario:
+        
+        | Herramienta | Uso |
+        |-------------|-----|
+        | **GitHub Copilot** | Completado de código en tiempo real |
+        | **Claude Code** | Refactorizaciones, debugging, contexto amplio |
+        | **Cursor** | Desarrollo con IA integrada en el editor |
+        | **Custom scripts + LLMs** | Automatizaciones específicas de mi infraestructura |
+        
+        ## Los errores que cometí
+        
+        No todo fue perfecto. Aquí van mis principales errores:
+        
+        ### Error 1: Confundir automatización con inteligencia
+        
+        Al principio pensé que si un agente podía hacer X, podía hacer X+Y+Z. No funciona así. **Los agentes son buenos en dominios bien definidos.** Cuanto más específico es el problema, mejor funciona el agente.
+        
+        ### Error 2: No invertir en tests primero
+        
+        Intenté usar agentes en proyectos sin cobertura de tests. El resultado: el agente "mejoraba" el código y **rompía cosas que funcionaban**. Los tests son el anchor que mantiene al agente enfocado en lo que importa.
+        
+        ### Error 3: No documentar las decisiones del agente
+        
+        Cuando un agente toma una decisión (refactoriza, cambia configuración, actualiza dependencias), **necesitas entender por qué**. Sin logs de las decisiones del agente, terminas con un black box que no puedes auditar.
+        
+        ## El futuro
+        
+        Creo que estamos en el equivalente a cuando aparecieron los primeros IDEs. Al principio todo el mundo era escéptico: "¿un robot va a escribir mi código?". Ahora nadie cuestiona que los IDEs mejoran la productividad.
+        
+        El desarrollo agéntico va por el mismo camino. **No va a reemplazar a los desarrolladores, pero los desarrolladores que usen agentes van a reemplazar a los que no.**
+        
+        ## Mi recomendación para empezar
+        
+        Si quieres probar desarrollo agéntico pero no sabes por dónde empezar:
+        
+        1. **Empieza pequeño**: Usa Copilot o Cursor en tu día a día
+        2. **Automatiza una tarea repetitiva**: Un script que uses siempre
+        3. **Añade contexto**: Dale al agente acceso a la documentación de tu proyecto
+        4. **Mide resultados**: ¿Cuánto tiempo ahorras? ¿Qué calidad tiene el output?
+        5. **Itera**: Refina tus prompts, añade más contexto, mejora la estructura
+        
+        ## Conclusión
+        
+        Llevo como una hora escribiendo esto. Empecé con la intención de hacer un post de LinkedIn de tres líneas. Pero el tema es demasiado rico para resumirlo. Y eso es exactamente lo que quiero transmitir: **el desarrollo agéntico no es una moda, es un cambio de paradigma.**
+        
+        ¿Y tú? ¿Estás usando agentes en tu flujo de trabajo? ¿Qué herramientas usas? Me encantaría leer vuestros comentarios.
+        
+        ---
+        
+        *Sergio Valverde es Platform Engineer en Lunix, Organizer de GitHub Community Spain, y entusiasta del Developer Experience. Sígueme en [GitHub](https://github.com/svg153), [LinkedIn](https://linkedin.com/in/svg153), y [X](https://twitter.com/svg153).*
+        
+      </div>
+      <div class="article-tags">
+            <a href="/tags/ai/">#AI</a>
+            <a href="/tags/agents/">#Agents</a>
+            <a href="/tags/devops/">#DevOps</a>
+        </div>
+    </article>
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-links">
+          <a href="https://github.com/svg153" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://linkedin.com/in/svg153" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://twitter.com/svg153" target="_blank" rel="noopener">X / Twitter</a>
+          <a href="https://www.tiktok.com/@svg153dev" target="_blank" rel="noopener">TikTok</a>
+          <a href="https://www.youtube.com/@svg153" target="_blank" rel="noopener">YouTube</a>
+          <a href="/rss.xml">RSS</a>
+        </div>
+        <p class="footer-copy">© 2025 Sergio Valverde. Built with Astro. Hosted on GitHub Pages.</p>
+      </div>
+    </footer>
+  </body>
+</html>
