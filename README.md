@@ -1,4 +1,4 @@
-# Blog
+# Blog Syndication
 
 Sergio Valverde's blog — built with **Astro**, styled like the GitHub Blog.
 
@@ -16,9 +16,12 @@ src/
 ├── content/blog/     ← Write posts here as .md files
 ├── pages/
 │   ├── index.astro   ← Homepage with GitHub Blog aesthetic
-│   ├── posts/[slug].astro  ← Individual post layout
-│   └── about.astro   ← About page
-└── content/config.ts ← Content collection schema
+│   ├── about.astro   ← About page
+│   └── posts/        ← Generated post pages (auto-created by build)
+├── content.config.ts ← Content collection schema
+├── scripts/
+│   ├── generate-posts.mjs ← Generates .astro pages from markdown
+│   └── syndicate.js      ← Publish to dev.to, LinkedIn, Substack
 public/               ← Static assets (images, favicon)
 ```
 
@@ -55,12 +58,50 @@ readingTime: "5"
 
 ```bash
 npm install
-npm run dev
+npm run dev        # starts dev server on :4321
+npm run build      # generates static site to dist/
 ```
 
 ## Syndication
 
-Posts are written once in Markdown and can be syndicated to:
-- **dev.to** (via API)
-- **LinkedIn** (excerpt + link)
-- **Substack** (newsletter)
+Publish to multiple platforms from one markdown file:
+
+```bash
+# Preview what would be published (no changes)
+node scripts/syndicate.js --dry-run
+
+# Publish all new posts to all platforms
+node scripts/syndicate.js
+
+# Publish a specific post
+node scripts/syndicate.js --post=hello-world
+
+# Only publish to dev.to
+node scripts/syndicate.js --devto
+
+# Only publish to LinkedIn
+node scripts/syndicate.js --linkedin
+
+# Only publish to Substack newsletter
+node scripts/syndicate.js --substack
+```
+
+### Required environment variables
+
+| Variable | Source |
+|----------|--------|
+| `DEVTO_API_KEY` | https://dev.to/settings/extensions |
+| `LINKEDIN_TOKEN` | LinkedIn OAuth 2.0 bearer token |
+| `SUBSTACK_API_KEY` | Substack API key (Settings → Advanced) |
+
+### Content strategy
+
+- **Blog (primary)** — Full articles, deep dives, technical guides
+- **dev.to** — Cross-post from blog (same content, different formatting)
+- **LinkedIn** — Excerpt with link to full article
+- **Substack** — Newsletter digest of recent posts
+- **X/Twitter** — Thread summarizing key points + link
+
+## GitHub Pages
+
+Deployed automatically via GitHub Actions on push to `main`.
