@@ -1,0 +1,346 @@
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync } from 'fs';
+import { join } from 'path';
+
+const blogDir = 'src/content/blog';
+const pagesDir = 'src/pages/posts';
+
+// Clean old generated pages
+const oldPages = readdirSync(pagesDir).filter(f => f.endsWith('.astro'));
+oldPages.forEach(f => rmSync(join(pagesDir, f)));
+
+const posts = readdirSync(blogDir).filter(f => f.endsWith('.md'));
+
+// Read the base template (without frontmatter)
+const templatePath = join('src', 'pages', 'posts', 'base.html');
+if (!readdirSync('src/pages/posts').includes('base.html')) {
+  // We'll build the HTML inline
+}
+
+posts.forEach(postFile => {
+  const postPath = join(blogDir, postFile);
+  const content = readFileSync(postPath, 'utf-8');
+  const fmMatch = content.match(/^---\n([\s\S]*?)\n---/);
+  if (!fmMatch) return;
+
+  const fm = fmMatch[1];
+  const title = fm.match(/title:\s*"([^"]+)"/)?.[1] || 'Untitled';
+  const description = fm.match(/description:\s*"([^"]+)"/)?.[1] || '';
+  const date = fm.match(/date:\s*"([^"]+)"/)?.[1] || '';
+  const tagsMatch = fm.match(/tags:\s*\[([^\]]+)\]/);
+  const tags = tagsMatch ? tagsMatch[1].split(',').map(t => t.trim().replace(/"/g, '')) : [];
+  const readingTime = fm.match(/readingTime:\s*"([^"]+)"/)?.[1] || '';
+  const featured = fm.match(/featured:\s*(true|false)/)?.[1] === 'true';
+
+  const slug = postFile.replace('.md', '');
+  const bodyContent = content.replace(/^---\n[\s\S]*?\n---\n?/, '');
+
+  // Determine tag color
+  const tagColors = {
+    'ai': { cls: 'tag-ai', label: 'AI & Agents' },
+    'devops': { cls: 'tag-devops', label: 'DevOps' },
+    'platform': { cls: 'tag-platform', label: 'Platform Engineering' },
+    'security': { cls: 'tag-security', label: 'Security' },
+    'general': { cls: 'tag-general', label: 'General' },
+  };
+  const primaryTag = (tags[0] || 'general').toLowerCase();
+  const tc = tagColors[primaryTag] || tagColors['general'];
+
+  // Build tags HTML
+  const tagsHtml = tags.length > 0
+    ? `<div class="article-tags">\n${tags.map(t => `            <a href="/tags/${t.toLowerCase()}/">#${t}</a>`).join('\n')}\n        </div>`
+    : '';
+
+  const astroContent = `---
+const data = {
+  title: ${JSON.stringify(title)},
+  description: ${JSON.stringify(description)},
+  date: ${JSON.stringify(date)},
+  tags: ${JSON.stringify(tags)},
+  readingTime: ${JSON.stringify(readingTime)},
+  featured: ${featured}
+};
+
+const tagConfig = { class: '${tc.cls}', label: '${tc.label}' };
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={data.description || data.title} />
+    <meta property="og:title" content={data.title} />
+    <meta property="og:description" content={data.description || ''} />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content={"https://svg153.github.io/blog" + Astro.url.pathname} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>{data.title} — Sergio Valverde</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      :root {
+        --color-fg-default: #f0f6fc;
+        --color-fg-muted: #8b949e;
+        --color-canvas-default: #0d1117;
+        --color-canvas-subtle: #161b22;
+        --color-border-default: #30363d;
+        --color-accent-fg: #58a6ff;
+        --font-stack-text: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+        --font-stack-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+        --max-width: 768px;
+        --card-radius: 6px;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: var(--font-stack-text);
+        background: var(--color-canvas-default);
+        color: var(--color-fg-default);
+        line-height: 1.7;
+        -webkit-font-smoothing: antialiased;
+      }
+      a { color: var(--color-accent-fg); }
+      .header {
+        background: var(--color-canvas-default);
+        border-bottom: 1px solid var(--color-border-default);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .header-inner {
+        max-width: 1264px;
+        margin: 0 auto;
+        padding: 16px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .header-logo {
+        display: flex; align-items: center; gap: 12px;
+        font-size: 20px; font-weight: 600; color: var(--color-fg-default);
+        text-decoration: none;
+      }
+      .header-logo:hover { text-decoration: none; }
+      .header-logo svg { fill: var(--color-fg-default); }
+      .header-nav { display: flex; align-items: center; gap: 24px; }
+      .header-nav a {
+        color: var(--color-fg-muted); font-size: 14px; font-weight: 500;
+        text-decoration: none; transition: color 0.2s;
+      }
+      .header-nav a:hover { color: var(--color-fg-default); text-decoration: none; }
+      .back-link {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 24px 32px 0;
+      }
+      .back-link a {
+        color: var(--color-fg-muted);
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .back-link a:hover { color: var(--color-fg-default); }
+      .article {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 32px 32px 80px;
+      }
+      .article-header { margin-bottom: 32px; }
+      .article-tag {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-bottom: 16px;
+        width: fit-content;
+      }
+      .tag-ai { color: #f778ba; background: rgba(247, 120, 186, 0.1); }
+      .tag-devops { color: #1d9bf0; background: rgba(29, 155, 240, 0.1); }
+      .tag-platform { color: #a371f7; background: rgba(163, 113, 247, 0.1); }
+      .tag-security { color: #d29922; background: rgba(210, 153, 34, 0.1); }
+      .tag-general { color: #3fb950; background: rgba(63, 185, 80, 0.1); }
+      .article-header h1 {
+        font-size: 36px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.25;
+        margin-bottom: 16px;
+      }
+      .article-meta {
+        font-size: 14px;
+        color: var(--color-fg-muted);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .article-meta a { color: var(--color-fg-muted); }
+      .article-meta a:hover { color: var(--color-accent-fg); }
+      .meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--color-fg-muted); }
+      .article-content { font-size: 16px; line-height: 1.8; }
+      .article-content h2 {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 40px 0 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--color-border-default);
+      }
+      .article-content h3 {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 32px 0 12px;
+      }
+      .article-content p { margin-bottom: 20px; }
+      .article-content ul, .article-content ol {
+        margin-bottom: 20px;
+        padding-left: 24px;
+      }
+      .article-content li { margin-bottom: 8px; }
+      .article-content a { color: var(--color-accent-fg); text-decoration: underline; }
+      .article-content code {
+        font-family: var(--font-stack-mono);
+        background: var(--color-canvas-subtle);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      .article-content pre {
+        background: var(--color-canvas-subtle);
+        border: 1px solid var(--color-border-default);
+        border-radius: var(--card-radius);
+        padding: 16px;
+        overflow-x: auto;
+        margin-bottom: 20px;
+      }
+      .article-content pre code {
+        background: none;
+        padding: 0;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .article-content blockquote {
+        border-left: 3px solid var(--color-border-default);
+        padding-left: 16px;
+        margin: 20px 0;
+        color: var(--color-fg-muted);
+      }
+      .article-content img {
+        max-width: 100%;
+        border-radius: var(--card-radius);
+        margin: 20px 0;
+      }
+      .article-content hr {
+        border: none;
+        border-top: 1px solid var(--color-border-default);
+        margin: 32px 0;
+      }
+      .article-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      .article-content th, .article-content td {
+        border: 1px solid var(--color-border-default);
+        padding: 8px 12px;
+        text-align: left;
+      }
+      .article-content th {
+        background: var(--color-canvas-subtle);
+        font-weight: 600;
+      }
+      .article-tags {
+        margin-top: 48px;
+        padding-top: 24px;
+        border-top: 1px solid var(--color-border-default);
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .article-tags a {
+        font-size: 13px;
+        color: var(--color-fg-muted);
+        text-decoration: none;
+      }
+      .footer {
+        border-top: 1px solid var(--color-border-default);
+        padding: 40px 32px;
+        text-align: center;
+      }
+      .footer-inner { max-width: 1264px; margin: 0 auto; }
+      .footer-links {
+        display: flex; justify-content: center; gap: 24px; margin-bottom: 16px;
+      }
+      .footer-links a { color: var(--color-fg-muted); font-size: 13px; }
+      .footer-copy { color: var(--color-fg-muted); font-size: 12px; }
+      @media (max-width: 768px) {
+        .header-inner { padding: 12px 16px; }
+        .header-nav { gap: 12px; }
+        .article { padding: 24px 16px 60px; }
+        .back-link { padding: 16px 16px 0; }
+        .article-header h1 { font-size: 28px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-inner">
+        <a href="/" class="header-logo">
+          <svg height="32" viewBox="0 0 16 16" width="32" aria-hidden="true">
+            <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+          </svg>
+          Sergio Valverde
+        </a>
+        <nav class="header-nav">
+          <a href="/">Blog</a>
+          <a href="/about/">About</a>
+          <a href="https://github.com/svg153" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://linkedin.com/in/svg153" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://twitter.com/svg153" target="_blank" rel="noopener">X</a>
+          <a href="https://www.tiktok.com/@svg153dev" target="_blank" rel="noopener">TikTok</a>
+        </nav>
+      </div>
+    </header>
+    <a href="/" class="back-link">← Back to all posts</a>
+    <article class="article">
+      <div class="article-header">
+        <span class="article-tag {tagConfig.class}">{tagConfig.label}</span>
+        <h1>{data.title}</h1>
+        <div class="article-meta">
+          <a href="https://github.com/svg153">Sergio Valverde</a>
+          <span class="meta-dot"></span>
+          <time datetime={data.date}>{new Date(data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+          {data.readingTime && <>
+            <span class="meta-dot"></span>
+            <span>{data.readingTime} min read</span>
+          </>}
+        </div>
+      </div>
+      <div class="article-content">
+${bodyContent.split('\n').map(l => '        ' + l).join('\n')}
+      </div>
+      ${tagsHtml}
+    </article>
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-links">
+          <a href="https://github.com/svg153" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://linkedin.com/in/svg153" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://twitter.com/svg153" target="_blank" rel="noopener">X / Twitter</a>
+          <a href="https://www.tiktok.com/@svg153dev" target="_blank" rel="noopener">TikTok</a>
+          <a href="https://www.youtube.com/@svg153" target="_blank" rel="noopener">YouTube</a>
+          <a href="/rss.xml">RSS</a>
+        </div>
+        <p class="footer-copy">© 2025 Sergio Valverde. Built with Astro. Hosted on GitHub Pages.</p>
+      </div>
+    </footer>
+  </body>
+</html>
+`;
+
+  writeFileSync(join(pagesDir, `${slug}.astro`), astroContent);
+  console.log(`  → ${slug}.astro`);
+});
+
+console.log(`Generated ${posts.length} post pages from ${blogDir}/`);
