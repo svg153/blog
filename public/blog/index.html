@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog — Sergio Valverde</title>
+  <link rel="stylesheet" href="/css/blog.css">
+  <style>
+    .blog-index { padding: 32px 0 0; }
+    .blog-index h1 { font-size: 32px; font-weight: 700; color: var(--color-fg-base); margin-bottom: 8px; }
+    .blog-index .subtitle { color: var(--color-fg-muted); font-size: 16px; margin-bottom: 40px; }
+    .post-card { padding: 24px 0; border-bottom: 1px solid var(--color-border); }
+    .post-card:last-child { border-bottom: none; }
+    .post-card .tag { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 8px; border-radius: 12px; display: inline-block; margin-bottom: 8px; }
+    .post-card h2 { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+    .post-card h2 a { color: var(--color-fg-base); }
+    .post-card h2 a:hover { color: var(--color-link); text-decoration: none; }
+    .post-card p { color: var(--color-fg-muted); font-size: 15px; line-height: 1.6; margin-bottom: 8px; }
+    .post-card .meta { font-size: 13px; color: var(--color-fg-muted); display: flex; gap: 8px; }
+    .post-card .meta a { color: var(--color-fg-muted); }
+    .post-card .meta a:hover { color: var(--color-link); }
+    .featured-card { background: var(--color-bg-subtle); border-radius: 8px; padding: 32px; margin-bottom: 32px; border: 1px solid var(--color-border); }
+    .featured-card .label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: #f778ba; margin-bottom: 12px; }
+    .featured-card h2 { font-size: 26px; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a href="/" class="site-title">Sergio Valverde</a>
+    <nav class="site-nav">
+      <a href="/blog">Blog</a>
+      <a href="/about">About</a>
+      <a href="https://github.com/svg153">GitHub</a>
+      <a href="https://linkedin.com/in/svg153">LinkedIn</a>
+      <a href="https://twitter.com/svg153">X</a>
+      <a href="https://tiktok.com/@svg153dev">TikTok</a>
+    </nav>
+  </header>
+  <main class="post-page">
+    <div class="blog-index">
+      <h1>Blog</h1>
+      <p class="subtitle">Thoughts on Platform Engineering, DevOps & Agentic Development</p>
+
+      <div class="featured-card">
+        <div class="label">Featured</div>
+        <h2><a href="/posts/mi-viaje-agentic-development.html">Mi viaje con el desarrollo agéntico: de Copilot a agentes autónomos</a></h2>
+        <p>Cómo pasé de escribir un post de LinkedIn a contar toda la historia del desarrollo agéntico — y por qué creo que esto va a cambiar cómo construimos software.</p>
+        <div class="meta">
+          <a href="https://github.com/svg153">Sergio Valverde</a>
+          <span>July 3, 2025</span>
+          <span>·</span>
+          <span>8 min read</span>
+        </div>
+      </div>
+
+      <h3 style="font-size:16px; font-weight:600; color:var(--color-fg-muted); margin: 32px 0 16px; text-transform: uppercase; letter-spacing: 0.05em;">Latest</h3>
+
+      <div class="post-card">
+        <span class="tag" style="color:#f0883e; background:rgba(240,136,62,0.12);">Tools</span>
+        <h2><a href="/posts/mi-stack-herramientas-2025.html">Mi stack de herramientas de desarrollo en 2025: lo que uso cada día</a></h2>
+        <p>De VS Code a Cursor, de Jenkins a GitHub Actions — un tour por las herramientas que uso cada día como Platform Engineer.</p>
+        <div class="meta">
+          <a href="https://github.com/svg153">Sergio Valverde</a>
+          <span>July 5, 2025</span>
+          <span>·</span>
+          <span>5 min read</span>
+        </div>
+      </div>
+
+      <div class="post-card">
+        <span class="tag" style="color:#1d9bf0; background:rgba(29,155,240,0.12);">DevOps</span>
+        <h2><a href="/posts/github-actions-ci-cd-platform-engineering.html">GitHub Actions: de CI/CD básico a pipelines de Platform Engineering</a></h2>
+        <p>Cómo evolucioné mis GitHub Actions desde simples tests hasta pipelines de Platform Engineering que automatizan infraestructura, seguridad y despliegues.</p>
+        <div class="meta">
+          <a href="https://github.com/svg153">Sergio Valverde</a>
+          <span>July 3, 2025</span>
+          <span>·</span>
+          <span>6 min read</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

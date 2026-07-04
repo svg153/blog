@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{TITLE}} — Sergio Valverde</title>
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="/" class="site-title">Sergio Valverde</a>
+    <nav class="site-nav">
+      <a href="/blog">Blog</a>
+      <a href="/about">About</a>
+      <a href="https://github.com/svg153">GitHub</a>
+      <a href="https://linkedin.com/in/svg153">LinkedIn</a>
+      <a href="https://twitter.com/svg153">X</a>
+      <a href="https://tiktok.com/@svg153dev">TikTok</a>
+    </nav>
+  </header>
+  <main class="post-page">
+    <div class="page-hero">
+      <div class="back-link"><a href="/blog">← Back to all posts</a></div>
+      <div class="article-header">
+        <span class="article-tag {{TAG_CLS}}">{{TAG_LABEL}}</span>
+        <h1>{{TITLE}}</h1>
+        <div class="article-meta">
+          <a href="https://github.com/svg153">Sergio Valverde</a>
+          <span class="meta-dot"></span>
+          <time>{{DATE}}</time>
+          <span class="meta-dot"></span>
+          <span>{{READING_TIME}} min read</span>
+        </div>
+      </div>
+    </div>
+    <div class="article-body">
+      {{BODY}}
+    </div>
+    <div class="article-footer">
+      <p>Sergio Valverde es Platform Engineer en Lunix, Organizer de GitHub Community Spain, y entusiasta del Developer Experience. Sígueme en <a href="https://github.com/svg153">GitHub</a>, <a href="https://linkedin.com/in/svg153">LinkedIn</a>, y <a href="https://twitter.com/svg153">X</a>.</p>
+    </div>
+    {{TAGS}}
+  </main>
+</body>
+</html>

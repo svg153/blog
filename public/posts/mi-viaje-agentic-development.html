@@ -1,90 +1,40 @@
----
-import Layout from '../../components/Layout.astro';
-
-const data = {
-  title: "Mi viaje con el desarrollo agéntico: de Copilot a agentes autónomos",
-  description: "Cómo pasé de escribir un post de LinkedIn a contar toda la historia del desarrollo agéntico — y por qué creo que esto va a cambiar cómo construimos software.",
-  date: "2025-07-02",
-  tags: ["AI","Agents","DevOps"],
-  readingTime: "8",
-  featured: true
-};
-
-const tagConfig = { cls: 'tag-ai', label: 'AI & Agents' };
-
----
-
-<Layout title="Mi viaje con el desarrollo agéntico: de Copilot a agentes autónomos" description="Cómo pasé de escribir un post de LinkedIn a contar toda la historia del desarrollo agéntico — y por qué creo que esto va a cambiar cómo construimos software.">
-  <style>
-    .page-hero { max-width: 720px; margin: 0 auto; padding: 32px 32px 0; }
-    .back-link { margin-bottom: 16px; }
-    .back-link a { color: #8b949e; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s; }
-    .back-link a:hover { color: #f0f6fc; text-decoration: none; }
-    .article-header { margin-bottom: 40px; }
-    .article-tag { display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 3px 10px; border-radius: 20px; margin-bottom: 16px; width: fit-content; }
-    .tag-ai { color: #f778ba; background: rgba(247, 120, 186, 0.12); }
-    .tag-devops { color: #1d9bf0; background: rgba(29, 155, 240, 0.12); }
-    .tag-platform { color: #a371f7; background: rgba(163, 113, 247, 0.12); }
-    .tag-security { color: #d29922; background: rgba(210, 153, 34, 0.12); }
-    .tag-general { color: #3fb950; background: rgba(63, 185, 80, 0.12); }
-    .tag-tool { color: #f0883e; background: rgba(240, 136, 62, 0.12); }
-    .tag-career { color: #db61a2; background: rgba(219, 97, 162, 0.12); }
-    .article-header h1 { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.25; margin-bottom: 16px; }
-    .article-meta { font-size: 14px; color: #8b949e; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .article-meta a { color: #8b949e; }
-    .article-meta a:hover { color: #58a6ff; }
-    .meta-dot { width: 4px; height: 4px; border-radius: 50%; background: #8b949e; }
-    .article-body { max-width: 720px; margin: 0 auto; padding: 0 32px 80px; }
-    .article-body > * { margin-bottom: 20px; }
-    .article-body h2 { font-size: 24px; font-weight: 600; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #30363d; }
-    .article-body h3 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; }
-    .article-body p { color: #c9d1d9; line-height: 1.8; }
-    .article-body strong { color: #f0f6fc; }
-    .article-body ul, .article-body ol { margin-bottom: 20px; padding-left: 24px; }
-    .article-body li { margin-bottom: 8px; color: #c9d1d9; }
-    .article-body a { color: #58a6ff; text-decoration: underline; }
-    .article-body code { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; background: #161b22; border: 1px solid #21262d; padding: 2px 6px; border-radius: 5px; font-size: 14px; color: #ff7b72; }
-    .article-body pre { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px 20px; overflow-x: auto; margin-bottom: 20px; }
-    .article-body pre code { background: none; border: none; padding: 0; font-size: 13px; line-height: 1.6; color: #c9d1d9; }
-    .article-body blockquote { border-left: 3px solid #58a6ff; padding-left: 16px; margin: 24px 0; color: #8b949e; font-style: italic; }
-    .article-body hr { border: none; border-top: 1px solid #30363d; margin: 32px 0; }
-    .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 15px; }
-    .article-body th, .article-body td { border: 1px solid #30363d; padding: 10px 14px; text-align: left; }
-    .article-body th { background: #161b22; font-weight: 600; font-size: 14px; color: #f0f6fc; }
-    .article-body td { color: #8b949e; }
-    .article-tags { margin-top: 48px; padding-top: 24px; border-top: 1px solid #30363d; display: flex; gap: 8px; flex-wrap: wrap; }
-    .article-tags a { font-size: 13px; padding: 3px 10px; border-radius: 20px; border: 1px solid #30363d; color: #8b949e; text-decoration: none; transition: all 0.2s; }
-    .article-tags a:hover { border-color: #8b949e; color: #f0f6fc; text-decoration: none; }
-    .article-footer { max-width: 720px; margin: 0 auto; padding: 0 32px 80px; }
-    .article-footer p { color: #8b949e; font-size: 14px; line-height: 1.7; font-style: italic; }
-    @media (max-width: 768px) {
-      .page-hero { padding: 24px 16px 0; }
-      .article-body { padding: 0 16px 60px; }
-      .article-header h1 { font-size: 28px; }
-      .article-body h2 { font-size: 20px; }
-      .article-body h3 { font-size: 18px; }
-    }
-  </style>
-
-  <div class="page-hero">
-    <div class="back-link"><a href="/">← Back to all posts</a></div>
-    <div class="article-header">
-      <span class="article-tag {tagConfig.cls}">{tagConfig.label}</span>
-      <h1>{data.title}</h1>
-      <div class="article-meta">
-        <a href="https://github.com/svg153">Sergio Valverde</a>
-        <span class="meta-dot"></span>
-        <time datetime={data.date}>{new Date(data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
-        {data.readingTime && <>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi viaje con el desarrollo agéntico: de Copilot a agentes autónomos — Sergio Valverde</title>
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="/" class="site-title">Sergio Valverde</a>
+    <nav class="site-nav">
+      <a href="/blog">Blog</a>
+      <a href="/about">About</a>
+      <a href="https://github.com/svg153">GitHub</a>
+      <a href="https://linkedin.com/in/svg153">LinkedIn</a>
+      <a href="https://twitter.com/svg153">X</a>
+      <a href="https://tiktok.com/@svg153dev">TikTok</a>
+    </nav>
+  </header>
+  <main class="post-page">
+    <div class="page-hero">
+      <div class="back-link"><a href="/blog">← Back to all posts</a></div>
+      <div class="article-header">
+        <span class="article-tag tag-ai">AI & Agents</span>
+        <h1>Mi viaje con el desarrollo agéntico: de Copilot a agentes autónomos</h1>
+        <div class="article-meta">
+          <a href="https://github.com/svg153">Sergio Valverde</a>
           <span class="meta-dot"></span>
-          <span>{data.readingTime} min read</span>
-        </>}
+          <time>July 2, 2025</time>
+          <span class="meta-dot"></span>
+          <span>8 min read</span>
+        </div>
       </div>
     </div>
-  </div>
-
-  <div class="article-body">
-<p>Hace unas horas empecé a escribir lo que iba a ser un post de LinkedIn. Una idea rápida, algo ligero. Pero me encontré escribiendo esto — un artículo completo sobre mi viaje con el desarrollo agéntico. Y creo que eso dice algo importante sobre lo que está pasando.</p>
+    <div class="article-body">
+      <p>Hace unas horas empecé a escribir lo que iba a ser un post de LinkedIn. Una idea rápida, algo ligero. Pero me encontré escribiendo esto — un artículo completo sobre mi viaje con el desarrollo agéntico. Y creo que eso dice algo importante sobre lo que está pasando.</p>
 <h2>El punto de partida</h2>
 <p>Todo empezó como siempre empieza hoy en día: con <strong>GitHub Copilot</strong>. Como muchos de vosotros, lo uso a diario. Es una herramienta increíble que me ahorra horas de trabajo. Pero hay algo que no me terminaba de convencer: <strong>Copilot es reactivo</strong>. Tú le pides algo, él te lo da. No va más allá.</p>
 <h2>La evolución</h2>
@@ -170,15 +120,15 @@ const tagConfig = { cls: 'tag-ai', label: 'AI & Agents' };
 <hr>
 <p><em>Sergio Valverde es Platform Engineer en Lunix, Organizer de GitHub Community Spain, y entusiasta del Developer Experience. Sígueme en <a href="https://github.com/svg153">GitHub</a>, <a href="https://linkedin.com/in/svg153">LinkedIn</a>, y <a href="https://twitter.com/svg153">X</a>.</em></p>
 
-  </div>
-
-  <div class="article-footer">
-    <p>Sergio Valverde es Platform Engineer en Lunix, Organizer de GitHub Community Spain, y entusiasta del Developer Experience. Sígueme en <a href="https://github.com/svg153">GitHub</a>, <a href="https://linkedin.com/in/svg153">LinkedIn</a>, y <a href="https://twitter.com/svg153">X</a>.</p>
-  </div>
-
-<div class="article-tags">
-      <a href="/tags/ai">#AI</a>
-      <a href="/tags/agents">#Agents</a>
-      <a href="/tags/devops">#DevOps</a>
     </div>
-</Layout>
+    <div class="article-footer">
+      <p>Sergio Valverde es Platform Engineer en Lunix, Organizer de GitHub Community Spain, y entusiasta del Developer Experience. Sígueme en <a href="https://github.com/svg153">GitHub</a>, <a href="https://linkedin.com/in/svg153">LinkedIn</a>, y <a href="https://twitter.com/svg153">X</a>.</p>
+    </div>
+    <div class="article-tags">
+      <a href="/posts/ai">AI</a>
+      <a href="/posts/agents">Agents</a>
+      <a href="/posts/devops">DevOps</a>
+    </div>
+  </main>
+</body>
+</html>

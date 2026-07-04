@@ -1,0 +1,223 @@
+---
+import Layout from '../../components/Layout.astro';
+
+const data = {
+  title: "Mi stack de herramientas de desarrollo en 2025: lo que uso cada día",
+  description: "De VS Code a Cursor, de Jenkins a GitHub Actions — un tour por las herramientas que uso cada día como Platform Engineer y por qué las elegí.",
+  date: "2025-07-05",
+  tags: ["Tool","DevOps","Career"],
+  readingTime: "5",
+  featured: false
+};
+
+const tagConfig = { cls: 'tag-tool', label: 'Tools' };
+
+---
+
+<Layout title="Mi stack de herramientas de desarrollo en 2025: lo que uso cada día" description="De VS Code a Cursor, de Jenkins a GitHub Actions — un tour por las herramientas que uso cada día como Platform Engineer y por qué las elegí.">
+  <style>
+    .page-hero { max-width: 720px; margin: 0 auto; padding: 32px 32px 0; }
+    .back-link { margin-bottom: 16px; }
+    .back-link a { color: #8b949e; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s; }
+    .back-link a:hover { color: #f0f6fc; text-decoration: none; }
+    .article-header { margin-bottom: 40px; }
+    .article-tag { display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 3px 10px; border-radius: 20px; margin-bottom: 16px; width: fit-content; }
+    .tag-ai { color: #f778ba; background: rgba(247, 120, 186, 0.12); }
+    .tag-devops { color: #1d9bf0; background: rgba(29, 155, 240, 0.12); }
+    .tag-platform { color: #a371f7; background: rgba(163, 113, 247, 0.12); }
+    .tag-security { color: #d29922; background: rgba(210, 153, 34, 0.12); }
+    .tag-general { color: #3fb950; background: rgba(63, 185, 80, 0.12); }
+    .tag-tool { color: #f0883e; background: rgba(240, 136, 62, 0.12); }
+    .tag-career { color: #db61a2; background: rgba(219, 97, 162, 0.12); }
+    .article-header h1 { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.25; margin-bottom: 16px; }
+    .article-meta { font-size: 14px; color: #8b949e; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .article-meta a { color: #8b949e; }
+    .article-meta a:hover { color: #58a6ff; }
+    .meta-dot { width: 4px; height: 4px; border-radius: 50%; background: #8b949e; }
+    .article-body { max-width: 720px; margin: 0 auto; padding: 0 32px 80px; }
+    .article-body > * { margin-bottom: 20px; }
+    .article-body h2 { font-size: 24px; font-weight: 600; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #30363d; }
+    .article-body h3 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; }
+    .article-body p { color: #c9d1d9; line-height: 1.8; }
+    .article-body strong { color: #f0f6fc; }
+    .article-body ul, .article-body ol { margin-bottom: 20px; padding-left: 24px; }
+    .article-body li { margin-bottom: 8px; color: #c9d1d9; }
+    .article-body a { color: #58a6ff; text-decoration: underline; }
+    .article-body code { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; background: #161b22; border: 1px solid #21262d; padding: 2px 6px; border-radius: 5px; font-size: 14px; color: #ff7b72; }
+    .article-body pre { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px 20px; overflow-x: auto; margin-bottom: 20px; }
+    .article-body pre code { background: none; border: none; padding: 0; font-size: 13px; line-height: 1.6; color: #c9d1d9; }
+    .article-body blockquote { border-left: 3px solid #58a6ff; padding-left: 16px; margin: 24px 0; color: #8b949e; font-style: italic; }
+    .article-body hr { border: none; border-top: 1px solid #30363d; margin: 32px 0; }
+    .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 15px; }
+    .article-body th, .article-body td { border: 1px solid #30363d; padding: 10px 14px; text-align: left; }
+    .article-body th { background: #161b22; font-weight: 600; font-size: 14px; color: #f0f6fc; }
+    .article-body td { color: #8b949e; }
+    .article-tags { margin-top: 48px; padding-top: 24px; border-top: 1px solid #30363d; display: flex; gap: 8px; flex-wrap: wrap; }
+    .article-tags a { font-size: 13px; padding: 3px 10px; border-radius: 20px; border: 1px solid #30363d; color: #8b949e; text-decoration: none; transition: all 0.2s; }
+    .article-tags a:hover { border-color: #8b949e; color: #f0f6fc; text-decoration: none; }
+    .article-footer { max-width: 720px; margin: 0 auto; padding: 0 32px 80px; }
+    .article-footer p { color: #8b949e; font-size: 14px; line-height: 1.7; font-style: italic; }
+    @media (max-width: 768px) {
+      .page-hero { padding: 24px 16px 0; }
+      .article-body { padding: 0 16px 60px; }
+      .article-header h1 { font-size: 28px; }
+      .article-body h2 { font-size: 20px; }
+      .article-body h3 { font-size: 18px; }
+    }
+  </style>
+
+  <div class="page-hero">
+    <div class="back-link"><a href="/">← Back to all posts</a></div>
+    <div class="article-header">
+      <span class="article-tag {tagConfig.cls}">{tagConfig.label}</span>
+      <h1>{data.title}</h1>
+      <div class="article-meta">
+        <a href="https://github.com/svg153">Sergio Valverde</a>
+        <span class="meta-dot"></span>
+        <time datetime={data.date}>{new Date(data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+        {data.readingTime && <>
+          <span class="meta-dot"></span>
+          <span>{data.readingTime} min read</span>
+        </>}
+      </div>
+    </div>
+  </div>
+
+  <div class="article-body">
+<h1>Mi stack de herramientas de desarrollo en 2025: lo que uso cada día</h1>
+<p>Cada año cambio herramientas. No por capricho — porque el flujo de trabajo evoluciona y lo que funcionaba hace dos años ya no encaja. Este año he hecho un cambio más radical que nunca: me mudé de VS Code a Cursor.</p>
+<p>En este artículo te cuento mi stack completo, por qué elegí cada herramienta, y qué cambiaría si pudiera empezar de cero.</p>
+<h2>Editor: Cursor sobre VS Code</h2>
+<p>Sí, lo escribí. Cursor.</p>
+<p>Durante años fui devoto de VS Code. Lo configuré con cientos de extensiones, themes, snippets y keybindings. Pero Cursor me convenció por tres razones:</p>
+<ol>
+<li><p><strong>Contexto automático</strong>: Cursor sabe qué archivos estás tocando, qué imports tienes, y qué patrones usa tu proyecto. No necesitas decirle &quot;lee todos los archivos .ts&quot;.</p>
+</li>
+<li><p><strong>Multi-file edits</strong>: Puedes decirle &quot;refactoriza esta función en todos los archivos que la usan&quot; y lo hace. Sin extensiones, sin scripts personalizados.</p>
+</li>
+<li><p><strong>Codebase indexing</strong>: Cursor indexa tu repositorio completo. Puedes preguntar &quot;¿dónde se configura el timeout de la API?&quot; y te responde con el archivo exacto y la línea.</p>
+</li>
+</ol>
+<p>¿Lo malo? Es un fork de VS Code, así que a veces las extensiones se rompen. Y depende de la nube para el indexing pesado. Pero para uso diario, la experiencia es superior.</p>
+<h2>Shell: zsh + Starship</h2>
+<pre><code class="language-bash"># .zshrc
+plugins=(git docker kubectl terraform)
+</code></pre>
+<p>Starship es mi prompt. Muestra el lenguaje del proyecto, el branch de git, el estado de los tests, y el tiempo de ejecución del último comando. Todo en una línea limpia.</p>
+<pre><code>~/proyecto/main ◆ |node:v20| ✓ |2.3s|
+</code></pre>
+<p>Simple, informativo, bonito.</p>
+<h2>Docker: mi entorno de desarrollo</h2>
+<p>Cada proyecto tiene su <code>docker-compose.yml</code>. No instalo nada localmente — PostgreSQL, Redis, MinIO, todo corre en contenedores.</p>
+<pre><code class="language-yaml">services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: myapp
+      POSTGRES_PASSWORD: dev
+    ports:
+      - &quot;5432:5432&quot;
+</code></pre>
+<p>La ventaja: un compañero nuevo puede <code>docker compose up</code> y tener todo funcionando en 30 segundos. Sin instalar PostgreSQL, sin configurar variables de entorno, sin problemas de compatibilidad.</p>
+<h2>Terraform: infraestructura como código</h2>
+<pre><code class="language-bash">terraform init &amp;&amp; terraform plan &amp;&amp; terraform apply
+</code></pre>
+<p>Sencillo. Terraform + GitHub Actions para CI/CD de infraestructura. Cada PR genera un plan que se revisa antes de aplicar. Sin servidores de CI dedicados, sin Jenkins.</p>
+<h2>Git: mis comandos diarios</h2>
+<pre><code class="language-bash"># Lo que uso 50 veces al día
+git log --oneline -20
+git diff --stat
+git stash push -m &quot;wip: feature X&quot;
+git stash list
+git stash pop
+
+# Lo que uso a menudo
+git log --since=&quot;2 weeks ago&quot; --oneline --graph
+git log --all --grep=&quot;fix&quot; --oneline
+git log --stat --since=&quot;1 month ago&quot;
+
+# Los que uso cuando recuerdo que existen
+git bisect start
+git reflog
+git fsck
+</code></pre>
+<p>Git bisect es mi herramienta secreta. Cuando un bug aparece de la nada, <code>git bisect</code> te dice exactamente qué commit lo introdujo. En minutos, no en horas.</p>
+<h2>Observabilidad: lo que uso en producción</h2>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Para qué</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Prometheus</strong></td>
+<td>Métricas de infraestructura</td>
+</tr>
+<tr>
+<td><strong>Grafana</strong></td>
+<td>Dashboards y alertas</td>
+</tr>
+<tr>
+<td><strong>Loki</strong></td>
+<td>Logs agregados</td>
+</tr>
+<tr>
+<td><strong>Tempo</strong></td>
+<td>Tracing distribuido</td>
+</tr>
+<tr>
+<td><strong>PagerDuty</strong></td>
+<td>Alertas y on-call</td>
+</tr>
+</tbody></table>
+<p>Todo self-hosted. No pago por SaaS de observabilidad. El stack de Grafana Labs es completo, open source, y funciona bien si lo configuras correctamente.</p>
+<h2>Lo que NO uso (y por qué)</h2>
+<h3>Jenkins</h3>
+<p>Lo usé durante años. Ahora lo veo como un dinosaurio. GitHub Actions hace lo mismo, mejor integrado, y sin mantener un servidor.</p>
+<h3>Slack (para trabajo técnico)</h3>
+<p>Lo uso para comunicación general, pero para debugging y troubleshooting, prefiero:</p>
+<ul>
+<li><strong>GitHub Discussions</strong> para preguntas técnicas</li>
+<li><strong>Markdown</strong> para documentación</li>
+<li><strong>Logs estructurados</strong> para debugging</li>
+</ul>
+<h3>IDEs pesados (IntelliJ, PyCharm)</h3>
+<p>Para proyectos pequeños y medianos, Cursor/VS Code es suficiente. IntelliJ es potente pero tarda 30 segundos en abrir. Para Platform Engineering, donde trabajo con múltiples lenguajes y scripts, la ligereza importa.</p>
+<h2>Mis atajos de teclado</h2>
+<pre><code># Cursor / VS Code
+Ctrl+Shift+P    → Command palette
+Ctrl+P           → Go to file
+Ctrl+Shift+F     → Search in files
+Ctrl+`            → Terminal integrado
+Alt+Z            → Word wrap toggle
+Ctrl+Shift+K     → Delete line
+Cmd+D            → Select next occurrence
+</code></pre>
+<p>Estos 7 atajos cubren el 90% de mi flujo de trabajo. No necesito más.</p>
+<h2>Herramientas que quiero probar</h2>
+<ul>
+<li><strong>Bun</strong>: El runtime JavaScript que promete ser 10x más rápido que Node</li>
+<li><strong>Nix</strong>: Gestión de entornos de desarrollo reproducible</li>
+<li><strong>Dev Containers</strong>: Entornos de desarrollo en contenedores (ya los uso, pero quiero profundizar)</li>
+<li><strong>Copilot CLI</strong>: La terminal con IA integrada</li>
+</ul>
+<h2>Conclusión</h2>
+<p>Mi stack en 2025 es simple pero potente: Cursor como editor, Docker como entorno, Terraform para infraestructura, GitHub Actions para CI/CD, y el stack de Grafana para observabilidad. Todo open source, todo integrado, todo automatizado.</p>
+<p>La mejor herramienta es la que no tienes que pensar en ella. Si te pasa más de 5 minutos al día configurando o arreglando tu entorno, algo está mal.</p>
+<p>¿Cuál es tu stack? ¿Qué cambiarías?</p>
+<hr>
+<p><em>Sergio Valverde es Platform Engineer en Lunix, Organizer de GitHub Community Spain, y entusiasta del Developer Experience. Sígueme en <a href="https://github.com/svg153">GitHub</a>, <a href="https://linkedin.com/in/svg153">LinkedIn</a>, y <a href="https://twitter.com/svg153">X</a>.</em></p>
+
+  </div>
+
+  <div class="article-footer">
+    <p>Sergio Valverde es Platform Engineer en Lunix, Organizer de GitHub Community Spain, y entusiasta del Developer Experience. Sígueme en <a href="https://github.com/svg153">GitHub</a>, <a href="https://linkedin.com/in/svg153">LinkedIn</a>, y <a href="https://twitter.com/svg153">X</a>.</p>
+  </div>
+
+<div class="article-tags">
+      <a href="/tags/tool">#Tool</a>
+      <a href="/tags/devops">#DevOps</a>
+      <a href="/tags/career">#Career</a>
+    </div>
+</Layout>
