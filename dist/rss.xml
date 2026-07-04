@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sergio Valverde — Blog</title>
+    <link>https://svg153.github.io/blog/</link>
+    <description>Platform Engineering, DevOps & Agentic Development</description>
+    <language>en</language>
+    <atom:link href="https://svg153.github.io/blog/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mi stack de herramientas de desarrollo en 2025: lo que uso cada día</title>
+      <link>https://svg153.github.io/blog/posts/mi-stack-herramientas-2025.html</link>
+      <description>De VS Code a Cursor, de Jenkins a GitHub Actions — un tour por las herramientas que uso cada día como Platform Engineer y por qué las elegí.</description>
+      <pubDate>Sat, 05 Jul 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>GitHub Actions: de CI/CD básico a pipelines de Platform Engineering</title>
+      <link>https://svg153.github.io/blog/posts/github-actions-ci-cd-platform-engineering.html</link>
+      <description>Cómo evolucioné mis GitHub Actions desde simples tests hasta pipelines de Platform Engineering que automatizan infraestructura, seguridad y despliegues.</description>
+      <pubDate>Thu, 03 Jul 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Mi viaje con el desarrollo agéntico: de Copilot a agentes autónomos</title>
+      <link>https://svg153.github.io/blog/posts/mi-viaje-agentic-development.html</link>
+      <description>Cómo pasé de escribir un post de LinkedIn a contar toda la historia del desarrollo agéntico — y por qué creo que esto va a cambiar cómo construimos software.</description>
+      <pubDate>Wed, 02 Jul 2025 00:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

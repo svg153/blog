@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cómo evolucioné mis GitHub Actions desde simples tests hasta pipelines de Platform Engineering que automatizan infraestructura, seguridad y despliegues.">
+  <title>GitHub Actions: de CI/CD básico a pipelines de Platform Engineering — Sergio Valverde</title>
+  <link rel="stylesheet" href="/blog/css/blog.css">
+</head>
+<body>
+  <header class="post-header">
+    <a href="/blog/" class="back-link">← Back to all posts</a>
+  </header>
+  <main class="post-main">
+    <article>
+      <header class="post-header-content">
+        <span class="featured-tag tag-devops">DevOps</span>
+        <h1>GitHub Actions: de CI/CD básico a pipelines de Platform Engineering</h1>
+        <div class="meta">
+          <span>Sergio Valverde</span><span class="meta-dot"></span>
+          <span>July 3, 2025</span>
+          <span class="meta-dot"></span><span>6 min read</span>
+        </div>
+        <div class="article-tags"><span class="article-tag">DevOps</span><span class="article-tag">GitHub</span><span class="article-tag">CI/CD</span></div>
+      </header>
+      <div class="article-body"><h1>GitHub Actions: de CI/CD básico a pipelines de Platform Engineering</h1>
+<p>Llevo años usando GitHub Actions y la evolución que he visto es brutal. Empecé con workflows de tres líneas que ejecutaban <code>npm test</code> y ahora tengo pipelines que gestionan infraestructura, validan seguridad, generan documentación y despliegan a producción — todo sin tocar un servidor.</p>
+<p>En este artículo te cuento cómo pasé de lo básico a lo avanzado, con ejemplos reales que puedes copiar.</p>
+<h2>El nivel 0: el workflow que todo el mundo tiene</h2>
+<pre><code class="language-yaml">name: CI
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: &#39;20&#39;
+      - run: npm ci
+      - run: npm test
+</code></pre>
+<p>Esto es lo que todo el mundo tiene. Funciona. Pero es solo el punto de partida.</p>
+<h2>Nivel 1: matrices y múltiples entornos</h2>
+<p>El primer salto fue entender las matrices. En lugar de un solo job, ejecutas tests en múltiples versiones de Node, Python o Go:</p>
+<pre><code class="language-yaml">jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm test
+</code></pre>
+<p>Esto te da 6 jobs en paralelo. Si uno falla, los demás siguen corriendo. Muy útil para asegurarte de que tu código funciona en todas las versiones soportadas.</p>
+<h2>Nivel 2: caches y artefactos</h2>
+<p>El segundo salto fue optimizar. <code>npm ci</code> es rápido, pero ¿y si puedes evitarlo?</p>
+<pre><code class="language-yaml">- uses: actions/cache@v4
+  with:
+    path: ~/.npm
+    key: ${{ runner.os }}-node-${{ hashFiles(&#39;**/package-lock.json&#39;) }}
+    restore-keys: |
+      ${{ runner.os }}-node-
+</code></pre>
+<p>Con esto, la primera instalación descarga todo. Las siguientes usan la cache y tardan segundos. En pipelines que se ejecutan 50 veces al día, la diferencia es enorme.</p>
+<p>Y los artefactos:</p>
+<pre><code class="language-yaml">- uses: actions/upload-artifact@v4
+  with:
+    name: coverage-report
+    path: coverage/
+    retention-days: 30
+</code></pre>
+<p>Esto te permite ver los resultados de cobertura incluso después de que el job termine.</p>
+<h2>Nivel 3: jobs dependientes y despliegues</h2>
+<p>Aquí es donde se pone interesante. Puedes hacer que un job dependa de otro:</p>
+<pre><code class="language-yaml">jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == &#39;refs/heads/main&#39; &amp;&amp; github.event_name == &#39;push&#39;
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo &quot;Deploying to production...&quot;
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+</code></pre>
+<p>El <code>needs: test</code> hace que deploy solo corra si test pasa. El <code>if</code> hace que solo deploye en main y solo en push (no en PRs).</p>
+<h2>Nivel 4: Platform Engineering con GitHub Actions</h2>
+<p>Aquí es donde todo cambia. GitHub Actions no es solo para tests y deploy — es una plataforma completa de automatización.</p>
+<h3>Validación de Terraform</h3>
+<pre><code class="language-yaml">name: Terraform Plan
+on:
+  pull_request:
+    paths:
+      - &#39;infrastructure/**&#39;
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform init
+      - run: terraform plan -out=tfplan
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: tfplan
+</code></pre>
+<p>Cada PR que toca Terraform genera un plan. Lo subes como artefacto y lo revisas antes de merge. Sin necesidad de un servidor de CI dedicado.</p>
+<h3>Escaneo de seguridad</h3>
+<pre><code class="language-yaml">jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: &#39;fs&#39;
+          scan-ref: &#39;.&#39;
+          format: &#39;sarif&#39;
+          output: &#39;trivy-results.sarif&#39;
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: &#39;trivy-results.sarif&#39;
+</code></pre>
+<p>Esto integra directamente con GitHub Security tab. Cada PR muestra vulnerabilidades antes de que lleguen a producción.</p>
+<h3>Generación de documentación</h3>
+<pre><code class="language-yaml">name: Docs
+on:
+  push:
+    branches: [main]
+    paths:
+      - &#39;docs/**&#39;
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: &#39;3.12&#39;
+      - run: pip install mkdocs-material
+      - run: mkdocs build
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+</code></pre>
+<p>Cada push a main regenera la docs y la publica en GitHub Pages. Sin intervención humana.</p>
+<h2>Nivel 5: workflows reutilizables</h2>
+<p>Cuando tienes 10 repos con los mismos workflows, copiar y pegar se vuelve insostenible. La solución: workflows reutilizables.</p>
+<pre><code class="language-yaml"># .github/workflows/ci.yml (reusable)
+name: Reusable CI
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        type: number
+        default: 20
+    secrets:
+      DEPLOY_KEY:
+        required: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+      - run: npm ci &amp;&amp; npm test
+</code></pre>
+<p>Y en cada repo:</p>
+<pre><code class="language-yaml">name: CI
+on: [push, pull_request]
+
+jobs:
+  ci:
+    uses: mi-org/shared-workflows/.github/workflows/ci.yml@main
+    with:
+      node-version: 22
+    secrets:
+      DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+</code></pre>
+<p>Un solo lugar para actualizar la configuración de CI. Si cambias algo, se propaga a todos los repos.</p>
+<h2>Los errores que cometí</h2>
+<h3>1. No usar <code>concurrency</code></h3>
+<p>Sin concurrency, cada push dispara un workflow nuevo. Si haces 5 pushes en un minuto, tienes 5 workflows corriendo en paralelo. Con <code>concurrency</code>:</p>
+<pre><code class="language-yaml">concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+</code></pre>
+<p>Esto cancela workflows anteriores del mismo branch. Ahorras tokens y tiempo.</p>
+<h3>2. Hardcodear secrets en los logs</h3>
+<p>Nunca hagas <code>echo $SECRET</code> en un step. Si el step falla, el log se expone. Usa <code>env</code> en lugar de <code>args</code>:</p>
+<pre><code class="language-yaml"># ✅ Correcto
+- run: ./deploy.sh
+  env:
+    API_KEY: ${{ secrets.API_KEY }}
+
+# ❌ Incorrecto
+- run: API_KEY=${{ secrets.API_KEY }} ./deploy.sh
+</code></pre>
+<h3>3. No usar <code>matrix.fail-fast: false</code></h3>
+<p>Por defecto, si un job de la matrix falla, cancela los demás. Para tests, quieres ver TODOS los resultados:</p>
+<pre><code class="language-yaml">strategy:
+  fail-fast: false
+  matrix:
+    node-version: [18, 20, 22]
+</code></pre>
+<h2>Mi stack de GitHub Actions</h2>
+<p>Esto es lo que uso en mis proyectos de Platform Engineering:</p>
+<table>
+<thead>
+<tr>
+<th>Acción</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>actions/checkout@v4</code></td>
+<td>Siempre</td>
+</tr>
+<tr>
+<td><code>actions/setup-node@v4</code></td>
+<td>Proyectos Node.js</td>
+</tr>
+<tr>
+<td><code>actions/setup-python@v5</code></td>
+<td>Proyectos Python</td>
+</tr>
+<tr>
+<td><code>hashicorp/setup-terraform@v3</code></td>
+<td>Terraform plans</td>
+</tr>
+<tr>
+<td><code>aquasecurity/trivy-action@master</code></td>
+<td>Escaneo de vulnerabilidades</td>
+</tr>
+<tr>
+<td><code>peaceiris/actions-gh-pages@v3</code></td>
+<td>Deploy a GitHub Pages</td>
+</tr>
+<tr>
+<td><code>codecov/codecov-action@v4</code></td>
+<td>Upload de cobertura</td>
+</tr>
+<tr>
+<td><code>github/codeql-action/upload-sarif@v3</code></td>
+<td>Integración con Security tab</td>
+</tr>
+</tbody></table>
+<h2>Conclusión</h2>
+<p>GitHub Actions ha evolucionado de un simple sistema de CI/CD a una plataforma completa de automatización. Para Platform Engineers, es una herramienta fundamental: puedes automatizar desde tests básicos hasta despliegues de infraestructura con seguridad integrada.</p>
+<p>La clave es empezar simple y añadir complejidad gradualmente. No necesitas todos los workflows de nivel 5 desde el día uno. Empieza con tests, añade caches, luego despliegues, y poco a poco construye tu plataforma de automatización.</p>
+<p>¿Qué workflows usas en tus proyectos? ¿Tienes algún truco que te funcione bien?</p>
+<hr>
+<p><em>Sergio Valverde es Platform Engineer en Lunik, Organizer de GitHub Community Spain, y entusiasta del Developer Experience. Sígueme en <a href="https://github.com/svg153">GitHub</a>, <a href="https://linkedin.com/in/svg153">LinkedIn</a>, y <a href="https://twitter.com/svg153">X</a>.</em></p>
+</div>
+    </article>
+  </main>
+  <footer class="post-footer">
+    <a href="/blog/">← Back to all posts</a>
+  </footer>
+</body>
+</html>
