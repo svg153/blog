@@ -196,7 +196,7 @@ function buildHome() {
       <div class="featured-image">🤖</div>
       <div class="featured-content">
         <span class="featured-tag ${getTag(featured.tags[0]).cls}">${getTag(featured.tags[0]).label}</span>
-        <h2><a href="/posts/${featured.slug}.html">${featured.title}</a></h2>
+        <h2><a href="/blog/posts/${featured.slug}.html">${featured.title}</a></h2>
         <p>${featured.description}</p>
         <div class="meta">
           <span>Sergio Valverde</span><span class="meta-dot"></span>
@@ -210,7 +210,7 @@ function buildHome() {
   const postsHtml = otherPosts.map(p => `
   <div class="post-card">
     <span class="featured-tag ${getTag(p.tags[0]).cls}">${getTag(p.tags[0]).label}</span>
-    <h3><a href="/posts/${p.slug}.html">${p.title}</a></h3>
+    <h3><a href="/blog/posts/${p.slug}.html">${p.title}</a></h3>
     <p>${p.description}</p>
     <div class="meta">
       <span>Sergio Valverde</span><span class="meta-dot"></span>
@@ -290,7 +290,7 @@ function buildPost(post) {
   const htmlBody = marked.parse(post.body) || '';
   const tag = getTag(post.tags[0]);
   const tagsHtml = post.tags.length > 0
-    ? `<div class="article-tags">${post.tags.map(t => `<a href="/posts/${t.toLowerCase()}.html">${t}</a>`).join('')}</div>`
+    ? `<div class="article-tags">${post.tags.map(t => `<span class="article-tag">${t}</span>`).join('')}</div>`
     : '';
 
   const html = `<!DOCTYPE html>
@@ -372,10 +372,36 @@ function buildAbout() {
   console.log('  → about/index.html');
 }
 
+// ── Build RSS feed ──
+function buildRss() {
+  const items = sorted.map(p => `    <item>
+      <title>${p.title}</title>
+      <link>https://svg153.github.io/blog/posts/${p.slug}.html</link>
+      <description>${p.description}</description>
+      <pubDate>${new Date(p.date).toUTCString()}</pubDate>
+    </item>`).join('\n');
+
+  const rss = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sergio Valverde — Blog</title>
+    <link>https://svg153.github.io/blog/</link>
+    <description>Platform Engineering, DevOps & Agentic Development</description>
+    <language>en</language>
+    <atom:link href="https://svg153.github.io/blog/rss.xml" rel="self" type="application/rss+xml" />
+${items}
+  </channel>
+</rss>`;
+
+  writeFileSync(join(OUT, 'rss.xml'), rss);
+  console.log('  → rss.xml');
+}
+
 // ── Run ──
 console.log('Building static blog...\n');
 mkdirSync(join(OUT, 'posts'), { recursive: true });
 buildHome();
 sorted.forEach(buildPost);
 buildAbout();
+buildRss();
 console.log('\nDone!');
