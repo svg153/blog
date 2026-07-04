@@ -4,37 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GitHub Actions: de CI/CD básico a pipelines de Platform Engineering — Sergio Valverde</title>
-  <link rel="stylesheet" href="/css/blog.css">
+  <link rel="stylesheet" href="/blog/css/blog.css">
 </head>
 <body>
-  <header class="site-header">
-    <a href="/" class="site-title">Sergio Valverde</a>
-    <nav class="site-nav">
-      <a href="/blog">Blog</a>
-      <a href="/about">About</a>
-      <a href="https://github.com/svg153">GitHub</a>
-      <a href="https://linkedin.com/in/svg153">LinkedIn</a>
-      <a href="https://twitter.com/svg153">X</a>
-      <a href="https://tiktok.com/@svg153dev">TikTok</a>
-    </nav>
+  <header class="post-header">
+    <a href="/blog/" class="back-link">← Back to all posts</a>
   </header>
-  <main class="post-page">
-    <div class="page-hero">
-      <div class="back-link"><a href="/blog">← Back to all posts</a></div>
-      <div class="article-header">
-        <span class="article-tag tag-devops">DevOps</span>
+  <main class="post-main">
+    <article>
+      <header class="post-header-content">
+        <span class="featured-tag tag-devops">DevOps</span>
         <h1>GitHub Actions: de CI/CD básico a pipelines de Platform Engineering</h1>
-        <div class="article-meta">
-          <a href="https://github.com/svg153">Sergio Valverde</a>
+        <div class="meta">
+          <span>Sergio Valverde</span>
           <span class="meta-dot"></span>
-          <time>July 3, 2025</time>
-          <span class="meta-dot"></span>
-          <span>6 min read</span>
+          <span>July 3, 2025</span>
+          {{#READING_TIME}}<span class="meta-dot"></span><span>6 min read</span>{{/READING_TIME}}
         </div>
-      </div>
-    </div>
-    <div class="article-body">
-      <h1>GitHub Actions: de CI/CD básico a pipelines de Platform Engineering</h1>
+      </header>
+      <div class="article-body"><h1>GitHub Actions: de CI/CD básico a pipelines de Platform Engineering</h1>
 <p>Llevo años usando GitHub Actions y la evolución que he visto es brutal. Empecé con workflows de tres líneas que ejecutaban <code>npm test</code> y ahora tengo pipelines que gestionan infraestructura, validan seguridad, generan documentación y despliegan a producción — todo sin tocar un servidor.</p>
 <p>En este artículo te cuento cómo pasé de lo básico a lo avanzado, con ejemplos reales que puedes copiar.</p>
 <h2>El nivel 0: el workflow que todo el mundo tiene</h2>
@@ -285,16 +273,11 @@ jobs:
 <p>¿Qué workflows usas en tus proyectos? ¿Tienes algún truco que te funcione bien?</p>
 <hr>
 <p><em>Sergio Valverde es Platform Engineer en Lunix, Organizer de GitHub Community Spain, y entusiasta del Developer Experience. Sígueme en <a href="https://github.com/svg153">GitHub</a>, <a href="https://linkedin.com/in/svg153">LinkedIn</a>, y <a href="https://twitter.com/svg153">X</a>.</em></p>
-
-    </div>
-    <div class="article-footer">
-      <p>Sergio Valverde es Platform Engineer en Lunix, Organizer de GitHub Community Spain, y entusiasta del Developer Experience. Sígueme en <a href="https://github.com/svg153">GitHub</a>, <a href="https://linkedin.com/in/svg153">LinkedIn</a>, y <a href="https://twitter.com/svg153">X</a>.</p>
-    </div>
-    <div class="article-tags">
-      <a href="/posts/devops">DevOps</a>
-      <a href="/posts/github">GitHub</a>
-      <a href="/posts/ci/cd">CI/CD</a>
-    </div>
+</div>
+    </article>
   </main>
+  <footer class="post-footer">
+    <a href="/blog/">← Back to all posts</a>
+  </footer>
 </body>
 </html>

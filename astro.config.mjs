@@ -1,6 +1,8 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://svg153.github.io',
-  base: '/blog',
+  // No site - generates relative paths
+  build: {
+    assets: '_astro',
+  },
 });

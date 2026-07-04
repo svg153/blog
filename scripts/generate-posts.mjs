@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, readdirSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, mkdirSync, copyFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { marked } from 'marked';
 
@@ -69,5 +69,14 @@ ${tags.map(t => `      <a href="/posts/${t.toLowerCase()}">${t}</a>`).join('\n')
   writeFileSync(outPath, html);
   console.log('  → posts/' + slug + '.html');
 });
+
+// Copy static homepage from public/index.html to dist/index.html
+// This overrides the Astro-generated home to avoid CDN cache issues
+const staticHomeSrc = 'public/index.html';
+const staticHomeDst = 'dist/index.html';
+if (existsSync(staticHomeSrc)) {
+  copyFileSync(staticHomeSrc, staticHomeDst);
+  console.log('  → index.html (static homepage)');
+}
 
 console.log('Generated ' + posts.length + ' post pages from ' + blogDir + '/');
