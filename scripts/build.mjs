@@ -2,7 +2,8 @@ import { readFileSync, writeFileSync, readdirSync, mkdirSync, copyFileSync, exis
 import { join } from 'path';
 import { marked } from 'marked';
 
-// v1.0.3 — CDN cache invalidation
+const BUILD_ID = Date.now();
+const BUILD_DATE = new Date().toISOString().slice(0, 10);
 marked.setOptions({ gfm: true, breaks: false });
 
 const OUT = 'dist';
@@ -226,9 +227,12 @@ function buildHome() {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Sergio Valverde — Blog sobre Platform Engineering, DevOps, y Agentic Development. Artículos sobre GitHub Actions, Docker, Kubernetes, CI/CD y desarrollo de software.">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Sergio Valverde — Blog</title>
   <link rel="icon" type="image/svg+xml" href="/blog/favicon.svg">
-  <link rel="stylesheet" href="/blog/css/blog.css">
+  <link rel="stylesheet" href="/blog/css/blog.css?v=${BUILD_ID}">
 </head>
 <body>
   <header class="header">
@@ -279,6 +283,7 @@ function buildHome() {
     </div>
     <p class="footer-copy">© 2025 Sergio Valverde. Static site. Hosted on GitHub Pages.</p>
   </footer>
+  <!-- build-id: ${BUILD_ID} -->
 </body>
 </html>`;
 
