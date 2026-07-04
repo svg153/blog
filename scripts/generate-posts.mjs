@@ -75,6 +75,7 @@ ${tags.map(t => `      <a href="/posts/${t.toLowerCase()}">${t}</a>`).join('\n')
 const staticHomeSrc = 'public/index.html';
 const staticHomeDst = 'dist/index.html';
 if (existsSync(staticHomeSrc)) {
+  mkdirSync('dist', { recursive: true });
   copyFileSync(staticHomeSrc, staticHomeDst);
   console.log('  → index.html (static homepage)');
 }
