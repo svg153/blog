@@ -178,8 +178,11 @@ function checkLinkExists(link, source) {
   // Skip external links
   if (link.startsWith('http') || link.startsWith('#') || link.startsWith('mailto:')) return true;
   
+  // Strip query strings (e.g., blog.css?v=12345)
+  let linkPath = link.split('?')[0];
+  
   // Handle root-relative links
-  let path = link;
+  let path = linkPath;
   if (path.startsWith('/')) {
     // For /blog/posts/... — strip /blog/ prefix since we're testing from dist root
     path = path.replace(/^\/blog\//, '');
