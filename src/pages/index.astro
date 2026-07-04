@@ -39,8 +39,16 @@ const tagColors = {
   'general': { cls: 'tag-general', label: 'General' },
 };
 
-const getTag = (tag) => tagColors[tag?.[0]?.toLowerCase()] || tagColors['general'];
-const formatDate = (d) => new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+const getTag = (tag) => {
+  if (!tag || tag.length === 0) return tagColors['general'];
+  const first = tag[0].toLowerCase();
+  return tagColors[first] || tagColors['general'];
+};
+
+const formatDate = (d) => {
+  if (!d) return 'Soon';
+  return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+};
 ---
 
 <html lang="en">
@@ -359,7 +367,7 @@ const formatDate = (d) => new Date(d).toLocaleDateString('en-US', { year: 'numer
         <div class="featured-card">
           <div class="featured-image">🤖</div>
           <div class="featured-content">
-            {(() => { const t = getTag(featuredPost.tags); return <span class="featured-tag {t.cls}">{t.label}</span>; })()}
+            {(() => { const t = getTag(featuredPost.tags); return <span class={`featured-tag ${t.cls}`}>{t.label}</span>; })()}
             <h2><a href="/posts/{featuredPost.slug}/">{featuredPost.title}</a></h2>
             <p>{featuredPost.description}</p>
             <div class="meta">
@@ -385,7 +393,7 @@ const formatDate = (d) => new Date(d).toLocaleDateString('en-US', { year: 'numer
           const t = getTag(post.tags);
           return (
             <div class="post-card">
-              <span class="featured-tag {t.cls}">{t.label}</span>
+              <span class={`featured-tag ${t.cls}`}>{t.label}</span>
               <h3><a href="/posts/{post.slug}/">{post.title}</a></h3>
               <p>{post.description}</p>
               <div class="meta">
