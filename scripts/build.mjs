@@ -397,6 +397,18 @@ ${items}
   console.log('  → rss.xml');
 }
 
+// ── Copy static assets ──
+function copyAssets() {
+  const assets = ['favicon.svg', 'favicon.ico'];
+  for (const asset of assets) {
+    const src = join('public', asset);
+    if (existsSync(src)) {
+      copyFileSync(src, join(OUT, asset));
+      console.log(`  → ${asset}`);
+    }
+  }
+}
+
 // ── Run ──
 console.log('Building static blog...\n');
 mkdirSync(join(OUT, 'posts'), { recursive: true });
@@ -404,4 +416,5 @@ buildHome();
 sorted.forEach(buildPost);
 buildAbout();
 buildRss();
+copyAssets();
 console.log('\nDone!');
