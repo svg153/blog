@@ -5,7 +5,12 @@ import { marked } from 'marked';
 marked.setOptions({ gfm: true, breaks: false });
 
 const OUT = 'dist';
-mkdirSync(OUT, { recursive: true });
+const cssPath = join(OUT, 'css');
+const postsPath = join(OUT, 'posts');
+const aboutPath = join(OUT, 'about');
+mkdirSync(cssPath, { recursive: true });
+mkdirSync(postsPath, { recursive: true });
+mkdirSync(aboutPath, { recursive: true });
 
 // ── CSS (GitHub Blog dark theme — matches svg153.github.io) ──
 const css = `
