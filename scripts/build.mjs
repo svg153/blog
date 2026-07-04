@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync, readdirSync, mkdirSync, copyFileSync, exis
 import { join } from 'path';
 import { marked } from 'marked';
 
+// v1.0.3 — CDN cache invalidation
 marked.setOptions({ gfm: true, breaks: false });
 
 const OUT = 'dist';
