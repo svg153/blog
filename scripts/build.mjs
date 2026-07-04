@@ -338,7 +338,7 @@ function buildAbout() {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Sergio Valverde — Platform Engineer, DevOps enthusiast, and GitHub Community Spain Organizer based in Barcelona.">
+  <meta name="description" content="Sergio Valverde — Platform Engineer, DevOps enthusiast, and GitHub Community Spain Organizer based in Madrid.">
   <title>About — Sergio Valverde</title>
   <link rel="stylesheet" href="/blog/css/blog.css">
 </head>
@@ -349,7 +349,7 @@ function buildAbout() {
   <main class="post-main">
     <article>
       <h1>About</h1>
-      <p>Hi, I'm <strong>Sergio Valverde</strong>. I'm a Platform Engineer based in Barcelona, passionate about DevOps, GitHub Actions, and building developer tooling.</p>
+      <p>Hi, I'm <strong>Sergio Valverde</strong>. I'm a Platform Engineer based in Madrid, passionate about DevOps, GitHub Actions, and building developer tooling.</p>
       <p>I organize <a href="https://github.com/GitHub-Community-Spain">GitHub Community Spain</a> and write about the tools, patterns, and ideas that shape how we build software.</p>
       <h2>Connect</h2>
       <ul>

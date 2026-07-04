@@ -148,4 +148,4 @@ La mejor herramienta es la que no tienes que pensar en ella. Si te pasa más de 
 
 ---
 
-*Sergio Valverde es Platform Engineer en Lunix, Organizer de GitHub Community Spain, y entusiasta del Developer Experience. Sígueme en [GitHub](https://github.com/svg153), [LinkedIn](https://linkedin.com/in/svg153), y [X](https://twitter.com/svg153).*
+*Sergio Valverde es Platform Engineer en Lunik, Organizer de GitHub Community Spain, y entusiasta del Developer Experience. Sígueme en [GitHub](https://github.com/svg153), [LinkedIn](https://linkedin.com/in/svg153), y [X](https://twitter.com/svg153).*
