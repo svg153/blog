@@ -18,14 +18,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout your repository using git
+      - name: Checkout
         uses: actions/checkout@v6
-      - name: Setup Pages
-        uses: actions/configure-pages@v6
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Install dependencies
         run: npm ci
       - name: Build with Astro
-        uses: withastro/action@v6
+        run: npm run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
