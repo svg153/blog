@@ -1,0 +1,274 @@
+---
+import Layout from '@layouts/Layout.astro';
+---
+
+<Layout title="GitHub Actions: de CI/CD básico a pipelines de Platform Engineering" description="Cómo evolucioné mis GitHub Actions desde simples tests hasta pipelines de Platform Engineering que automatizan infraestructura, seguridad y despliegues." isArticle={true}>
+  <article class="post-article">
+    <header class="post-header">
+      <h1>GitHub Actions: de CI/CD básico a pipelines de Platform Engineering</h1>
+      <div class="post-meta">
+        <time datetime="2025-07-03">3 de julio de 2025</time>
+        <span class="meta-sep">·</span>
+        <span>6 min lectura</span>
+      </div>
+      <div class="post-tags">
+        {['DevOps', 'GitHub', 'CI/CD'].map((tag) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </div>
+    </header>
+
+    <div class="post-body">
+      <p>Llevo años usando GitHub Actions y la evolución que he visto es brutal. Empecé con workflows de tres líneas que ejecutaban <code>npm test</code> y ahora tengo pipelines que gestionan infraestructura, validan seguridad, generan documentación y despliegan a producción — todo sin tocar un servidor.</p>
+      <p>En este artículo te cuento cómo pasé de lo básico a lo avanzado, con ejemplos reales que puedes copiar.</p>
+
+      <h2>El nivel 0: el workflow que todo el mundo tiene</h2>
+      <pre><code>name: CI
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm test</code></pre>
+      <p>Esto es lo que todo el mundo tiene. Funciona. Pero es solo el punto de partida.</p>
+
+      <h2>Nivel 1: matrices y múltiples entornos</h2>
+      <p>El primer salto fue entender las matrices. En lugar de un solo job, ejecutas tests en múltiples versiones de Node, Python o Go:</p>
+      <pre><code>jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: &#36;&#123;&#123; matrix.node-version &#125;&#125;
+      - run: npm ci
+      - run: npm test</code></pre>
+      <p>Esto te da 6 jobs en paralelo. Si uno falla, los demás siguen corriendo. Muy útil para asegurarte de que tu código funciona en todas las versiones soportadas.</p>
+
+      <h2>Nivel 2: caches y artefactos</h2>
+      <p>El segundo salto fue optimizar. <code>npm ci</code> es rápido, pero ¿y si puedes evitarlo?</p>
+      <pre><code>- uses: actions/cache@v4
+  with:
+    path: ~/.npm
+    key: &#36;&#123;&#123; runner.os &#125;&#125;-node-&#36;&#123;&#123; hashFiles('**/package-lock.json') &#125;&#125;
+    restore-keys: |
+      &#36;&#123;&#123; runner.os &#125;&#125;-node-</code></pre>
+      <p>Con esto, la primera instalación descarga todo. Las siguientes usan la cache y tardan segundos. En pipelines que se ejecutan 50 veces al día, la diferencia es enorme.</p>
+      <p>Y los artefactos:</p>
+      <pre><code>- uses: actions/upload-artifact@v4
+  with:
+    name: coverage-report
+    path: coverage/
+    retention-days: 30</code></pre>
+      <p>Esto te permite ver los resultados de cobertura incluso después de que el job termine.</p>
+
+      <h2>Nivel 3: jobs dependientes y despliegues</h2>
+      <p>Aquí es donde se pone interesante. Puedes hacer que un job dependa de otro:</p>
+      <pre><code>jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Deploying to production..."
+        env:
+          DEPLOY_KEY: &#36;&#123;&#123; secrets.DEPLOY_KEY &#125;&#125;</code></pre>
+      <p>El <code>needs: test</code> hace que deploy solo corra si test pasa. El <code>if</code> hace que solo deploye en main y solo en push (no en PRs).</p>
+
+      <h2>Nivel 4: Platform Engineering con GitHub Actions</h2>
+      <p>Aquí es donde todo cambia. GitHub Actions no es solo para tests y deploy — es una plataforma completa de automatización.</p>
+
+      <h3>Validación de Terraform</h3>
+      <pre><code>name: Terraform Plan
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/**'
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform plan -out=tfplan
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: tfplan</code></pre>
+      <p>Cada PR que toca Terraform genera un plan. Lo subes como artefacto y lo revisas antes de merge. Sin necesidad de un servidor de CI dedicado.</p>
+
+      <h3>Escaneo de seguridad</h3>
+      <pre><code>jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'</code></pre>
+      <p>Esto integra directamente con GitHub Security tab. Cada PR muestra vulnerabilidades antes de que lleguen a producción.</p>
+
+      <h3>Generación de documentación</h3>
+      <pre><code>name: Docs
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install mkdocs-material
+      - run: mkdocs build
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: &#36;&#123;&#123; secrets.GITHUB_TOKEN &#125;&#125;
+          publish_dir: ./site</code></pre>
+      <p>Cada push a main regenera la docs y la publica en GitHub Pages. Sin intervención humana.</p>
+
+      <h2>Nivel 5: workflows reutilizables</h2>
+      <p>Cuando tienes 10 repos con los mismos workflows, copiar y pegar se vuelve insostenible. La solución: workflows reutilizables.</p>
+      <pre><code># .github/workflows/ci.yml (reusable)
+name: Reusable CI
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        type: number
+        default: 20
+    secrets:
+      DEPLOY_KEY:
+        required: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: &#36;&#123;&#123; inputs.node-version &#125;&#125;
+      - run: npm ci && npm test</code></pre>
+      <p>Y en cada repo:</p>
+      <pre><code>name: CI
+on: [push, pull_request]
+
+jobs:
+  ci:
+    uses: mi-org/shared-workflows/.github/workflows/ci.yml@main
+    with:
+      node-version: 22
+    secrets:
+      DEPLOY_KEY: &#36;&#123;&#123; secrets.DEPLOY_KEY &#125;&#125;</code></pre>
+      <p>Un solo lugar para actualizar la configuración de CI. Si cambias algo, se propaga a todos los repos.</p>
+
+      <h2>Los errores que cometí</h2>
+
+      <h3>1. No usar <code>concurrency</code></h3>
+      <p>Sin concurrency, cada push dispara un workflow nuevo. Si haces 5 pushes en un minuto, tienes 5 workflows corriendo en paralelo. Con <code>concurrency</code>:</p>
+      <pre><code>concurrency:
+  group: &#36;&#123;&#123; github.workflow &#125;&#125;-&#36;&#123;&#123; github.ref &#125;&#125;
+  cancel-in-progress: true</code></pre>
+      <p>Esto cancela workflows anteriores del mismo branch. Ahorras tokens y tiempo.</p>
+
+      <h3>2. Hardcodear secrets en los logs</h3>
+      <p>Nunca hagas <code>echo $SECRET</code> en un step. Si el step falla, el log se expone. Usa <code>env</code> en lugar de <code>args</code>:</p>
+      <pre><code># ✅ Correcto
+- run: ./deploy.sh
+  env:
+    API_KEY: &#36;&#123;&#123; secrets.API_KEY &#125;&#125;
+
+# ❌ Incorrecto
+- run: API_KEY=&#36;&#123;&#123; secrets.API_KEY &#125;&#125; ./deploy.sh</code></pre>
+
+      <h3>3. No usar <code>matrix.fail-fast: false</code></h3>
+      <p>Por defecto, si un job de la matrix falla, cancela los demás. Para tests, quieres ver TODOS los resultados:</p>
+      <pre><code>strategy:
+  fail-fast: false
+  matrix:
+    node-version: [18, 20, 22]</code></pre>
+
+      <h2>Mi stack de GitHub Actions</h2>
+      <p>Esto es lo que uso en mis proyectos de Platform Engineering:</p>
+      <table>
+        <thead>
+          <tr><th>Acción</th><th>Uso</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>actions/checkout@v4</code></td><td>Siempre</td></tr>
+          <tr><td><code>actions/setup-node@v4</code></td><td>Proyectos Node.js</td></tr>
+          <tr><td><code>actions/setup-python@v5</code></td><td>Proyectos Python</td></tr>
+          <tr><td><code>hashicorp/setup-terraform@v3</code></td><td>Terraform plans</td></tr>
+          <tr><td><code>aquasecurity/trivy-action@master</code></td><td>Escaneo de vulnerabilidades</td></tr>
+          <tr><td><code>peaceiris/actions-gh-pages@v3</code></td><td>Deploy a GitHub Pages</td></tr>
+          <tr><td><code>codecov/codecov-action@v4</code></td><td>Upload de cobertura</td></tr>
+          <tr><td><code>github/codeql-action/upload-sarif@v3</code></td><td>Integración con Security tab</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Conclusión</h2>
+      <p>GitHub Actions ha evolucionado de un simple sistema de CI/CD a una plataforma completa de automatización. Para Platform Engineers, es una herramienta fundamental: puedes automatizar desde tests básicos hasta despliegues de infraestructura con seguridad integrada.</p>
+      <p>La clave es empezar simple y añadir complejidad gradualmente. No necesitas todos los workflows de nivel 5 desde el día uno. Empieza con tests, añade caches, luego despliegues, y poco a poco construye tu plataforma de automatización.</p>
+      <p>¿Qué workflows usas en tus proyectos? ¿Tienes algún truco que te funcione bien?</p>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .post-article { max-width: var(--max-width); margin: 0 auto; }
+  .post-header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--color-border); }
+  .post-header h1 { font-size: 2rem; margin-bottom: 0.75rem; line-height: 1.2; }
+  .post-meta { color: var(--color-text-secondary); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .meta-sep { color: var(--color-text-secondary); }
+  .post-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .tag { background: rgba(56, 139, 253, 0.15); color: var(--color-accent); padding: 0.15em 0.6em; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
+  .post-body { font-size: 1.05rem; line-height: 1.7; }
+  .post-body h2 { font-size: 1.5rem; margin-top: 2.5rem; margin-bottom: 1rem; padding-top: 1rem; }
+  .post-body h3 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.75rem; }
+  .post-body p { margin-bottom: 1.25rem; }
+  .post-body ul, .post-body ol { margin-bottom: 1.25rem; padding-left: 1.5rem; }
+  .post-body li { margin-bottom: 0.5rem; }
+  .post-body code { font-family: var(--font-mono); background: var(--color-bg-secondary); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; }
+  .post-body pre { background: var(--color-bg-secondary); padding: 1rem; border-radius: 6px; overflow-x: auto; margin-bottom: 1.5rem; border: 1px solid var(--color-border); }
+  .post-body pre code { background: none; padding: 0; font-size: 0.85rem; }
+  .post-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+  .post-body th, .post-body td { border: 1px solid var(--color-border); padding: 0.5rem 0.75rem; text-align: left; }
+  .post-body th { background: var(--color-bg-secondary); font-weight: 600; }
+  @media (max-width: 640px) {
+    .post-header h1 { font-size: 1.5rem; }
+    .post-body { font-size: 1rem; }
+  }
+</style>

@@ -1,0 +1,97 @@
+---
+import Layout from '@layouts/Layout.astro';
+---
+
+<Layout title="Mi viaje con el desarrollo agéntico: de Copilot a agentes autónomos" description="Cómo pasé de escribir un post de LinkedIn a contar toda la historia del desarrollo agéntico — y por qué creo que esto va a cambiar cómo construimos software." isArticle={true}>
+  <article class="post-article">
+    <header class="post-header">
+      <h1>Mi viaje con el desarrollo agéntico: de Copilot a agentes autónomos</h1>
+      <div class="post-meta">
+        <time datetime="2025-07-02">2 de julio de 2025</time>
+        <span class="meta-sep">·</span>
+        <span>8 min lectura</span>
+      </div>
+      <div class="post-tags">
+        {['AI', 'Agents', 'DevOps'].map((tag) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </div>
+    </header>
+
+    <div class="post-body">
+      <p>Hace unas horas empecé a escribir lo que iba a ser un post de LinkedIn. Una idea rápida, algo ligero. Pero me encontré escribiendo esto — un artículo completo sobre mi viaje con el desarrollo agéntico. Y creo que eso dice algo importante sobre lo que está pasando.</p>
+
+      <h2>El punto de partida</h2>
+      <p>Todo empezó como siempre empieza hoy en día: con <strong>GitHub Copilot</strong>. Como muchos de vosotros, lo uso a diario. Es una herramienta increíble que me ahorra horas de trabajo. Pero hay algo que no me terminaba de convencer: <strong>Copilot es reactivo</strong>. Tú le pides algo, él te lo da. No va más allá.</p>
+
+      <h2>La evolución</h2>
+      <p>Lo primero que hice fue explorar <strong>Claude Code</strong> y <strong>Cursor</strong>. La diferencia es notable: estos tools no solo completan código, sino que <strong>entienden el contexto</strong> de tu proyecto. Pueden refactorizar múltiples archivos, entender dependencias, y mantener la coherencia.</p>
+      <p>Pero seguían siendo herramientas — no agentes.</p>
+
+      <h2>El salto a agentes autónomos</h2>
+      <p>La verdadera revolución empezó cuando empecé a experimentar con <strong>agentes que podían tomar decisiones por sí mismos</strong>. No solo completan código: <strong>planifican, ejecutan, verifican y corrigen</strong>.</p>
+
+      <h3>Mi primer experimento real</h3>
+      <p>El primer proyecto donde usé un agente autónomo fue para automatizar la revisión de PRs en uno de mis repositorios. El agente:</p>
+      <ol>
+        <li><strong>Leía</strong> todos los cambios del PR</li>
+        <li><strong>Planificaba</strong> qué tests ejecutar</li>
+        <li><strong>Ejecutaba</strong> los tests automáticamente</li>
+        <li><strong>Verificaba</strong> los resultados</li>
+        <li><strong>Generaba</strong> un comentario con la revisión</li>
+      </ol>
+      <p>Todo esto sin intervención humana. El agente tomó decisiones sobre qué tests eran relevantes, cómo interpretar los resultados, y qué sugerencias hacer.</p>
+
+      <h2>El presente: flujos de trabajo agénticos</h2>
+      <p>Hoy en día, mi flujo de trabajo con agentes autónomos se ha convertido en algo completamente diferente. Ya no estoy solo escribiendo código — estoy <strong>orquestando agentes</strong> que trabajan en paralelo, se comunican entre sí, y entregan resultados que antes me llevaban horas.</p>
+
+      <h3>Ejemplo: SDD (Spec-Driven Development)</h3>
+      <p>Uno de los flujos más potentes que he implementado es el desarrollo guiado por especificaciones. El proceso:</p>
+      <ol>
+        <li>Escribo una especificación en formato markdown</li>
+        <li>Un agente la convierte en tareas de implementación</li>
+        <li>Otros agentes implementan las tareas en paralelo</li>
+        <li>Un agente de verificación comprueba que todo funciona</li>
+        <li>Un agente de testing escribe tests para cubrir el nuevo código</li>
+      </ol>
+      <p>El resultado: una feature completa, con tests, documentación y revisión de código, generada en minutos en lugar de horas.</p>
+
+      <h2>Lo que aprendí</h2>
+      <ul>
+        <li><strong>Los agentes no reemplazan desarrolladores</strong> — nos hacen más efectivos. El valor humano está en definir el problema, no en escribir cada línea de código.</li>
+        <li><strong>La calidad de la especificación es crítica</strong>. Un agente es tan bueno como las instrucciones que recibe.</li>
+        <li><strong>La verificación automática es esencial</strong>. Sin tests y verificación, los agentes pueden introducir errores sutiles.</li>
+        <li><strong>El contexto importa</strong>. Los agentes que entienden el contexto completo del proyecto son mucho más efectivos.</li>
+      </ul>
+
+      <h2>El futuro</h2>
+      <p>Creo que estamos al principio de algo importante. Los agentes autónomos van a cambiar radicalmente cómo construimos software. No se trata de reemplazar desarrolladores, sino de <strong>aumentar nuestras capacidades</strong>.</p>
+      <p>El desarrollador del futuro será más como un <strong>director de orquesta</strong> — definiendo objetivos, especificando restricciones, y guiando agentes que ejecutan el trabajo detallado.</p>
+      <p>Y eso es emocionante.</p>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .post-article { max-width: var(--max-width); margin: 0 auto; }
+  .post-header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--color-border); }
+  .post-header h1 { font-size: 2rem; margin-bottom: 0.75rem; line-height: 1.2; }
+  .post-meta { color: var(--color-text-secondary); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .meta-sep { color: var(--color-text-secondary); }
+  .post-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .tag { background: rgba(56, 139, 253, 0.15); color: var(--color-accent); padding: 0.15em 0.6em; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
+  .post-body { font-size: 1.05rem; line-height: 1.7; }
+  .post-body h2 { font-size: 1.5rem; margin-top: 2.5rem; margin-bottom: 1rem; padding-top: 1rem; }
+  .post-body h3 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.75rem; }
+  .post-body p { margin-bottom: 1.25rem; }
+  .post-body ul, .post-body ol { margin-bottom: 1.25rem; padding-left: 1.5rem; }
+  .post-body li { margin-bottom: 0.5rem; }
+  .post-body blockquote { border-left: 3px solid var(--color-accent); padding-left: 1rem; margin: 1.5rem 0; color: var(--color-text-secondary); font-style: italic; }
+  .post-body code { font-family: var(--font-mono); background: var(--color-bg-secondary); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; }
+  .post-body pre { background: var(--color-bg-secondary); padding: 1rem; border-radius: 6px; overflow-x: auto; margin-bottom: 1.5rem; border: 1px solid var(--color-border); }
+  .post-body pre code { background: none; padding: 0; font-size: 0.85rem; }
+  @media (max-width: 640px) {
+    .post-header h1 { font-size: 1.5rem; }
+    .post-body { font-size: 1rem; }
+  }
+</style>

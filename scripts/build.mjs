@@ -6,7 +6,7 @@ const BUILD_ID = Date.now();
 const BUILD_DATE = new Date().toISOString().slice(0, 10);
 marked.setOptions({ gfm: true, breaks: false });
 
-const OUT = 'dist';
+const OUT = '.';  // generate directly in root — GitHub Pages serves from main
 const cssPath = join(OUT, 'css');
 const postsPath = join(OUT, 'posts');
 const aboutPath = join(OUT, 'about');

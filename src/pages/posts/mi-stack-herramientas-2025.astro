@@ -1,0 +1,159 @@
+---
+import Layout from '@layouts/Layout.astro';
+---
+
+<Layout title="Mi stack de herramientas de desarrollo en 2025" description="De VS Code a Cursor, de Jenkins a GitHub Actions — un tour por las herramientas que uso cada día como Platform Engineer y por qué las elegí." isArticle={true}>
+  <article class="post-article">
+    <header class="post-header">
+      <h1>Mi stack de herramientas de desarrollo en 2025: lo que uso cada día</h1>
+      <div class="post-meta">
+        <time datetime="2025-07-05">5 de julio de 2025</time>
+        <span class="meta-sep">·</span>
+        <span>5 min lectura</span>
+      </div>
+      <div class="post-tags">
+        {['Tool', 'DevOps', 'Career'].map((tag) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </div>
+    </header>
+
+    <div class="post-body">
+      <p>Cada año cambio herramientas. No por capricho — porque el flujo de trabajo evoluciona y lo que funcionaba hace dos años ya no encaja. Este año he hecho un cambio más radical que nunca: me mudé de VS Code a Cursor.</p>
+      <p>En este artículo te cuento mi stack completo, por qué elegí cada herramienta, y qué cambiaría si pudiera empezar de cero.</p>
+
+      <h2>Editor: Cursor sobre VS Code</h2>
+      <p>Sí, lo escribí. Cursor.</p>
+      <p>Durante años fui devoto de VS Code. Lo configuré con cientos de extensiones, themes, snippets y keybindings. Pero Cursor me convenció por tres razones:</p>
+      <ol>
+        <li><strong>Contexto automático</strong>: Cursor sabe qué archivos estás tocando, qué imports tienes, y qué patrones usa tu proyecto. No necesitas decirle "lee todos los archivos .ts".</li>
+        <li><strong>Multi-file edits</strong>: Puedes decirle "refactoriza esta función en todos los archivos que la usan" y lo hace. Sin extensiones, sin scripts personalizados.</li>
+        <li><strong>Codebase indexing</strong>: Cursor indexa tu repositorio completo. Puedes preguntar "¿dónde se configura el timeout de la API?" y te responde con el archivo exacto y la línea.</li>
+      </ol>
+      <p>¿Lo malo? Es un fork de VS Code, así que a veces las extensiones se rompen. Y depende de la nube para el indexing pesado. Pero para uso diario, la experiencia es superior.</p>
+
+      <h2>Shell: zsh + Starship</h2>
+      <pre><code># .zshrc
+plugins=(git docker kubectl terraform)</code></pre>
+      <p>Starship es mi prompt. Muestra el lenguaje del proyecto, el branch de git, el estado de los tests, y el tiempo de ejecución del último comando. Todo en una línea limpia.</p>
+      <pre><code>~/proyecto/main ◆ |node:v20| ✓ |2.3s|</code></pre>
+      <p>Simple, informativo, bonito.</p>
+
+      <h2>Docker: mi entorno de desarrollo</h2>
+      <p>Cada proyecto tiene su <code>docker-compose.yml</code>. No instalo nada localmente — PostgreSQL, Redis, MinIO, todo corre en contenedores.</p>
+      <pre><code>services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: myapp
+      POSTGRES_PASSWORD: dev
+    ports:
+      - "5432:5432"</code></pre>
+      <p>La ventaja: un compañero nuevo puede <code>docker compose up</code> y tener todo funcionando en 30 segundos. Sin instalar PostgreSQL, sin configurar variables de entorno, sin problemas de compatibilidad.</p>
+
+      <h2>Terraform: infraestructura como código</h2>
+      <pre><code>terraform init && terraform plan && terraform apply</code></pre>
+      <p>Sencillo. Terraform + GitHub Actions para CI/CD de infraestructura. Cada PR genera un plan que se revisa antes de aplicar. Sin servidores de CI dedicados, sin Jenkins.</p>
+
+      <h2>Git: mis comandos diarios</h2>
+      <pre><code># Lo que uso 50 veces al día
+git log --oneline -20
+git diff --stat
+git stash push -m "wip: feature X"
+git stash list
+git stash pop
+
+# Lo que uso a menudo
+git log --since="2 weeks ago" --oneline --graph
+git log --all --grep="fix" --oneline
+git log --stat --since="1 month ago"
+
+# Los que uso cuando recuerdo que existen
+git bisect start
+git reflog
+git fsck</code></pre>
+      <p>Git bisect es mi herramienta secreta. Cuando un bug aparece de la nada, <code>git bisect</code> te dice exactamente qué commit lo introdujo. En minutos, no en horas.</p>
+
+      <h2>Observabilidad: lo que uso en producción</h2>
+      <table>
+        <thead>
+          <tr><th>Herramienta</th><th>Para qué</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Prometheus</strong></td><td>Métricas de infraestructura</td></tr>
+          <tr><td><strong>Grafana</strong></td><td>Dashboards y alertas</td></tr>
+          <tr><td><strong>Loki</strong></td><td>Logs agregados</td></tr>
+          <tr><td><strong>Tempo</strong></td><td>Tracing distribuido</td></tr>
+          <tr><td><strong>PagerDuty</strong></td><td>Alertas y on-call</td></tr>
+        </tbody>
+      </table>
+      <p>Todo self-hosted. No pago por SaaS de observabilidad. El stack de Grafana Labs es completo, open source, y funciona bien si lo configuras correctamente.</p>
+
+      <h2>Lo que NO uso (y por qué)</h2>
+
+      <h3>Jenkins</h3>
+      <p>Lo usé durante años. Ahora lo veo como un dinosaurio. GitHub Actions hace lo mismo, mejor integrado, y sin mantener un servidor.</p>
+
+      <h3>Slack (para trabajo técnico)</h3>
+      <p>Lo uso para comunicación general, pero para debugging y troubleshooting, prefiero:</p>
+      <ul>
+        <li><strong>GitHub Discussions</strong> para preguntas técnicas</li>
+        <li><strong>Markdown</strong> para documentación</li>
+        <li><strong>Logs estructurados</strong> para debugging</li>
+      </ul>
+
+      <h3>IDEs pesados (IntelliJ, PyCharm)</h3>
+      <p>Para proyectos pequeños y medianos, Cursor/VS Code es suficiente. IntelliJ es potente pero tarda 30 segundos en abrir. Para Platform Engineering, donde trabajo con múltiples lenguajes y scripts, la ligereza importa.</p>
+
+      <h2>Mis atajos de teclado</h2>
+      <pre><code># Cursor / VS Code
+Ctrl+Shift+P    → Command palette
+Ctrl+P           → Go to file
+Ctrl+Shift+F     → Search in files
+Ctrl+`            → Terminal integrado
+Alt+Z            → Word wrap toggle
+Ctrl+Shift+K     → Delete line
+Cmd+D            → Select next occurrence</code></pre>
+      <p>Estos 7 atajos cubren el 90% de mi flujo de trabajo. No necesito más.</p>
+
+      <h2>Herramientas que quiero probar</h2>
+      <ul>
+        <li><strong>Bun</strong>: El runtime JavaScript que promete ser 10x más rápido que Node</li>
+        <li><strong>Nix</strong>: Gestión de entornos de desarrollo reproducible</li>
+        <li><strong>Dev Containers</strong>: Entornos de desarrollo en contenedores (ya los uso, pero quiero profundizar)</li>
+        <li><strong>Copilot CLI</strong>: La terminal con IA integrada</li>
+      </ul>
+
+      <h2>Conclusión</h2>
+      <p>Mi stack en 2025 es simple pero potente: Cursor como editor, Docker como entorno, Terraform para infraestructura, GitHub Actions para CI/CD, y el stack de Grafana para observabilidad. Todo open source, todo integrado, todo automatizado.</p>
+      <p>La mejor herramienta es la que no tienes que pensar en ella. Si te pasa más de 5 minutos al día configurando o arreglando tu entorno, algo está mal.</p>
+      <p>¿Cuál es tu stack? ¿Qué cambiarías?</p>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .post-article { max-width: var(--max-width); margin: 0 auto; }
+  .post-header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--color-border); }
+  .post-header h1 { font-size: 2rem; margin-bottom: 0.75rem; line-height: 1.2; }
+  .post-meta { color: var(--color-text-secondary); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .meta-sep { color: var(--color-text-secondary); }
+  .post-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .tag { background: rgba(56, 139, 253, 0.15); color: var(--color-accent); padding: 0.15em 0.6em; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
+  .post-body { font-size: 1.05rem; line-height: 1.7; }
+  .post-body h2 { font-size: 1.5rem; margin-top: 2.5rem; margin-bottom: 1rem; padding-top: 1rem; }
+  .post-body h3 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.75rem; }
+  .post-body p { margin-bottom: 1.25rem; }
+  .post-body ul, .post-body ol { margin-bottom: 1.25rem; padding-left: 1.5rem; }
+  .post-body li { margin-bottom: 0.5rem; }
+  .post-body code { font-family: var(--font-mono); background: var(--color-bg-secondary); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; }
+  .post-body pre { background: var(--color-bg-secondary); padding: 1rem; border-radius: 6px; overflow-x: auto; margin-bottom: 1.5rem; border: 1px solid var(--color-border); }
+  .post-body pre code { background: none; padding: 0; font-size: 0.85rem; }
+  .post-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+  .post-body th, .post-body td { border: 1px solid var(--color-border); padding: 0.5rem 0.75rem; text-align: left; }
+  .post-body th { background: var(--color-bg-secondary); font-weight: 600; }
+  @media (max-width: 640px) {
+    .post-header h1 { font-size: 1.5rem; }
+    .post-body { font-size: 1rem; }
+  }
+</style>
