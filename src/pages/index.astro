@@ -1,52 +1,20 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import { SITE } from '@config';
-import Feed from 'astro:feed';
+import { getCollection } from 'astro:content';
 
-interface Post {
-  title: string;
-  date: string;
-  description: string;
-  slug: string;
-  tags: string[];
-}
-
-const posts: Post[] = [
-  {
-    title: 'Skills over MCP: de exponer tools a distribuir know-how',
-    date: '2026-09-14',
-    description: 'SEP-2640 convierte Skills over MCP en una extensión oficial: qué cambia, cómo separar Tools, Resources y Skills, y dónde encajan los agentes por encima de esa capa.',
-    slug: 'skills-over-mcp-tools-know-how',
-    tags: ['MCP', 'Agent Skills', 'AI Agents', 'Platform Engineering'],
-  },
-  {
-    title: 'Mi viaje con el desarrollo agéntico: de Copilot a agentes autónomos',
-    date: '2025-06-30',
-    description: 'Cómo evolucioné desde usar Copilot como autocompletado hasta construir flujos de trabajo con agentes autónomos que planean, ejecutan y verifican su propio código.',
-    slug: 'mi-viaje-agentic-development',
-    tags: ['IA', 'agentes', 'Copilot'],
-  },
-  {
-    title: 'GitHub Actions: de CI/CD básico a pipelines de Platform Engineering',
-    date: '2025-07-01',
-    description: 'De workflows básicos a pipelines completos con reusable workflows, Composite Actions, y un enfoque de Platform Engineering para equipos.',
-    slug: 'github-actions-ci-cd-platform-engineering',
-    tags: ['DevOps', 'GitHub Actions', 'CI/CD'],
-  },
-  {
-    title: 'Mi stack de herramientas de desarrollo en 2025',
-    date: '2025-07-02',
-    description: 'Editor, terminal, shell, navegadores, contenedores, IaC y más — las herramientas que uso cada día y por qué las elegí.',
-    slug: 'mi-stack-herramientas-2025',
-    tags: ['Herramientas', 'Stack'],
-  },
-];
-
-const sortedPosts = posts.sort((a, b) =>
-  new Date(b.date).getTime() - new Date(a.date).getTime()
+const posts = await getCollection('blog');
+const sortedPosts = posts.sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
 
-const feedPath = Astro.url.pathname === '/blog/' ? '/blog/rss.xml' : '/rss.xml';
+const postSlug = (id: string) => id.replace(/\.md$/, '');
+const formatDate = (date: string) =>
+  new Date(`${date}T12:00:00`).toLocaleDateString('es-ES', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 ---
 
 <Layout title="Blog" description={SITE.description}>
@@ -64,24 +32,22 @@ const feedPath = Astro.url.pathname === '/blog/' ? '/blog/rss.xml' : '/rss.xml';
         <article class="post-card">
           <header>
             <h2>
-              <a href={`/blog/posts/${post.slug}/`}>
-                {post.title}
+              <a href={`/blog/posts/${postSlug(post.id)}/`}>
+                {post.data.title}
               </a>
             </h2>
-            <time class="post-meta" datetime={post.date}>
-              {new Date(post.date).toLocaleDateString('es-ES', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
+            <time class="post-meta" datetime={post.data.date}>
+              {formatDate(post.data.date)}
             </time>
           </header>
-          <p class="post-description">{post.description}</p>
-          <div class="post-tags">
-            {post.tags.map((tag) => (
-              <span class="tag">{tag}</span>
-            ))}
-          </div>
+          {post.data.description && <p class="post-description">{post.data.description}</p>}
+          {(post.data.tags?.length ?? 0) > 0 && (
+            <div class="post-tags">
+              {post.data.tags?.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          )}
         </article>
       ))}
     </div>
