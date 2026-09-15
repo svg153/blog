@@ -1,0 +1,47 @@
+name: Refresh Mermaid lockfile
+
+on:
+  push:
+    branches:
+      - chore/use-astro-mermaid
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+        with:
+          ref: chore/use-astro-mermaid
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Regenerate package lock
+        run: npm install --package-lock-only
+
+      - name: Validate clean install
+        run: npm ci
+
+      - name: Build with Astro
+        run: npm run build
+
+      - name: Commit generated lockfile and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm .github/workflows/refresh-mermaid-lock.yml
+          git add package-lock.json .github/workflows/refresh-mermaid-lock.yml
+          if git diff --cached --quiet; then
+            echo "No lockfile changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: refresh lockfile for astro-mermaid"
+          git push
