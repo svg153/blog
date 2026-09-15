@@ -26,14 +26,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Create temporary Mermaid page
+      - name: Create temporary Mermaid content fixture
         shell: bash
         run: |
-          cat > src/pages/__mermaid-smoke.md <<'EOF'
+          cat > src/content/blog/__mermaid-smoke.md <<'EOF'
           ---
-          layout: ../layouts/Layout.astro
-          title: Mermaid smoke test
-          description: Temporary CI-only page
+          title: "Mermaid smoke test"
+          description: "Temporary CI-only Mermaid fixture"
+          date: "2026-09-15"
+          tags: ["test"]
+          featured: false
+          readingTime: "1"
           ---
 
           ```mermaid
@@ -42,6 +45,21 @@ jobs:
             Astro --> Mermaid
             Mermaid --> Diagram
           ```
+          EOF
+
+          cat > src/pages/__mermaid-smoke.astro <<'EOF'
+          ---
+          import Layout from '@layouts/Layout.astro';
+          import { getEntry, render } from 'astro:content';
+
+          const post = await getEntry('blog', '__mermaid-smoke');
+          if (!post) throw new Error('Could not find Mermaid smoke-test content');
+          const { Content } = await render(post);
+          ---
+
+          <Layout title="Mermaid smoke test">
+            <Content />
+          </Layout>
           EOF
 
       - name: Build with Astro
