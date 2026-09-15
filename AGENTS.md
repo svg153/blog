@@ -31,11 +31,10 @@ Accessibility and content rules:
 - Use meaningful node labels and avoid relying only on color to communicate meaning.
 - Avoid raw HTML or JavaScript in Mermaid labels. Rendering uses Mermaid with `securityLevel: 'strict'`.
 - Keep the Mermaid source in the Markdown article; do not commit generated SVGs for diagrams that can be expressed cleanly in Mermaid.
-- Do not add per-post Mermaid scripts or CDN imports. Rendering is handled centrally by `src/layouts/Layout.astro`.
-- Mermaid is loaded only on pages that contain a Mermaid code fence. If the renderer cannot load or a diagram is invalid, the original code block remains as a readable fallback.
-- The current renderer is pinned to Mermaid `11.17.2`. Upgrade it deliberately and validate existing diagrams before changing the pinned version.
-
-Astro syntax highlighting deliberately excludes the `mermaid` language in `astro.config.mjs`; normal code fences continue to use Shiki.
+- Do not add per-post Mermaid scripts, CDN imports, or custom renderers. Mermaid is integrated centrally through `astro-mermaid` in `astro.config.mjs`.
+- Mermaid is rendered client-side only on pages that contain Mermaid blocks; normal Markdown/code fences continue through Astro's standard pipeline.
+- Keep `astro-mermaid` and `mermaid` compatible. `astro-mermaid@2.1.0` declares Mermaid 10/11 support, so Mermaid is intentionally pinned to `11.17.2`. Do not upgrade to Mermaid 12+ until the integration declares/supports it and existing diagrams have been validated.
+- Dependency changes must keep `package-lock.json` in sync and preserve the existing `npm ci` deployment contract.
 
 ## Documentation
 
@@ -50,3 +49,4 @@ Consult these guides before working on related tasks:
 - [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
 - [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
 - [Mermaid syntax and diagram types](https://mermaid.js.org/intro/)
+- [astro-mermaid integration](https://github.com/joesaby/astro-mermaid)
