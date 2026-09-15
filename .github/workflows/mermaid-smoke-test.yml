@@ -47,7 +47,7 @@ jobs:
           ```
           EOF
 
-          cat > src/pages/__mermaid-smoke.astro <<'EOF'
+          cat > src/pages/mermaid-smoke.astro <<'EOF'
           ---
           import Layout from '@layouts/Layout.astro';
           import { getEntry, render } from 'astro:content';
@@ -68,9 +68,9 @@ jobs:
       - name: Verify Mermaid transformation
         shell: bash
         run: |
-          test -f dist/__mermaid-smoke/index.html
-          grep -q 'class="mermaid"' dist/__mermaid-smoke/index.html
-          if grep -q 'language-mermaid' dist/__mermaid-smoke/index.html; then
+          test -f dist/mermaid-smoke/index.html
+          grep -q 'class="mermaid"' dist/mermaid-smoke/index.html
+          if grep -q 'language-mermaid' dist/mermaid-smoke/index.html; then
             echo "Mermaid block was left as a normal syntax-highlighted code fence."
             exit 1
           fi
