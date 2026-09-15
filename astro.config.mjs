@@ -1,16 +1,21 @@
 import { defineConfig } from 'astro/config';
+import astroMermaid from 'astro-mermaid';
 
 export default defineConfig({
   site: 'https://svg153.github.io',
   base: '/blog',
-  markdown: {
-    syntaxHighlight: {
-      type: 'shiki',
-      // Mermaid code fences are rendered as diagrams by Layout.astro.
-      // Keep Astro's default exclusion for math as well.
-      excludeLangs: ['math', 'mermaid'],
-    },
-  },
+  integrations: [
+    astroMermaid({
+      theme: 'dark',
+      autoTheme: false,
+      enableLog: false,
+      mermaidConfig: {
+        securityLevel: 'strict',
+        fontFamily:
+          "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
+      },
+    }),
+  ],
   vite: {
     resolve: {
       alias: {
