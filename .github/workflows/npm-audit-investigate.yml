@@ -1,0 +1,83 @@
+name: Investigate npm audit
+
+on:
+  push:
+    branches:
+      - chore/npm-audit-remediation
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: chore/npm-audit-remediation
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Capture audit report
+        shell: bash
+        run: npm audit --json > audit.json || true
+
+      - name: Summarize high and critical findings
+        shell: bash
+        run: |
+          node --input-type=module <<'EOF'
+          import fs from 'node:fs';
+
+          const report = JSON.parse(fs.readFileSync('audit.json', 'utf8'));
+          const findings = Object.entries(report.vulnerabilities ?? {})
+            .filter(([, value]) => ['high', 'critical'].includes(value.severity))
+            .sort((a, b) => {
+              const rank = { critical: 0, high: 1 };
+              return rank[a[1].severity] - rank[b[1].severity] || a[0].localeCompare(b[0]);
+            });
+
+          console.log(`AUDIT_COUNTS ${JSON.stringify(report.metadata?.vulnerabilities ?? {})}`);
+          console.log(`HIGH_CRITICAL_PACKAGES ${findings.length}`);
+
+          for (const [name, value] of findings) {
+            console.log('\n=== FINDING ===');
+            console.log(`package: ${name}`);
+            console.log(`severity: ${value.severity}`);
+            console.log(`direct: ${value.isDirect}`);
+            console.log(`range: ${value.range}`);
+            console.log(`nodes: ${(value.nodes ?? []).join(', ')}`);
+            console.log(`fixAvailable: ${JSON.stringify(value.fixAvailable)}`);
+
+            for (const via of value.via ?? []) {
+              if (typeof via === 'string') {
+                console.log(`via-package: ${via}`);
+              } else {
+                console.log(`advisory: ${via.source ?? ''} ${via.title ?? ''}`);
+                console.log(`url: ${via.url ?? ''}`);
+                console.log(`vulnerable-range: ${via.range ?? ''}`);
+              }
+            }
+          }
+
+          fs.writeFileSync('/tmp/high-critical-packages.txt', findings.map(([name]) => name).join('\n'));
+          EOF
+
+      - name: Explain vulnerable dependency paths
+        shell: bash
+        run: |
+          while IFS= read -r package; do
+            [ -z "$package" ] && continue
+            echo "===== npm explain $package ====="
+            npm explain "$package" || true
+          done < /tmp/high-critical-packages.txt
+
+      - name: Show outdated direct dependencies
+        run: npm outdated || true
