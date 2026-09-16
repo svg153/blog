@@ -59,7 +59,7 @@ Un servidor que la soporta puede anunciar Skills y debe implementar dos operacio
 - `skills/list`, para descubrir las Skills disponibles;
 - `skills/get`, para recuperar la entrada de una Skill por URI.
 
-Los contenidos reales de la Skill —`SKILL.md` y sus archivos auxiliares— se leen utilizando el primitive de Resources existente, mediante `resources/read`.
+Los contenidos reales de la Skill (`SKILL.md` y sus archivos auxiliares) se leen utilizando el primitive de Resources existente, mediante `resources/read`.
 
 Esto es importante porque MCP **no inventa un nuevo formato de Skill**. La Skill sigue el formato de Agent Skills: un directorio con `SKILL.md` y, opcionalmente, referencias u otros archivos de apoyo.
 
@@ -69,16 +69,25 @@ Además, el cliente no tiene que descargar todas las instrucciones al conectarse
 
 Es progressive disclosure aplicado al conocimiento operacional.
 
-```text
-MCP Server
-│
-├── Tools
-├── Resources
-└── Skills
-     │
-     ├── skills/list
-     ├── skills/get
-     └── resources/read → SKILL.md / references
+```mermaid
+flowchart TB
+  Server["MCP Server"]
+  Tools["Tools"]
+  Resources["Resources"]
+  Skills["Skills"]
+  List["skills/list"]
+  Get["skills/get"]
+  Read["resources/read"]
+  Files["SKILL.md / references"]
+
+  Server --> Tools
+  Server --> Resources
+  Server --> Skills
+  Skills --> List
+  Skills --> Get
+  Resources --> Read
+  Get --> Read
+  Read --> Files
 ```
 
 ## Tools, Resources y Skills no son lo mismo
@@ -116,15 +125,20 @@ La Skill no necesita duplicar toda la documentación de ADF. Puede usarla como r
 
 Eso da una composición mucho más limpia:
 
-```text
-Skill
-│
-├── proceso
-├── decisiones
-├── orquestación
-│
-├── usa → Tools
-└── consulta → Resources
+```mermaid
+flowchart LR
+  Skill["Skill"]
+  Process["Proceso"]
+  Decisions["Decisiones"]
+  Orchestration["Orquestación"]
+  Tools["Tools"]
+  Resources["Resources"]
+
+  Skill --> Process
+  Skill --> Decisions
+  Skill --> Orchestration
+  Orchestration -->|usa| Tools
+  Orchestration -->|consulta| Resources
 ```
 
 ## El producto puede enviar también su manual de uso
@@ -155,15 +169,22 @@ Skills over MCP no obliga a elegir entre una Skill instalada localmente y una Sk
 
 Una estructura razonable puede mantener una única fuente lógica de conocimiento y varios canales de distribución:
 
-```text
-                 Agent Skill
-                     │
-          ┌──────────┴──────────┐
-          │                     │
-  distribución standalone   distribución MCP
-  repo / package / plugin    skills/list
-                             skills/get
-                             resources/read
+```mermaid
+flowchart TB
+  Skill["Agent Skill"]
+  Standalone["Distribución standalone"]
+  MCP["Distribución MCP"]
+  Package["repo / package / plugin"]
+  List["skills/list"]
+  Get["skills/get"]
+  Read["resources/read"]
+
+  Skill --> Standalone
+  Skill --> MCP
+  Standalone --> Package
+  MCP --> List
+  MCP --> Get
+  MCP --> Read
 ```
 
 Eso permite utilizar una Skill en clientes que todavía no soportan la extensión y, al mismo tiempo, aprovechar discovery y carga bajo demanda cuando sí existe soporte.
@@ -208,18 +229,20 @@ Una Skill aporta procedimientos y conocimiento reutilizable. Un agente completo 
 
 Por tanto, hoy modelaría las capas así:
 
-```text
-Agent
-│
-├── goal / state / planning / delegation
-│
-└── usa
-     │
-     ├── Skills   → know-how
-     ├── Resources → contexto y referencias
-     └── Tools     → acciones
-                    │
-                    └── MCP
+```mermaid
+flowchart TB
+  Agent["Agent"]
+  Control["goal / state / planning / delegation"]
+  Skills["Skills: know-how"]
+  Resources["Resources: contexto y referencias"]
+  Tools["Tools: acciones"]
+  MCP["MCP"]
+
+  Agent --> Control
+  Agent --> Skills
+  Agent --> Resources
+  Agent --> Tools
+  Tools --> MCP
 ```
 
 MCP está creciendo como **capability plane** para agentes: puede transportar acciones, contexto y ahora workflows reutilizables.
@@ -273,7 +296,7 @@ La idea que me quedo de este cambio es bastante sencilla:
 
 ## Referencias
 
-- [MCP — Skills Extension overview](https://modelcontextprotocol.io/extensions/skills/overview)
-- [modelcontextprotocol/ext-skills — Skills Over MCP Working Group](https://github.com/modelcontextprotocol/ext-skills)
-- [SEP-2640 — Skills Extension](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2640)
+- [MCP: Skills Extension overview](https://modelcontextprotocol.io/extensions/skills/overview)
+- [modelcontextprotocol/ext-skills: Skills Over MCP Working Group](https://github.com/modelcontextprotocol/ext-skills)
+- [SEP-2640: Skills Extension](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2640)
 - [Agent Skills specification](https://agentskills.io/)
