@@ -1,4 +1,4 @@
-name: Investigate npm audit
+name: Validate npm audit remediation
 
 on:
   push:
@@ -6,10 +6,10 @@ on:
       - chore/npm-audit-remediation
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  audit:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,61 +23,27 @@ jobs:
           node-version: '22'
           cache: npm
 
-      - name: Install dependencies
+      - name: Regenerate lockfile
+        run: npm install --package-lock-only
+
+      - name: Validate clean install
         run: npm ci
 
-      - name: Capture audit report
-        shell: bash
-        run: npm audit --json > audit.json || true
+      - name: Require clean npm audit
+        run: npm audit
 
-      - name: Summarize high and critical findings
-        shell: bash
-        run: |
-          node --input-type=module <<'EOF'
-          import fs from 'node:fs';
+      - name: Build with Astro
+        run: npm run build
 
-          const report = JSON.parse(fs.readFileSync('audit.json', 'utf8'));
-          const findings = Object.entries(report.vulnerabilities ?? {})
-            .filter(([, value]) => ['high', 'critical'].includes(value.severity))
-            .sort((a, b) => {
-              const rank = { critical: 0, high: 1 };
-              return rank[a[1].severity] - rank[b[1].severity] || a[0].localeCompare(b[0]);
-            });
+      - name: Show remediated versions
+        run: npm ls astro js-yaml nanoid postcss sharp smol-toml svgo
 
-          console.log(`AUDIT_COUNTS ${JSON.stringify(report.metadata?.vulnerabilities ?? {})}`);
-          console.log(`HIGH_CRITICAL_PACKAGES ${findings.length}`);
-
-          for (const [name, value] of findings) {
-            console.log('\n=== FINDING ===');
-            console.log(`package: ${name}`);
-            console.log(`severity: ${value.severity}`);
-            console.log(`direct: ${value.isDirect}`);
-            console.log(`range: ${value.range}`);
-            console.log(`nodes: ${(value.nodes ?? []).join(', ')}`);
-            console.log(`fixAvailable: ${JSON.stringify(value.fixAvailable)}`);
-
-            for (const via of value.via ?? []) {
-              if (typeof via === 'string') {
-                console.log(`via-package: ${via}`);
-              } else {
-                console.log(`advisory: ${via.source ?? ''} ${via.title ?? ''}`);
-                console.log(`url: ${via.url ?? ''}`);
-                console.log(`vulnerable-range: ${via.range ?? ''}`);
-              }
-            }
-          }
-
-          fs.writeFileSync('/tmp/high-critical-packages.txt', findings.map(([name]) => name).join('\n'));
-          EOF
-
-      - name: Explain vulnerable dependency paths
+      - name: Commit lockfile and remove temporary workflow
         shell: bash
         run: |
-          while IFS= read -r package; do
-            [ -z "$package" ] && continue
-            echo "===== npm explain $package ====="
-            npm explain "$package" || true
-          done < /tmp/high-critical-packages.txt
-
-      - name: Show outdated direct dependencies
-        run: npm outdated || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm .github/workflows/npm-audit-investigate.yml
+          git add package-lock.json .github/workflows/npm-audit-investigate.yml
+          git commit -m "chore: refresh lockfile after Astro security update"
+          git push
