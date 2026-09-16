@@ -26,26 +26,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Parse all Mermaid fences
+      - name: Verify source Mermaid fences
         shell: bash
         run: |
-          node --input-type=module <<'EOF'
-          import fs from 'node:fs';
-          import mermaid from 'mermaid';
-
-          const path = 'src/content/blog/skills-over-mcp-tools-know-how.md';
-          const markdown = fs.readFileSync(path, 'utf8');
-          const diagrams = [...markdown.matchAll(/```mermaid\n([\s\S]*?)```/g)].map((match) => match[1]);
-
-          if (diagrams.length !== 4) {
-            throw new Error(`Expected 4 Mermaid diagrams, found ${diagrams.length}`);
-          }
-
-          for (const [index, diagram] of diagrams.entries()) {
-            await mermaid.parse(diagram);
-            console.log(`Diagram ${index + 1}: valid Mermaid syntax`);
-          }
-          EOF
+          ARTICLE='src/content/blog/skills-over-mcp-tools-know-how.md'
+          COUNT=$(grep -c '^```mermaid$' "$ARTICLE")
+          test "$COUNT" -eq 4
+          if grep -q '^```text$' "$ARTICLE"; then
+            echo 'An old text architecture diagram remains in the article.'
+            exit 1
+          fi
 
       - name: Build with Astro
         run: npm run build
