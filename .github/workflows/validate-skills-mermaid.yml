@@ -1,0 +1,73 @@
+name: Validate Skills Mermaid diagrams
+
+on:
+  push:
+    branches:
+      - content/mermaid-skills-over-mcp
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+        with:
+          ref: content/mermaid-skills-over-mcp
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Parse all Mermaid fences
+        shell: bash
+        run: |
+          node --input-type=module <<'EOF'
+          import fs from 'node:fs';
+          import mermaid from 'mermaid';
+
+          const path = 'src/content/blog/skills-over-mcp-tools-know-how.md';
+          const markdown = fs.readFileSync(path, 'utf8');
+          const diagrams = [...markdown.matchAll(/```mermaid\n([\s\S]*?)```/g)].map((match) => match[1]);
+
+          if (diagrams.length !== 4) {
+            throw new Error(`Expected 4 Mermaid diagrams, found ${diagrams.length}`);
+          }
+
+          for (const [index, diagram] of diagrams.entries()) {
+            await mermaid.parse(diagram);
+            console.log(`Diagram ${index + 1}: valid Mermaid syntax`);
+          }
+          EOF
+
+      - name: Build with Astro
+        run: npm run build
+
+      - name: Verify article transformations
+        shell: bash
+        run: |
+          ARTICLE='dist/posts/skills-over-mcp-tools-know-how/index.html'
+          test -f "$ARTICLE"
+          COUNT=$(grep -o 'class="mermaid"' "$ARTICLE" | wc -l)
+          test "$COUNT" -eq 4
+          if grep -q 'language-mermaid' "$ARTICLE"; then
+            echo 'A Mermaid fence remained as a normal code block.'
+            exit 1
+          fi
+
+      - name: Remove temporary validation workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm .github/workflows/validate-skills-mermaid.yml
+          git add .github/workflows/validate-skills-mermaid.yml
+          git commit -m "ci: remove temporary Skills Mermaid validation"
+          git push
