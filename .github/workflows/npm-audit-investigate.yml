@@ -26,6 +26,9 @@ jobs:
       - name: Regenerate lockfile
         run: npm install --package-lock-only
 
+      - name: Apply compatible audit fixes to lockfile
+        run: npm audit fix --package-lock-only
+
       - name: Validate clean install
         run: npm ci
 
