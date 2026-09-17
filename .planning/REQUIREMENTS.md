@@ -8,10 +8,10 @@
 - [x] **CORE-05** — README and AGENTS describe the actual Astro architecture and contribution flow.
 
 ## Feed and discovery endpoints
-- [ ] **FEED-01** — `/blog/rss.xml` contains published posts with canonical absolute URLs.
-- [ ] **FEED-02** — RSS metadata is derived from the content collection, not duplicated manually.
-- [ ] **FEED-03** — A sitemap is generated for public routes with the configured `/blog` base path.
-- [ ] **FEED-04** — CI/build verification detects missing feed/sitemap outputs.
+- [x] **FEED-01** — `/blog/rss.xml` contains published posts with canonical absolute URLs.
+- [x] **FEED-02** — RSS metadata is derived from the content collection, not duplicated manually.
+- [x] **FEED-03** — A sitemap is generated for public routes with the configured `/blog` base path.
+- [x] **FEED-04** — CI/build verification detects missing feed/sitemap outputs.
 
 ## SEO and structured metadata
 - [ ] **SEO-01** — Every page emits an absolute canonical URL.
