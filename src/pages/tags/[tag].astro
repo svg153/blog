@@ -1,0 +1,72 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import Layout from '@layouts/Layout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { buildTaxonomy } from '../../lib/taxonomy.mjs';
+
+export async function getStaticPaths() {
+  const taxonomy = buildTaxonomy(await getCollection('blog'));
+
+  return taxonomy.map((entry) => ({
+    params: { tag: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: {
+    slug: string;
+    label: string;
+    aliases: string[];
+    posts: CollectionEntry<'blog'>[];
+  };
+}
+
+const { entry } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+
+<Layout
+  title={`Tag: ${entry.label}`}
+  description={`Artículos etiquetados con ${entry.label}.`}
+>
+  <section class="tag-page" data-tag-page-slug={entry.slug}>
+    <header class="page-header">
+      <p class="back-link"><a href={`${base}tags/`}>← Todos los tags</a></p>
+      <h1>{entry.label}</h1>
+      <p>
+        {entry.posts.length} {entry.posts.length === 1 ? 'artículo' : 'artículos'} con este tag.
+      </p>
+    </header>
+
+    <div class="post-list">
+      {entry.posts.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .page-header p {
+    color: var(--color-text-secondary);
+  }
+
+  .back-link {
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+</style>

@@ -27,11 +27,11 @@
 - [x] **OG-04** — A default fallback card exists for non-article pages or generation failure.
 
 ## Taxonomy and archive
-- [ ] **TAX-01** — Tags are normalized to stable URL slugs while preserving display labels.
-- [ ] **TAX-02** — Every article tag links to `/tags/<slug>/`.
-- [ ] **TAX-03** — `/tags/` lists normalized tags with published-post counts.
-- [ ] **TAX-04** — Tag pages list only published posts matching the normalized tag.
-- [ ] **TAX-05** — `/archive/` groups published posts chronologically with stable links.
+- [x] **TAX-01** — Tags are normalized to stable URL slugs while preserving display labels.
+- [x] **TAX-02** — Every article tag links to `/tags/<slug>/`.
+- [x] **TAX-03** — `/tags/` lists normalized tags with published-post counts.
+- [x] **TAX-04** — Tag pages list only published posts matching the normalized tag.
+- [x] **TAX-05** — `/archive/` groups published posts chronologically with stable links.
 
 ## Article UX and series
 - [ ] **UX-01** — Rendered headings have stable, linkable IDs.

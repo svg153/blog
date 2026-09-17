@@ -1,5 +1,6 @@
 ---
 import Layout from '@layouts/Layout.astro';
+import TagLink from '../components/TagLink.astro';
 
 export interface Props {
   slug: string;
@@ -48,7 +49,7 @@ const formattedDate = new Intl.DateTimeFormat('es-ES', {
       </div>
       {tags.length > 0 && (
         <div class="post-tags">
-          {tags.map((tag) => <span class="tag">{tag}</span>)}
+          {tags.map((tag) => <TagLink tag={tag} />)}
         </div>
       )}
     </header>
@@ -66,7 +67,6 @@ const formattedDate = new Intl.DateTimeFormat('es-ES', {
   .post-meta { color: var(--color-text-secondary); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
   .meta-sep { color: var(--color-text-secondary); }
   .post-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .tag { background: rgba(56, 139, 253, 0.15); color: var(--color-accent); padding: 0.15em 0.6em; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
   .post-body { font-size: 1.05rem; line-height: 1.7; }
   .post-body :global(h2) { font-size: 1.5rem; margin-top: 2.5rem; margin-bottom: 1rem; padding-top: 1rem; }
   .post-body :global(h3) { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.75rem; }

@@ -66,6 +66,14 @@ Accessibility and content rules:
 - Keep system fonts disabled. The renderer intentionally uses pinned `@resvg/resvg-js` with fonts from pinned `@fontsource/inter` so CI output does not depend on runner-installed fonts.
 - `npm run build` must continue verifying card coverage, dimensions, metadata references and deterministic stress rendering.
 
+## Taxonomy and archive
+
+- Tags in frontmatter are canonical display labels; their URLs are derived only through `src/lib/taxonomy.mjs`.
+- Do not hand-author tag slugs or duplicate tag registries. Use `tagSlug()`, `buildTaxonomy()` and `TagLink.astro`.
+- Case, whitespace and accent differences must resolve predictably; symbol handling for values such as `CI/CD`, `C++` and `R&D` is covered by the build validator.
+- A new article/tag must automatically appear in `/tags/`, its matching `/tags/<slug>/` page, the home links, the archive and sitemap without a manual list edit.
+- Keep `scripts/validate-taxonomy.mjs` aligned with any taxonomy/archive contract change.
+
 ## Generated output and legacy code
 
 - Never commit `dist/` or copies of generated site HTML/CSS/PNG assets.

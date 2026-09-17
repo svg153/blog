@@ -7,11 +7,12 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/validate-discovery.mjs && node scripts/validate-social-cards.mjs && node scripts/validate-seo.mjs",
+    "build": "astro build && node scripts/validate-discovery.mjs && node scripts/validate-social-cards.mjs && node scripts/validate-seo.mjs && node scripts/validate-taxonomy.mjs",
     "preview": "astro preview",
     "validate:discovery": "node scripts/validate-discovery.mjs",
     "validate:social-cards": "node scripts/validate-social-cards.mjs",
-    "validate:seo": "node scripts/validate-seo.mjs"
+    "validate:seo": "node scripts/validate-seo.mjs",
+    "validate:taxonomy": "node scripts/validate-taxonomy.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "4.0.19",
