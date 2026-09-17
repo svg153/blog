@@ -1,0 +1,61 @@
+name: Phase 02 final validation
+
+on:
+  push:
+    branches: [ feat/rss-sitemap ]
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: feat/rss-sitemap
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Remove unused legacy Markdown parser
+        run: npm uninstall marked
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+
+      - name: Build and run discovery smoke checks
+        run: npm run build
+
+      - name: Parse generated XML
+        run: |
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+
+          expected = {
+              'dist/rss.xml': 'rss',
+              'dist/sitemap-index.xml': 'sitemapindex',
+              'dist/sitemap-0.xml': 'urlset',
+          }
+
+          for path, root_name in expected.items():
+              root = ET.parse(path).getroot()
+              actual = root.tag.rsplit('}', 1)[-1]
+              if actual != root_name:
+                  raise SystemExit(f'{path}: expected root {root_name}, got {actual}')
+              print(f'{path}: valid XML ({actual})')
+          PY
+
+      - name: Commit dependency cleanup and remove validation workflow
+        run: |
+          rm .github/workflows/phase02-final-validation.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json .github/workflows/phase02-final-validation.yml
+          git commit -m "chore: remove unused legacy Markdown parser"
+          git push origin HEAD:feat/rss-sitemap
