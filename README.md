@@ -62,7 +62,7 @@ readingTime: "5"
 
 Then write the article directly in Markdown. Do not add a page under `src/pages/posts/`; the dynamic route creates `/blog/posts/<slug>/` during the Astro build.
 
-The same canonical metadata also drives RSS and the article's generated `/blog/og/<slug>.png` social card. Frontmatter tags are links, not display-only labels: they are normalized once through `src/lib/taxonomy.mjs` and exposed through `/blog/tags/`, `/blog/tags/<slug>/` and the chronological `/blog/archive/`. Article cards include title, date, tags and site identity; long titles are wrapped/truncated deterministically. Non-article pages use `/blog/og/default.png`.
+The same canonical metadata also drives RSS and the article's generated `/blog/og/<slug>.png` social card. Frontmatter tags are links, not display-only labels: they are normalized once through `src/lib/taxonomy.mjs` and exposed through `/blog/tags/`, `/blog/tags/<slug>/` and the chronological `/blog/archive/`. Astro's own rendered heading metadata drives article TOCs, and optional series metadata creates `/blog/series/<id>/` plus article previous/next navigation. Article cards include title, date, tags and site identity; long titles are wrapped/truncated deterministically. Non-article pages use `/blog/og/default.png`.
 
 Mermaid diagrams use normal fenced blocks:
 
@@ -84,7 +84,7 @@ npm run build
 npm audit --audit-level=high
 ```
 
-`npm run build` verifies RSS/sitemap discovery, generated social-card PNG dimensions/coverage/determinism, canonical/OG/Twitter/JSON-LD metadata, normalized tag counts/membership and chronological archive ordering. The production build is written to ignored `dist/` output.
+`npm run build` verifies RSS/sitemap discovery, generated social-card PNG dimensions/coverage/determinism, canonical/OG/Twitter/JSON-LD metadata, normalized tag counts/membership, chronological archive ordering, heading/TOC parity and deterministic series behavior. The production build is written to ignored `dist/` output.
 
 ## Pull requests and deployment
 

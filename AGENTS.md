@@ -74,6 +74,17 @@ Accessibility and content rules:
 - A new article/tag must automatically appear in `/tags/`, its matching `/tags/<slug>/` page, the home links, the archive and sitemap without a manual list edit.
 - Keep `scripts/validate-taxonomy.mjs` aligned with any taxonomy/archive contract change.
 
+## Article navigation and series
+
+- Use the `headings` returned by Astro's `render(entry)`; do not parse Markdown again to build article TOCs.
+- Astro-generated heading IDs are the canonical deep-link IDs. TOC links must match those IDs exactly.
+- The visible heading permalink enhancement must stay framework-free and progressively enhance existing server-rendered heading IDs.
+- Show the article TOC only when the shared threshold is met; keep it collapsible and mobile-usable.
+- Series metadata is optional and must use `series: { id, name, order }`. The id is a stable lowercase URL slug and order is a positive integer.
+- Use `src/lib/series.mjs` for grouping, order and previous/next context. Do not hand-author series registries or copied article lists.
+- Duplicate order or inconsistent names inside one series are build errors.
+- Keep `scripts/validate-article-ux.mjs` aligned with any heading/TOC/series contract change.
+
 ## Generated output and legacy code
 
 - Never commit `dist/` or copies of generated site HTML/CSS/PNG assets.
