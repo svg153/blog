@@ -1,0 +1,17 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import PostLayout from '@layouts/PostLayout.astro';
+import { readingTimeForPost } from '../../lib/content-lifecycle.mjs';
+export async function getStaticPaths() {
+  if (import.meta.env.PROD) return [];
+  return (await getCollection('blog')).map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+interface Props { post: CollectionEntry<'blog'>; }
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const articleHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const readingTime = readingTimeForPost(post);
+---
+<PostLayout slug={post.id} title={post.data.title} description={post.data.description} date={post.data.date} updatedDate={post.data.updatedDate} tags={post.data.tags} readingTime={readingTime} headings={articleHeadings} isPreview={true}>
+  <Content />
+</PostLayout>
