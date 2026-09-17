@@ -1,0 +1,47 @@
+---
+import Layout from '@layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { buildSeries } from '../../lib/series.mjs';
+
+const series = buildSeries(await getCollection('blog'));
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+
+<Layout title="Series" description="Series ordenadas de artículos del blog.">
+  <section class="series-index" data-series-count={series.length}>
+    <header class="page-header">
+      <h1>Series</h1>
+      <p>Recorridos de artículos que tienen un orden explícito.</p>
+    </header>
+
+    {series.length > 0 ? (
+      <div class="series-grid">
+        {series.map((group) => (
+          <a
+            class="series-card"
+            href={`${base}series/${group.id}/`}
+            data-series-index-id={group.id}
+            data-count={group.posts.length}
+          >
+            <strong>{group.name}</strong>
+            <span>{group.posts.length} {group.posts.length === 1 ? 'artículo' : 'artículos'}</span>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <p class="empty-state">Todavía no hay ninguna serie publicada.</p>
+    )}
+  </section>
+</Layout>
+
+<style>
+  .page-header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--color-border); }
+  .page-header p, .empty-state { color: var(--color-text-secondary); }
+  .series-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  .series-card { display: flex; flex-direction: column; gap: 0.35rem; padding: 1rem; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-bg-secondary); text-decoration: none; }
+  .series-card:hover, .series-card:focus-visible { border-color: var(--color-accent); text-decoration: none; }
+  .series-card strong { color: var(--color-heading); }
+  .series-card span { color: var(--color-text-secondary); font-size: 0.85rem; }
+</style>

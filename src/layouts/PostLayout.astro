@@ -2,6 +2,27 @@
 import Layout from '@layouts/Layout.astro';
 import TagLink from '../components/TagLink.astro';
 
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface SeriesLink {
+  slug: string;
+  title: string;
+}
+
+interface SeriesContext {
+  id: string;
+  name: string;
+  order: number;
+  position: number;
+  total: number;
+  previous?: SeriesLink;
+  next?: SeriesLink;
+}
+
 export interface Props {
   slug: string;
   title: string;
@@ -10,6 +31,8 @@ export interface Props {
   updatedDate?: string;
   tags?: string[];
   readingTime?: string;
+  headings?: Heading[];
+  series?: SeriesContext;
 }
 
 const {
@@ -20,6 +43,8 @@ const {
   updatedDate,
   tags = [],
   readingTime,
+  headings = [],
+  series,
 } = Astro.props;
 
 const formattedDate = new Intl.DateTimeFormat('es-ES', {
@@ -28,6 +53,11 @@ const formattedDate = new Intl.DateTimeFormat('es-ES', {
   year: 'numeric',
   timeZone: 'UTC',
 }).format(new Date(`${date}T12:00:00Z`));
+
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const showToc = headings.length >= 4;
 ---
 
 <Layout
@@ -41,6 +71,14 @@ const formattedDate = new Intl.DateTimeFormat('es-ES', {
 >
   <article class="post-article">
     <header class="post-header">
+      {series && (
+        <p class="series-kicker">
+          Serie:
+          <a href={`${base}series/${series.id}/`}>{series.name}</a>
+          <span aria-hidden="true">·</span>
+          {series.position}/{series.total}
+        </p>
+      )}
       <h1>{title}</h1>
       <div class="post-meta">
         <time datetime={date}>{formattedDate}</time>
@@ -54,22 +92,119 @@ const formattedDate = new Intl.DateTimeFormat('es-ES', {
       )}
     </header>
 
-    <div class="post-body">
+    {showToc && (
+      <details class="article-toc" data-article-toc open>
+        <summary>En este artículo</summary>
+        <ol>
+          {headings.map((heading) => (
+            <li class:list={{ 'toc-depth-3': heading.depth === 3 }}>
+              <a href={`#${heading.slug}`} data-toc-slug={heading.slug}>
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </details>
+    )}
+
+    <div class="post-body" data-post-body>
       <slot />
     </div>
+
+    {series && (
+      <nav
+        class="series-navigation"
+        aria-label={`Navegación de la serie ${series.name}`}
+        data-series-id={series.id}
+        data-series-order={series.order}
+      >
+        <div class="series-heading">
+          <span>Serie</span>
+          <a href={`${base}series/${series.id}/`}>{series.name}</a>
+        </div>
+        <div class="series-links">
+          {series.previous ? (
+            <a class="series-link previous" href={`${base}posts/${series.previous.slug}/`}>
+              <span>← Anterior</span>
+              <strong>{series.previous.title}</strong>
+            </a>
+          ) : <span />}
+          {series.next ? (
+            <a class="series-link next" href={`${base}posts/${series.next.slug}/`}>
+              <span>Siguiente →</span>
+              <strong>{series.next.title}</strong>
+            </a>
+          ) : <span />}
+        </div>
+      </nav>
+    )}
   </article>
+
+  <script is:inline data-heading-anchor-script>
+    (() => {
+      const root = document.querySelector('[data-post-body]');
+      if (!root) return;
+
+      for (const heading of root.querySelectorAll('h2[id], h3[id]')) {
+        if (heading.querySelector(':scope > .heading-anchor')) continue;
+
+        const anchor = document.createElement('a');
+        anchor.className = 'heading-anchor';
+        anchor.href = `#${heading.id}`;
+        anchor.setAttribute('aria-label', `Enlace permanente a ${heading.textContent?.trim() || 'esta sección'}`);
+        anchor.setAttribute('title', 'Enlace permanente');
+        anchor.textContent = '#';
+        heading.append(anchor);
+      }
+    })();
+  </script>
 </Layout>
 
 <style>
   .post-article { max-width: var(--max-width); margin: 0 auto; }
   .post-header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--color-border); }
   .post-header h1 { font-size: 2rem; margin-bottom: 0.75rem; line-height: 1.2; }
+  .series-kicker { display: flex; gap: 0.45rem; flex-wrap: wrap; color: var(--color-text-secondary); font-size: 0.85rem; margin-bottom: 0.6rem; }
   .post-meta { color: var(--color-text-secondary); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
   .meta-sep { color: var(--color-text-secondary); }
   .post-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  .article-toc {
+    margin: 0 0 2rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-bg-secondary);
+  }
+  .article-toc summary {
+    cursor: pointer;
+    color: var(--color-heading);
+    font-weight: 650;
+  }
+  .article-toc ol {
+    margin: 0.9rem 0 0;
+    padding-left: 1.35rem;
+  }
+  .article-toc li { margin-bottom: 0.35rem; }
+  .article-toc .toc-depth-3 { margin-left: 1rem; font-size: 0.94rem; }
+  .article-toc a { color: var(--color-text); }
+
   .post-body { font-size: 1.05rem; line-height: 1.7; }
-  .post-body :global(h2) { font-size: 1.5rem; margin-top: 2.5rem; margin-bottom: 1rem; padding-top: 1rem; }
-  .post-body :global(h3) { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.75rem; }
+  .post-body :global(h2) { font-size: 1.5rem; margin-top: 2.5rem; margin-bottom: 1rem; padding-top: 1rem; scroll-margin-top: 6rem; }
+  .post-body :global(h3) { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.75rem; scroll-margin-top: 6rem; }
+  .post-body :global(.heading-anchor) {
+    margin-left: 0.45rem;
+    color: var(--color-text-secondary);
+    font-size: 0.78em;
+    font-weight: 500;
+    text-decoration: none;
+    opacity: 0;
+  }
+  .post-body :global(h2:hover .heading-anchor),
+  .post-body :global(h3:hover .heading-anchor),
+  .post-body :global(.heading-anchor:focus-visible) {
+    opacity: 1;
+  }
   .post-body :global(p) { margin-bottom: 1.25rem; }
   .post-body :global(ul), .post-body :global(ol) { margin-bottom: 1.25rem; padding-left: 1.5rem; }
   .post-body :global(li) { margin-bottom: 0.5rem; }
@@ -81,8 +216,36 @@ const formattedDate = new Intl.DateTimeFormat('es-ES', {
   .post-body :global(th), .post-body :global(td) { border: 1px solid var(--color-border); padding: 0.65rem 0.8rem; text-align: left; }
   .post-body :global(th) { background: var(--color-bg-secondary); }
   .post-body :global(a) { color: var(--color-accent); }
+
+  .series-navigation {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .series-heading { display: flex; gap: 0.5rem; margin-bottom: 1rem; color: var(--color-text-secondary); }
+  .series-heading a { font-weight: 650; }
+  .series-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .series-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+    padding: 0.9rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    text-decoration: none;
+  }
+  .series-link span { color: var(--color-text-secondary); font-size: 0.8rem; }
+  .series-link strong { color: var(--color-heading); overflow-wrap: anywhere; }
+  .series-link.next { text-align: right; }
+
   @media (max-width: 640px) {
     .post-header h1 { font-size: 1.5rem; }
     .post-body { font-size: 1rem; }
+    .article-toc { padding: 0.85rem; }
+    .article-toc .toc-depth-3 { margin-left: 0.45rem; }
+    .post-body :global(.heading-anchor) { opacity: 1; }
+    .series-links { grid-template-columns: 1fr; }
+    .series-link.next { text-align: left; }
   }
 </style>
