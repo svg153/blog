@@ -9,32 +9,40 @@ Personal technical blog built with Astro and deployed as a static site to GitHub
 - **One dynamic route** (`src/pages/posts/[slug].astro`) renders every article. Adding a post does not require a new `.astro` page.
 - **@astrojs/rss** generates `/blog/rss.xml` directly from the canonical content collection.
 - **@astrojs/sitemap** generates sitemap discovery output from the built Astro routes.
+- **Static social cards** are prerendered as 1200x630 PNGs from article metadata; no hosted OG-image service is used.
 - **astro-mermaid** renders Mermaid fences in Markdown; Mermaid is pinned to a compatible v11 release.
 - **GitHub Actions** validates pull requests and deploys `main` to GitHub Pages.
 
-Markdown is the canonical article source. Generated output such as `dist/` is never committed.
+Markdown is the canonical article source. Generated output such as `dist/` and generated social-card PNGs are never committed.
 
 ## Structure
 
 ```text
 src/
-├── content/blog/         # Canonical Markdown articles
-├── content.config.ts     # Content collection schema
+├── content/blog/          # Canonical Markdown articles
+├── content.config.ts      # Content collection schema
+├── lib/
+│   └── social-card.mjs    # Deterministic SVG -> PNG renderer
 ├── layouts/
-│   ├── Layout.astro      # Site shell and global styles
-│   └── PostLayout.astro  # Shared article presentation
+│   ├── Layout.astro       # Site shell, canonical/OG/Twitter/JSON-LD
+│   └── PostLayout.astro   # Shared article presentation
 └── pages/
     ├── index.astro
     ├── about.astro
     ├── rss.xml.js
+    ├── og/
+    │   ├── default.png.ts
+    │   └── [slug].png.ts
     └── posts/[slug].astro
 
 scripts/
-└── validate-discovery.mjs # Build smoke checks for RSS/sitemap
+├── validate-discovery.mjs
+├── validate-social-cards.mjs
+└── validate-seo.mjs
 
 .github/workflows/
-├── ci.yml                # PR validation
-└── deploy.yml            # GitHub Pages deployment from main
+├── ci.yml
+└── deploy.yml
 ```
 
 ## Writing an article
@@ -52,7 +60,9 @@ readingTime: "5"
 ---
 ```
 
-Then write the article directly in Markdown. Do not add a page under `src/pages/posts/`; the dynamic route creates `/blog/posts/<slug>/` during the Astro build. The same content collection drives the RSS feed, while the generated route is discovered automatically by the sitemap integration.
+Then write the article directly in Markdown. Do not add a page under `src/pages/posts/`; the dynamic route creates `/blog/posts/<slug>/` during the Astro build.
+
+The same canonical metadata also drives RSS and the article's generated `/blog/og/<slug>.png` social card. Article cards include title, date, tags and site identity; long titles are wrapped/truncated deterministically. Non-article pages use `/blog/og/default.png`.
 
 Mermaid diagrams use normal fenced blocks:
 
@@ -74,7 +84,7 @@ npm run build
 npm audit --audit-level=high
 ```
 
-`npm run build` also verifies that RSS/sitemap artifacts exist and that every Markdown article resolves to canonical `/blog/posts/<slug>/` URLs in both outputs. The production build is written to ignored `dist/` output.
+`npm run build` verifies RSS/sitemap discovery, generated social-card PNG dimensions/coverage/determinism and canonical/OG/Twitter/JSON-LD metadata. The production build is written to ignored `dist/` output.
 
 ## Pull requests and deployment
 

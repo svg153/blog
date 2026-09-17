@@ -21,10 +21,10 @@
 - [x] **SEO-05** — Articles emit valid `BlogPosting` JSON-LD with canonical URL and author/site identity.
 
 ## Social cards
-- [ ] **OG-01** — Each article resolves a deterministic 1200x630 social card from its metadata.
-- [ ] **OG-02** — Cards are generated at build time or committed as source assets, never by an external runtime image service.
-- [ ] **OG-03** — Long/special-character Spanish technical titles remain readable and safely escaped.
-- [ ] **OG-04** — A default fallback card exists for non-article pages or generation failure.
+- [x] **OG-01** — Each article resolves a deterministic 1200x630 social card from its metadata.
+- [x] **OG-02** — Cards are generated at build time or committed as source assets, never by an external runtime image service.
+- [x] **OG-03** — Long/special-character Spanish technical titles remain readable and safely escaped.
+- [x] **OG-04** — A default fallback card exists for non-article pages or generation failure.
 
 ## Taxonomy and archive
 - [ ] **TAX-01** — Tags are normalized to stable URL slugs while preserving display labels.
