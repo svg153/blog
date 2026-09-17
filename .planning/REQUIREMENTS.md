@@ -14,11 +14,11 @@
 - [x] **FEED-04** — CI/build verification detects missing feed/sitemap outputs.
 
 ## SEO and structured metadata
-- [ ] **SEO-01** — Every page emits an absolute canonical URL.
-- [ ] **SEO-02** — OpenGraph metadata includes URL, title, description, image, locale and correct page/article type.
-- [ ] **SEO-03** — Twitter card metadata mirrors canonical social metadata without duplicated sources of truth.
-- [ ] **SEO-04** — Articles expose publish/update time and tags in relevant meta properties.
-- [ ] **SEO-05** — Articles emit valid `BlogPosting` JSON-LD with canonical URL and author/site identity.
+- [x] **SEO-01** — Every page emits an absolute canonical URL.
+- [x] **SEO-02** — OpenGraph metadata includes URL, title, description, image, locale and correct page/article type.
+- [x] **SEO-03** — Twitter card metadata mirrors canonical social metadata without duplicated sources of truth.
+- [x] **SEO-04** — Articles expose publish/update time and tags in relevant meta properties.
+- [x] **SEO-05** — Articles emit valid `BlogPosting` JSON-LD with canonical URL and author/site identity.
 
 ## Social cards
 - [ ] **OG-01** — Each article resolves a deterministic 1200x630 social card from its metadata.
