@@ -7,9 +7,10 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/validate-discovery.mjs",
+    "build": "astro build && node scripts/validate-discovery.mjs && node scripts/validate-seo.mjs",
     "preview": "astro preview",
-    "validate:discovery": "node scripts/validate-discovery.mjs"
+    "validate:discovery": "node scripts/validate-discovery.mjs",
+    "validate:seo": "node scripts/validate-seo.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "4.0.19",
