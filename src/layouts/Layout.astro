@@ -4,44 +4,134 @@ import { SITE } from '@config';
 export interface Props {
   title: string;
   description?: string;
-  image?: string;
   ogImage?: string;
   isArticle?: boolean;
+  publishedTime?: string;
+  modifiedTime?: string;
+  tags?: string[];
 }
 
 const {
   title: pageTitle,
-  description = 'Blog de Sergio Valverde — desarrollo, herramientas, opiniones.',
-  image = '/img/og-default.png',
-  ogImage,
+  description = SITE.description,
+  ogImage = SITE.social.ogImage,
   isArticle = false,
+  publishedTime,
+  modifiedTime,
+  tags = [],
 } = Astro.props;
 
-const imageSrc = ogImage || SITE.social.ogImage;
-const currentYear = new Date().getFullYear();
+const siteUrl = Astro.site ?? new URL(SITE.url);
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
+const authorUrl = new URL(`${base}about/`, siteUrl).href;
 const rssPath = `${base}rss.xml`;
 const sitemapPath = `${base}sitemap-index.xml`;
+const currentYear = new Date().getFullYear();
+
+const toAbsoluteAssetUrl = (value: string) => {
+  if (/^https?:\/\//iu.test(value)) return value;
+
+  const normalized = value.startsWith(base)
+    ? value
+    : `${base}${value.replace(/^\/+/, '')}`;
+
+  return new URL(normalized, siteUrl).href;
+};
+
+const toIsoDateTime = (value?: string) => {
+  if (!value) return undefined;
+  const normalized = /^\d{4}-\d{2}-\d{2}$/u.test(value)
+    ? `${value}T00:00:00Z`
+    : value;
+  const date = new Date(normalized);
+  return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
+};
+
+const absoluteImage = toAbsoluteAssetUrl(ogImage);
+const imageAlt = `${pageTitle} — ${SITE.title}`;
+const publishedIso = toIsoDateTime(publishedTime);
+const modifiedIso = toIsoDateTime(modifiedTime ?? publishedTime);
+
+const blogPosting = isArticle && publishedIso
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: pageTitle,
+      description,
+      url: canonicalUrl,
+      mainEntityOfPage: canonicalUrl,
+      image: absoluteImage,
+      datePublished: publishedIso,
+      dateModified: modifiedIso ?? publishedIso,
+      inLanguage: 'es-ES',
+      keywords: tags,
+      author: {
+        '@type': 'Person',
+        name: SITE.author.name,
+        url: authorUrl,
+        sameAs: SITE.author.sameAs,
+      },
+      publisher: {
+        '@type': 'Person',
+        name: SITE.author.name,
+        url: authorUrl,
+      },
+    }
+  : undefined;
+
+const structuredDataJson = blogPosting
+  ? JSON.stringify(blogPosting)
+      .replace(/</gu, '\\u003c')
+      .replace(/\u2028/gu, '\\u2028')
+      .replace(/\u2029/gu, '\\u2029')
+  : undefined;
 ---
 
 <html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{pageTitle} | Sergio Valverde</title>
+    <title>{pageTitle} | {SITE.title}</title>
     <meta name="description" content={description} />
-    <meta property="og:image" content={typeof imageSrc === 'string' ? imageSrc : imageSrc.url} />
+    <link rel="canonical" href={canonicalUrl} />
+
     <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
     <meta property="og:type" content={isArticle ? 'article' : 'website'} />
-    <meta property="og:site_name" content="Sergio Valverde" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={absoluteImage} />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta property="og:site_name" content={SITE.title} />
     <meta property="og:locale" content="es_ES" />
-    <meta name="twitter:site" content="@svg153dev" />
-    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content={SITE.social.twitter} />
+    <meta name="twitter:creator" content={SITE.social.twitter} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteImage} />
+    <meta name="twitter:image:alt" content={imageAlt} />
+
+    {isArticle && publishedIso && (
+      <meta property="article:published_time" content={publishedIso} />
+    )}
+    {isArticle && modifiedIso && (
+      <meta property="article:modified_time" content={modifiedIso} />
+    )}
+    {isArticle && tags.map((tag) => (
+      <meta property="article:tag" content={tag} />
+    ))}
+
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <link rel="alternate" type="application/rss+xml" title={`${SITE.title} — Blog`} href={rssPath} />
     <link rel="sitemap" href={sitemapPath} />
+
+    {structuredDataJson && (
+      <script type="application/ld+json" set:html={structuredDataJson} />
+    )}
   </head>
   <body>
     <header class="site-header">
