@@ -29,7 +29,7 @@ flowchart TD
 | 02 | Publish valid RSS and sitemap discovery endpoints | FEED-01..04 | 01 | complete |
 | 03 | Add canonical, OpenGraph/Twitter completeness and BlogPosting JSON-LD | SEO-01..05 | 01 | complete |
 | 04 | Generate deterministic per-article social preview cards | OG-01..04 | 03 | complete |
-| 05 | Turn tags into navigable taxonomy and add chronological archive | TAX-01..05 | 01 | planned |
+| 05 | Turn tags into navigable taxonomy and add chronological archive | TAX-01..05 | 01 | complete |
 | 06 | Add article TOC/heading anchors and ordered series navigation | UX-01..05 | 05 | planned |
 | 07 | Add draft/publish/update lifecycle and automatic reading time | LIFE-01..06 | 01 | planned |
 | 08 | Recommend related posts deterministically from taxonomy/series | REL-01..04 | 05,07 | planned |
