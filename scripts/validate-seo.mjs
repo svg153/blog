@@ -4,7 +4,7 @@ import { basename, extname, join } from 'node:path';
 
 const ORIGIN = 'https://svg153.github.io';
 const BASE = '/blog/';
-const FALLBACK_IMAGE = `${ORIGIN}${BASE}favicon.svg`;
+const FALLBACK_IMAGE = `${ORIGIN}${BASE}og/default.png`;
 
 const getTags = (html, tagName) => [
   ...html.matchAll(new RegExp(`<${tagName}\\b[^>]*>`, 'giu')),
@@ -49,6 +49,7 @@ const validateCommon = (html, expectedCanonical, expectedType) => {
   for (const name of requiredTwitter) {
     assert.equal(metaValues(html, 'name', `twitter:${name}`).length, 1, `${expectedCanonical}: twitter:${name} missing or duplicated`);
   }
+  assert.equal(metaValues(html, 'name', 'twitter:card')[0], 'summary_large_image', `${expectedCanonical}: twitter:card must use the generated large card`);
   assert.match(metaValues(html, 'name', 'twitter:image')[0], /^https:\/\//u, `${expectedCanonical}: twitter:image must be absolute`);
 };
 
@@ -95,7 +96,7 @@ for (const file of postFiles) {
 }
 
 const rootHtml = readFileSync(join('dist', 'index.html'), 'utf8');
-assert.equal(metaValues(rootHtml, 'property', 'og:image')[0], FALLBACK_IMAGE, 'Fallback OG image must resolve to a real base-path asset');
-assert.ok(existsSync(join('dist', 'favicon.svg')), 'Fallback OG image asset must exist in dist');
+assert.equal(metaValues(rootHtml, 'property', 'og:image')[0], FALLBACK_IMAGE, 'Fallback OG image must resolve to the generated default social card');
+assert.ok(existsSync(join('dist', 'og', 'default.png')), 'Fallback OG image asset must exist in dist');
 
 console.log(`SEO validation passed for ${pages.length} site page(s) and ${postFiles.length} article(s).`);

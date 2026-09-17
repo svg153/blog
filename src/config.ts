@@ -11,8 +11,7 @@ export const SITE = {
     ],
   },
   social: {
-    // Temporary real fallback. Phase 04 replaces this with deterministic 1200x630 cards.
-    ogImage: '/favicon.svg',
+    ogImage: '/og/default.png',
     twitter: '@svg153dev',
   },
 };

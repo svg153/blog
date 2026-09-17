@@ -2,6 +2,7 @@
 import Layout from '@layouts/Layout.astro';
 
 export interface Props {
+  slug: string;
   title: string;
   description?: string;
   date: string;
@@ -11,6 +12,7 @@ export interface Props {
 }
 
 const {
+  slug,
   title,
   description,
   date,
@@ -30,6 +32,7 @@ const formattedDate = new Intl.DateTimeFormat('es-ES', {
 <Layout
   title={title}
   description={description}
+  ogImage={`/og/${slug}.png`}
   isArticle={true}
   publishedTime={date}
   modifiedTime={updatedDate ?? date}
