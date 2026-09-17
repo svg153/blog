@@ -2,9 +2,10 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import PostLayout from '@layouts/PostLayout.astro';
 import { buildSeries, seriesContextForPost } from '../../lib/series.mjs';
+import { getPublishedPosts, readingTimeForPost } from '../../lib/content-lifecycle.mjs';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  const posts = getPublishedPosts(await getCollection('blog'));
   const seriesGroups = buildSeries(posts);
 
   return posts.map((post) => ({
@@ -39,6 +40,7 @@ interface Props {
 const { post, seriesContext } = Astro.props;
 const { Content, headings } = await render(post);
 const articleHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const readingTime = readingTimeForPost(post);
 ---
 
 <PostLayout
@@ -48,7 +50,7 @@ const articleHeadings = headings.filter((heading) => heading.depth === 2 || head
   date={post.data.date}
   updatedDate={post.data.updatedDate}
   tags={post.data.tags}
-  readingTime={post.data.readingTime}
+  readingTime={readingTime}
   headings={articleHeadings}
   series={seriesContext}
 >
