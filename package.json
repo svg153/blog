@@ -16,7 +16,6 @@
     "@astrojs/sitemap": "3.7.4",
     "astro": "^7.3.2",
     "astro-mermaid": "^2.1.0",
-    "marked": "^18.0.5",
     "mermaid": "11.17.2"
   }
 }
