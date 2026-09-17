@@ -1,63 +1,53 @@
 # State — v2.1 Publishing platform foundation
 
 ## Current position
-- **Phase:** 06 — TOC, heading anchors and ordered series
-- **Status:** Phase 05 implementation and PR validation complete; merge + Pages verification pending before Phase 06 starts
-- **Next branch:** `feat/toc-series`
+- **Phase:** 07 — Content lifecycle and automatic reading time
+- **Status:** Phase 06 implementation and PR validation complete; merge + Pages verification pending before Phase 07 starts
+- **Next branch:** `feat/content-lifecycle`
 
 ## Baseline evidence
 - Astro 7 static build deploys successfully to GitHub Pages.
-- PR CI runs `npm ci`, high/critical audit and `npm run build`; the current audit is clean.
-- Five Markdown articles are rendered through one dynamic article route.
-- RSS and sitemap are generated from canonical content/routes and validated during every build.
-- Shared canonical/OpenGraph/Twitter/BlogPosting metadata is build-validated.
-- Deterministic 1200x630 article/fallback social cards are generated during Astro prerendering.
-- Frontmatter tags now drive stable taxonomy routes and a chronological archive.
+- PR CI runs clean install, security audit and the repository build-validation chain.
+- Five canonical Markdown articles render through one dynamic route.
+- RSS/sitemap, SEO metadata, deterministic social cards, taxonomy/archive and article UX are build-validated.
+- All five current long-form articles expose Astro-derived TOCs whose links match the generated h2/h3 IDs.
 
 ## Locked decisions
-- Markdown content collection is the canonical article source.
-- No committed generated site output, including social-card PNGs.
-- Generic article routing is the only article route model.
+- Markdown Content Collections are the canonical article source.
+- No committed generated site output.
+- Astro's rendered heading metadata and IDs are the only article-heading/TOC source of truth.
+- Heading permalinks are progressively enhanced with lightweight vanilla JS, not a framework runtime.
+- Optional series metadata is `{ id, name, order }`; ordering/navigation comes only from `src/lib/series.mjs`.
+- Tags use the single normalization contract in `src/lib/taxonomy.mjs`.
 - Static GitHub Pages remains the runtime model.
-- Tag URLs are derived only through `src/lib/taxonomy.mjs`; there is no duplicate tag registry or hand-authored slug list.
-- Reusable post/tag presentation lives in shared components rather than copied page markup.
-- RSS/sitemap, SEO metadata, social cards and taxonomy derive from canonical routes/content.
-- External publishing is explicit, reviewable and canonical-URL preserving.
-- No browser scraping/session reuse as a provider fallback.
-- Pagefind is introduced only after taxonomy/article UX are stable.
+- External publishing remains explicit, reviewable and canonical-URL preserving.
 
 ## Progress
-- Requirements complete: 23/65
-- Phases verified: 5/12
+- Requirements complete: 28/65
+- Phases verified: 6/12
 - Planning artifacts: PROJECT, ROADMAP, REQUIREMENTS, STATE
 
-## Phase 01 evidence
-- CORE-01..05 complete: Markdown is canonical, one article route, legacy generated/build artifacts removed and docs aligned.
+## Phase 01-05 evidence
+- CORE-01..05, FEED-01..04, SEO-01..05, OG-01..04 and TAX-01..05 are complete.
+- Pages #47-#50 deployed the completed discovery, SEO, social-card and taxonomy/archive phases successfully.
 
-## Phase 02 evidence
-- FEED-01..04 complete: RSS/sitemap use canonical `/blog/` URLs, generated XML is validated and Pages #47 deployed successfully.
+## Phase 06 evidence
+- UX-01..05 are complete in PR #26.
+- Astro `render(entry).headings` drives TOC content directly; Markdown is not reparsed.
+- Astro-generated h2/h3 IDs remain the stable deep-link IDs.
+- All five current articles meet the long-form threshold and render collapsible TOCs that match heading IDs/order exactly.
+- A small vanilla-JS enhancer adds standard `#heading-id` permalink anchors without a framework runtime; TOC/deep links still exist without it.
+- The content schema accepts optional URL-safe series id, display name and positive explicit order.
+- `src/lib/series.mjs` rejects duplicate order and inconsistent naming, sorts deterministically and computes previous/next context.
+- `/series/` is generated now; `/series/<id>/` routes appear automatically when canonical published content declares a series.
+- No editorial series was invented for existing posts. Synthetic build fixtures verify 3-post ordering and failure modes.
+- PR #26 CI #24 completed with zero audit findings; all prior validators plus Article UX passed.
 
-## Phase 03 evidence
-- SEO-01..05 complete: canonical/OG/Twitter metadata is centralized, articles emit publication/tag metadata and parseable `BlogPosting` JSON-LD, and Pages #48 deployed successfully.
-
-## Phase 04 evidence
-- OG-01..04 complete: five article cards plus fallback are deterministic 1200x630 PNGs generated from canonical metadata; Pages #49 deployed successfully.
-- Phase 04 restored the full dependency audit to zero findings after a newly surfaced moderate transitive advisory.
-
-## Phase 05 evidence
-- TAX-01..05 are complete in PR #25.
-- One Unicode-aware normalization helper generates stable lowercase tag slugs, with explicit regression coverage for accents, whitespace and common technical symbols.
-- Article and home tags are real links; `PostCard.astro` and `TagLink.astro` prevent duplicated list/tag rendering logic.
-- `/tags/` contains the 13 normalized current tags with counts derived from the Content Collection.
-- One static `/tags/<slug>/` page is generated per normalized tag and contains exactly the expected posts.
-- `/archive/` groups all current posts by year and orders them newest-first.
-- The taxonomy validator reconstructs membership from rendered article HTML, validates the home/index/tag pages and archive, and requires all taxonomy/archive URLs in the sitemap.
-- PR #25 CI #22 completed with zero audit findings; discovery, social-card, SEO and taxonomy validators all passed.
-
-## Known debt entering phase 06
-- Article headings are not yet exposed as a deliberate copyable deep-link/TOC contract.
-- Long articles do not render a heading-derived table of contents.
-- Frontmatter has no series identifier/name/order model and there is no series navigation/page.
+## Known debt entering phase 07
+- Publication dates are still strings rather than a lifecycle model.
+- There is no `draft` flag or production filtering for draft/future-dated content.
+- Development has no explicit draft-preview path.
+- Reading time remains manually maintained in frontmatter.
 
 ## Handoff
-After PR #25 merges and Pages is green, start Phase 06 from latest `main`. Reuse Astro's rendered heading metadata where possible instead of reparsing Markdown, add accessible heading anchors/TOC, extend the content schema with optional ordered series metadata, then add deterministic series pages and previous/next navigation with build validation.
+After PR #26 merges and Pages is green, start Phase 07 from latest `main`. Introduce one shared publication predicate used by routes/listings/RSS/taxonomy/series/social cards, validate publication/update dates, add explicit development-only draft preview, calculate reading time from source content, migrate existing articles without changing public URLs/dates, and verify draft/future content never leaks into production outputs.

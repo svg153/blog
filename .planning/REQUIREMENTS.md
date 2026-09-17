@@ -34,11 +34,11 @@
 - [x] **TAX-05** — `/archive/` groups published posts chronologically with stable links.
 
 ## Article UX and series
-- [ ] **UX-01** — Rendered headings have stable, linkable IDs.
-- [ ] **UX-02** — Long articles can render a heading-derived table of contents usable on desktop and mobile.
-- [ ] **UX-03** — Heading deep links are copyable without requiring a framework runtime.
-- [ ] **UX-04** — Frontmatter supports an optional series identifier/name and explicit order.
-- [ ] **UX-05** — Series navigation/pages expose ordered previous/next entries while excluding unpublished content.
+- [x] **UX-01** — Rendered headings have stable, linkable IDs.
+- [x] **UX-02** — Long articles can render a heading-derived table of contents usable on desktop and mobile.
+- [x] **UX-03** — Heading deep links are copyable without requiring a framework runtime.
+- [x] **UX-04** — Frontmatter supports an optional series identifier/name and explicit order.
+- [x] **UX-05** — Series navigation/pages expose ordered previous/next entries while excluding unpublished content.
 
 ## Content lifecycle
 - [ ] **LIFE-01** — Frontmatter supports `draft` with a safe default.
