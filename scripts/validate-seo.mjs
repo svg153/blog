@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { basename, extname, join } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { generatedPostSlugs } from './lib/generated-posts.mjs';
 
 const ORIGIN = 'https://svg153.github.io';
 const BASE = '/blog/';
@@ -65,11 +66,10 @@ for (const page of pages) {
   assert.equal(jsonLdValues(html).length, 0, `${page.canonical}: non-article page must not emit BlogPosting JSON-LD`);
 }
 
-const postFiles = readdirSync('src/content/blog').filter((file) => extname(file) === '.md');
-assert.ok(postFiles.length > 0, 'Expected at least one Markdown article');
+const postSlugs = generatedPostSlugs();
+assert.ok(postSlugs.length > 0, 'Expected at least one generated public article');
 
-for (const file of postFiles) {
-  const slug = basename(file, '.md');
+for (const slug of postSlugs) {
   const path = join('dist', 'posts', slug, 'index.html');
   const canonical = `${ORIGIN}${BASE}posts/${slug}/`;
   assert.ok(existsSync(path), `Missing generated article page: ${path}`);
@@ -99,4 +99,4 @@ const rootHtml = readFileSync(join('dist', 'index.html'), 'utf8');
 assert.equal(metaValues(rootHtml, 'property', 'og:image')[0], FALLBACK_IMAGE, 'Fallback OG image must resolve to the generated default social card');
 assert.ok(existsSync(join('dist', 'og', 'default.png')), 'Fallback OG image asset must exist in dist');
 
-console.log(`SEO validation passed for ${pages.length} site page(s) and ${postFiles.length} article(s).`);
+console.log(`SEO validation passed for ${pages.length} site page(s) and ${postSlugs.length} public article(s).`);
