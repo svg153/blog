@@ -19,6 +19,11 @@ const {
 
 const imageSrc = ogImage || SITE.social.ogImage;
 const currentYear = new Date().getFullYear();
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const rssPath = `${base}rss.xml`;
+const sitemapPath = `${base}sitemap-index.xml`;
 ---
 
 <html lang="es">
@@ -34,16 +39,17 @@ const currentYear = new Date().getFullYear();
     <meta property="og:locale" content="es_ES" />
     <meta name="twitter:site" content="@svg153dev" />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="icon" type="image/svg+xml" href="/blog/favicon.svg" />
-    <link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE.title} — Blog`} href={rssPath} />
+    <link rel="sitemap" href={sitemapPath} />
   </head>
   <body>
     <header class="site-header">
       <nav class="nav-container">
-        <a href="/blog/" class="nav-logo">Sergio Valverde</a>
+        <a href={base} class="nav-logo">Sergio Valverde</a>
         <ul class="nav-links">
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/blog/about/">Sobre mí</a></li>
+          <li><a href={base}>Blog</a></li>
+          <li><a href={`${base}about/`}>Sobre mí</a></li>
           <li><a href="https://github.com/svg153" target="_blank" rel="noopener">GitHub</a></li>
           <li><a href="https://linkedin.com/in/svg153" target="_blank" rel="noopener">LinkedIn</a></li>
           <li><a href="https://x.com/svg153dev" target="_blank" rel="noopener">X</a></li>

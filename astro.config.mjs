@@ -1,10 +1,12 @@
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 import astroMermaid from 'astro-mermaid';
 
 export default defineConfig({
   site: 'https://svg153.github.io',
   base: '/blog',
   integrations: [
+    sitemap(),
     astroMermaid({
       theme: 'dark',
       autoTheme: false,
