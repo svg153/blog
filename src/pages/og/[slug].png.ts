@@ -1,11 +1,12 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { getCollection } from 'astro:content';
 import { renderSocialCard } from '../../lib/social-card.mjs';
+import { getPublishedPosts } from '../../lib/content-lifecycle.mjs';
 
 export const prerender = true;
 
 export const getStaticPaths = (async () => {
-  const posts = await getCollection('blog');
+  const posts = getPublishedPosts(await getCollection('blog'));
 
   return posts.map((post) => ({
     params: { slug: post.id },
