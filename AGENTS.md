@@ -26,11 +26,11 @@ npm audit --audit-level=high
 
 Dependency changes must keep `package-lock.json` in sync and preserve `npm ci`.
 
-Pull requests to `main` must pass `.github/workflows/ci.yml`. Changes that affect generated pages must also be checked after merge through the GitHub Pages deployment workflow.
+Pull requests to `main` must pass `.github/workflows/ci.yml`. Changes that affect generated pages or assets must also be checked after merge through the GitHub Pages deployment workflow.
 
 ## Content and diagrams
 
-Create posts only as Markdown files under `src/content/blog/`. A new Markdown post must not require a new Astro page.
+Create posts only as Markdown files under `src/content/blog/`. A new Markdown post must not require a new Astro article page.
 
 Mermaid diagrams are supported with standard fenced code blocks:
 
@@ -57,13 +57,22 @@ Accessibility and content rules:
 - Mermaid is rendered client-side only on pages that contain Mermaid blocks; normal Markdown/code fences continue through Astro's standard pipeline.
 - Keep `astro-mermaid` and `mermaid` compatible. `astro-mermaid@2.1.0` declares Mermaid 10/11 support, so Mermaid is intentionally pinned to `11.17.2`. Do not upgrade to Mermaid 12+ until the integration supports it and existing diagrams have been validated.
 
+## Social preview cards
+
+- Article cards are generated from the canonical Content Collection at `/og/<slug>.png`; non-article pages use `/og/default.png`.
+- Do not commit generated PNGs or add a hosted/runtime OG-image service.
+- Keep cards exactly 1200x630 and update `scripts/validate-social-cards.mjs` with any contract change.
+- Content-derived strings must stay XML-escaped and long titles must remain bounded; do not bypass `src/lib/social-card.mjs` with per-post card templates.
+- Keep system fonts disabled. The renderer intentionally uses pinned `@resvg/resvg-js` with fonts from pinned `@fontsource/inter` so CI output does not depend on runner-installed fonts.
+- `npm run build` must continue verifying card coverage, dimensions, metadata references and deterministic stress rendering.
+
 ## Generated output and legacy code
 
-- Never commit `dist/` or copies of generated site HTML/CSS.
-- Static source assets belong in `public/`; generated pages do not.
+- Never commit `dist/` or copies of generated site HTML/CSS/PNG assets.
+- Static source assets belong in `public/`; build-generated pages/cards do not.
 - Do not reintroduce the retired custom build/generate scripts.
 - External publishing/syndication belongs to Phase 12 of the v2.1 roadmap. Do not add unofficial browser scraping, session reuse, placeholder API integrations, or automatic cross-posting on merge.
 
 ## Documentation
 
-Use the official Astro documentation for routing, content collections, components, and styling, and Mermaid documentation for diagram syntax.
+Use the official Astro documentation for routing, content collections, components, and styling, Mermaid documentation for diagram syntax, and the pinned renderer/font package documentation for social-card generation.

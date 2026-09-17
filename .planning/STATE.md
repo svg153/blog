@@ -1,34 +1,34 @@
 # State — v2.1 Publishing platform foundation
 
 ## Current position
-- **Phase:** 04 — Deterministic social preview cards
-- **Status:** Phase 03 implementation and PR validation complete; ready to start Phase 04 after merge
-- **Next branch:** `feat/social-preview-cards`
+- **Phase:** 05 — Tags and chronological archive
+- **Status:** Phase 04 implementation and branch validation complete; merge + Pages verification pending before Phase 05 starts
+- **Next branch:** `feat/tags-archive`
 
 ## Baseline evidence
 - Astro 7 static build deploys successfully to GitHub Pages.
-- PR CI runs `npm ci`, high/critical audit and `npm run build`; `npm audit` is clean.
+- PR CI runs `npm ci`, high/critical audit and `npm run build`.
 - Mermaid is integrated centrally through `astro-mermaid` with Mermaid 11.17.2 pinned.
 - Five Markdown articles are rendered through one dynamic route.
 - RSS and sitemap are generated from canonical content/routes and validated during every build.
-- GitHub Pages deployment #47 for Phase 02 completed successfully.
-- Shared `Layout.astro` now owns canonical, OpenGraph, Twitter and JSON-LD metadata.
-- `npm run build` validates canonical/social metadata and parses every article's `BlogPosting` JSON-LD.
+- Shared `Layout.astro` owns canonical, OpenGraph, Twitter and JSON-LD metadata.
+- Static social preview cards are generated during Astro prerendering from the canonical content collection.
 
 ## Locked decisions
 - Markdown content collection is the canonical article source.
-- No committed generated site output.
+- No committed generated site output, including social-card PNGs.
 - Generic article routing is the only article route model.
 - Static GitHub Pages remains the runtime model.
-- RSS/sitemap and SEO metadata are derived from canonical routes/content, never duplicate registries.
-- The current favicon-based social image is intentionally temporary; Phase 04 replaces it with deterministic 1200x630 cards.
+- RSS/sitemap, SEO metadata and social cards derive from canonical routes/content rather than duplicate registries.
+- Social cards are local build artifacts: no hosted OG-image service or runtime network dependency.
+- Social-card rasterization uses pinned `@resvg/resvg-js@2.6.2` plus bundled `@fontsource/inter@5.3.0`; system fonts are disabled for reproducibility.
 - External publishing is explicit, reviewable and canonical-URL preserving.
 - No browser scraping/session reuse as a provider fallback.
 - Pagefind is introduced only after taxonomy/article UX are stable.
 
 ## Progress
-- Requirements complete: 14/65
-- Phases verified: 3/12
+- Requirements complete: 18/65
+- Phases verified: 4/12
 - Planning artifacts: PROJECT, ROADMAP, REQUIREMENTS, STATE
 
 ## Phase 01 evidence
@@ -38,19 +38,23 @@
 - FEED-01..04 complete: RSS/sitemap use canonical `/blog/` URLs, XML was parsed successfully and Pages #47 deployed successfully.
 
 ## Phase 03 evidence
-- SEO-01..05 are complete.
-- Home, about and all five article pages emit exactly one absolute canonical URL under `/blog/`.
-- OpenGraph and Twitter metadata are centralized in `Layout.astro`; `og:url` matches canonical and social image URLs are absolute.
-- Articles emit `article:published_time`, `article:modified_time` and repeated `article:tag` values.
-- `updatedDate` is supported as an optional metadata source; unchanged articles use publication time as their current modification time until lifecycle work in Phase 07.
-- Every article emits one parseable `BlogPosting` JSON-LD object with canonical URL, author identity, dates, tags and image.
-- JSON-LD serialization escapes `<` and line-separator characters before `set:html`.
-- PR #23 CI run #15 completed with zero audit findings; discovery validation passed for five articles and SEO validation passed for two site pages plus five articles.
+- SEO-01..05 complete: canonical/OG/Twitter metadata is centralized, articles emit publication/tag metadata and parseable `BlogPosting` JSON-LD, and Pages #48 deployed successfully.
 
-## Known debt entering phase 04
-- Social images are valid absolute URLs but currently use the favicon fallback and `twitter:card=summary`.
-- No deterministic article-specific 1200x630 card exists yet.
-- Long Spanish technical titles have not yet been exercised against card wrapping/escaping.
+## Phase 04 evidence
+- OG-01..04 are complete in PR #24.
+- Astro prerenders `/og/<slug>.png` for all five current articles and `/og/default.png` for non-article pages.
+- Every generated card is exactly 1200x630 PNG and is referenced consistently by OpenGraph, Twitter and article JSON-LD metadata.
+- Twitter cards use `summary_large_image`.
+- Long/special-character Spanish title handling is exercised with an explicit stress input containing accents, ñ, punctuation and XML-sensitive characters.
+- The stress input is rendered twice and must produce byte-identical PNG output.
+- Card fonts come from the pinned Fontsource package with system fonts disabled.
+- A newly surfaced moderate `devalue` advisory was remediated in the lockfile; the Phase 04 remediation workflow required zero npm audit findings and a full successful build before committing the lockfile.
+- The initial Phase 04 CI correctly caught a stale `twitter:card=summary` value; it was fixed rather than weakening the validator.
+
+## Known debt entering phase 05
+- Tags are still display-only spans and are not normalized/linkable.
+- No `/tags/`, `/tags/<slug>/` or `/archive/` routes exist yet.
+- Tag case/spacing variants do not yet share a stable URL identity.
 
 ## Handoff
-After Phase 03 merges and Pages is green, start Phase 04 from latest `main`. Generate deterministic static 1200x630 social cards for every article plus a fallback, wire their absolute URLs into the existing shared SEO contract, switch to `summary_large_image`, and validate dimensions/output paths and metadata references before merge.
+After PR #24 merges and Pages is green, start Phase 05 from latest `main`. Introduce one shared tag-normalization helper, link article/home tags to stable `/tags/<slug>/` routes, add a tag index with counts and a chronological archive, then validate route coverage and URL stability before merge.

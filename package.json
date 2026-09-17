@@ -7,9 +7,10 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/validate-discovery.mjs && node scripts/validate-seo.mjs",
+    "build": "astro build && node scripts/validate-discovery.mjs && node scripts/validate-social-cards.mjs && node scripts/validate-seo.mjs",
     "preview": "astro preview",
     "validate:discovery": "node scripts/validate-discovery.mjs",
+    "validate:social-cards": "node scripts/validate-social-cards.mjs",
     "validate:seo": "node scripts/validate-seo.mjs"
   },
   "dependencies": {
@@ -18,5 +19,9 @@
     "astro": "^7.3.2",
     "astro-mermaid": "^2.1.0",
     "mermaid": "11.17.2"
+  },
+  "devDependencies": {
+    "@fontsource/inter": "5.3.0",
+    "@resvg/resvg-js": "2.6.2"
   }
 }
