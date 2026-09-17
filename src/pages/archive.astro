@@ -1,0 +1,108 @@
+---
+import Layout from '@layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { postSlug, sortPostsNewestFirst } from '../lib/taxonomy.mjs';
+
+const posts = sortPostsNewestFirst(await getCollection('blog'));
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+const groups = new Map<string, typeof posts>();
+for (const post of posts) {
+  const year = post.data.date.slice(0, 4);
+  const group = groups.get(year) ?? [];
+  group.push(post);
+  groups.set(year, group);
+}
+
+const years = [...groups.entries()].sort(([a], [b]) => Number(b) - Number(a));
+
+const formatDate = (date: string) =>
+  new Intl.DateTimeFormat('es-ES', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${date}T12:00:00Z`));
+---
+
+<Layout title="Archivo" description="Archivo cronológico de artículos del blog.">
+  <section class="archive-page">
+    <header class="page-header">
+      <h1>Archivo</h1>
+      <p>Todos los artículos, del más reciente al más antiguo.</p>
+    </header>
+
+    {years.map(([year, yearPosts]) => (
+      <section class="year-group" data-archive-year={year}>
+        <h2>{year}</h2>
+        <ol class="archive-list">
+          {yearPosts.map((post) => {
+            const slug = postSlug(post.id);
+            return (
+              <li class="archive-entry" data-archive-post={slug}>
+                <time datetime={post.data.date}>{formatDate(post.data.date)}</time>
+                <a href={`${base}posts/${slug}/`}>{post.data.title}</a>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
+    ))}
+  </section>
+</Layout>
+
+<style>
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .page-header p {
+    color: var(--color-text-secondary);
+  }
+
+  .year-group {
+    margin-bottom: 2.5rem;
+  }
+
+  .year-group h2 {
+    margin-top: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .archive-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .archive-entry {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr);
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid rgba(48, 54, 61, 0.55);
+  }
+
+  .archive-entry time {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+  }
+
+  .archive-entry a {
+    color: var(--color-heading);
+    font-weight: 550;
+  }
+
+  @media (max-width: 640px) {
+    .archive-entry {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+    }
+  }
+</style>

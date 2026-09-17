@@ -1,0 +1,88 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import TagLink from './TagLink.astro';
+import { postSlug } from '../lib/taxonomy.mjs';
+
+export interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const slug = postSlug(post.id);
+const formattedDate = new Intl.DateTimeFormat('es-ES', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+}).format(new Date(`${post.data.date}T12:00:00Z`));
+---
+
+<article class="post-card" data-post-slug={slug}>
+  <header>
+    <h2>
+      <a href={`${base}posts/${slug}/`}>{post.data.title}</a>
+    </h2>
+    <time class="post-meta" datetime={post.data.date}>{formattedDate}</time>
+  </header>
+
+  {post.data.description && <p class="post-description">{post.data.description}</p>}
+
+  {(post.data.tags?.length ?? 0) > 0 && (
+    <div class="post-tags">
+      {post.data.tags?.map((tag) => <TagLink tag={tag} />)}
+    </div>
+  )}
+</article>
+
+<style>
+  .post-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: border-color 0.2s;
+  }
+
+  .post-card:hover {
+    border-color: var(--color-accent);
+  }
+
+  .post-card h2 {
+    font-size: 1.35rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .post-card h2 a {
+    color: var(--color-heading);
+    text-decoration: none;
+  }
+
+  .post-card h2 a:hover {
+    color: var(--color-accent);
+  }
+
+  .post-meta {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .post-description {
+    margin-top: 0.5rem;
+    color: var(--color-text);
+  }
+
+  .post-tags {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 640px) {
+    .post-card { padding: 1rem; }
+  }
+</style>

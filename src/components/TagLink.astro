@@ -1,0 +1,51 @@
+---
+import { tagSlug } from '../lib/taxonomy.mjs';
+
+export interface Props {
+  tag: string;
+  count?: number;
+}
+
+const { tag, count } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const slug = tagSlug(tag);
+---
+
+<a
+  class="tag-link"
+  href={`${base}tags/${slug}/`}
+  data-tag-slug={slug}
+>
+  <span>{tag}</span>
+  {count !== undefined && <span class="tag-count">{count}</span>}
+</a>
+
+<style>
+  .tag-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(56, 139, 253, 0.15);
+    color: var(--color-accent);
+    padding: 0.18em 0.65em;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.5;
+    text-decoration: none;
+  }
+
+  .tag-link:hover,
+  .tag-link:focus-visible {
+    border-color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .tag-count {
+    color: var(--color-text-secondary);
+    font-size: 0.72rem;
+  }
+</style>
