@@ -7,8 +7,6 @@ readingTime: "6"
 featured: false
 ---
 
-# GitHub Actions: de CI/CD básico a pipelines de Platform Engineering
-
 Llevo años usando GitHub Actions y la evolución que he visto es brutal. Empecé con workflows de tres líneas que ejecutaban `npm test` y ahora tengo pipelines que gestionan infraestructura, validan seguridad, generan documentación y despliegan a producción — todo sin tocar un servidor.
 
 En este artículo te cuento cómo pasé de lo básico a lo avanzado, con ejemplos reales que puedes copiar.
