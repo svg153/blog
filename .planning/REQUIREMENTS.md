@@ -1,11 +1,11 @@
 # Requirements — v2.1.0 Publishing platform foundation
 
 ## Canonical Astro source
-- [ ] **CORE-01** — `src/content/blog/*.md` is the only canonical article content source.
-- [ ] **CORE-02** — One generic Astro route renders all published article entries.
-- [ ] **CORE-03** — Generated build output and legacy generated HTML are not versioned.
-- [ ] **CORE-04** — Obsolete custom build/generation/test scripts are removed or replaced by current, documented tooling.
-- [ ] **CORE-05** — README and AGENTS describe the actual Astro architecture and contribution flow.
+- [x] **CORE-01** — `src/content/blog/*.md` is the only canonical article content source.
+- [x] **CORE-02** — One generic Astro route renders all published article entries.
+- [x] **CORE-03** — Generated build output and legacy generated HTML are not versioned.
+- [x] **CORE-04** — Obsolete custom build/generation/test scripts are removed or replaced by current, documented tooling.
+- [x] **CORE-05** — README and AGENTS describe the actual Astro architecture and contribution flow.
 
 ## Feed and discovery endpoints
 - [ ] **FEED-01** — `/blog/rss.xml` contains published posts with canonical absolute URLs.

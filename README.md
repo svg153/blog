@@ -1,107 +1,85 @@
-# Blog Syndication
+# Sergio Valverde Blog
 
-Sergio Valverde's blog — built with **Astro**, styled like the GitHub Blog.
+Personal technical blog built with Astro and deployed as a static site to GitHub Pages.
 
-## Tech stack
+## Architecture
 
-- **Astro 7** — static site generator with zero JS by default
-- **Tailwind CSS v4** — utility-first CSS
-- **GitHub Pages** — hosting
-- **Markdown** — content authoring
+- **Astro 7** builds the static site.
+- **Astro Content Collections** load and validate articles from `src/content/blog/*.md`.
+- **One dynamic route** (`src/pages/posts/[slug].astro`) renders every article. Adding a post does not require a new `.astro` page.
+- **astro-mermaid** renders Mermaid fences in Markdown; Mermaid is pinned to a compatible v11 release.
+- **GitHub Actions** validates pull requests and deploys `main` to GitHub Pages.
+
+Markdown is the canonical article source. Generated output such as `dist/` is never committed.
 
 ## Structure
 
-```
+```text
 src/
-├── content/blog/     ← Write posts here as .md files
-├── pages/
-│   ├── index.astro   ← Homepage with GitHub Blog aesthetic
-│   ├── about.astro   ← About page
-│   └── posts/        ← Generated post pages (auto-created by build)
-├── content.config.ts ← Content collection schema
-├── scripts/
-│   ├── generate-posts.mjs ← Generates .astro pages from markdown
-│   └── syndicate.js      ← Publish to dev.to, LinkedIn, Substack
-public/               ← Static assets (images, favicon)
+├── content/blog/         # Canonical Markdown articles
+├── content.config.ts     # Content collection schema
+├── layouts/
+│   ├── Layout.astro      # Site shell and global styles
+│   └── PostLayout.astro  # Shared article presentation
+└── pages/
+    ├── index.astro
+    ├── about.astro
+    └── posts/[slug].astro
+
+.github/workflows/
+├── ci.yml                # PR validation
+└── deploy.yml            # GitHub Pages deployment from main
 ```
 
-## Writing a post
+## Writing an article
 
-1. Create `src/content/blog/my-post-title.md`
-2. Add frontmatter:
+Create `src/content/blog/<slug>.md` with frontmatter such as:
 
 ```yaml
 ---
 title: "My Post Title"
-description: "Short description for SEO"
-date: "2025-07-01"
-tags: ["AI", "DevOps", "Platform"]
-featured: true
+description: "Short description"
+date: "2026-09-17"
+tags: ["AI", "GitHub"]
+featured: false
 readingTime: "5"
 ---
 ```
 
-3. Write your article in Markdown
-4. Commit and push — GitHub Actions builds and deploys automatically
+Then write the article directly in Markdown. Do not add a page under `src/pages/posts/`; the dynamic route creates `/blog/posts/<slug>/` during the Astro build.
 
-## Tags and colors
+Mermaid diagrams use normal fenced blocks:
 
-| Tag | Color |
-|-----|-------|
-| AI | Pink `#f778ba` |
-| DevOps | Blue `#1d9bf0` |
-| Platform | Purple `#a371f7` |
-| Security | Orange `#d29922` |
-| General | Green `#3fb950` |
+````markdown
+```mermaid
+flowchart LR
+  Idea --> Review --> Publish
+```
+````
 
 ## Local development
 
-```bash
-npm install
-npm run dev        # starts dev server on :4321
-npm run build      # generates static site to dist/
-```
-
-## Syndication
-
-Publish to multiple platforms from one markdown file:
+Node.js 22.12 or newer is required.
 
 ```bash
-# Preview what would be published (no changes)
-node scripts/syndicate.js --dry-run
-
-# Publish all new posts to all platforms
-node scripts/syndicate.js
-
-# Publish a specific post
-node scripts/syndicate.js --post=hello-world
-
-# Only publish to dev.to
-node scripts/syndicate.js --devto
-
-# Only publish to LinkedIn
-node scripts/syndicate.js --linkedin
-
-# Only publish to Substack newsletter
-node scripts/syndicate.js --substack
+npm ci
+npm run dev
+npm run build
+npm audit --audit-level=high
 ```
 
-### Required environment variables
+The production build is written to ignored `dist/` output.
 
-| Variable | Source |
-|----------|--------|
-| `DEVTO_API_KEY` | https://dev.to/settings/extensions |
-| `LINKEDIN_TOKEN` | LinkedIn OAuth 2.0 bearer token |
-| `SUBSTACK_API_KEY` | Substack API key (Settings → Advanced) |
+## Pull requests and deployment
 
-### Content strategy
+Pull requests to `main` run CI with:
 
-- **Blog (primary)** — Full articles, deep dives, technical guides
-- **dev.to** — Cross-post from blog (same content, different formatting)
-- **LinkedIn** — Excerpt with link to full article
-- **Substack** — Newsletter digest of recent posts
-- **X/Twitter** — Thread summarizing key points + link
+1. `npm ci`
+2. `npm audit --audit-level=high`
+3. `npm run build`
 
-## GitHub Pages
+A push to `main` builds and deploys the generated `dist/` directory through GitHub Pages Actions.
 
-Deployed automatically via GitHub Actions on push to `main`.
+## Publishing roadmap
+
+The canonical source remains this blog. External syndication/export is intentionally not implemented by ad-hoc scripts; the v2.1 roadmap in `.planning/` will introduce a reviewable, provider-aware publishing pipeline in Phase 12.

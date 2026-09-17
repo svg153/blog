@@ -1,16 +1,38 @@
+## Repository contract
+
+This is an Astro 7 static blog deployed to GitHub Pages. Markdown in `src/content/blog/*.md` is the canonical article source.
+
+Every article is rendered by the single dynamic route `src/pages/posts/[slug].astro` through `src/layouts/PostLayout.astro`. Do not create article-specific `.astro` pages or commit generated output from `dist/`.
+
+Before changing architecture or milestone scope, read:
+
+- `.planning/PROJECT.md`
+- `.planning/REQUIREMENTS.md`
+- `.planning/ROADMAP.md`
+- `.planning/STATE.md`
+
+GitHub Issues track operational work; `.planning/` owns requirements, ordering, and implementation contracts.
+
 ## Development
 
-When starting the dev server, use background mode:
+Use the repository's Node.js 22+ contract and lockfile:
 
-```
-astro dev --background
+```bash
+npm ci
+npm run dev
+npm run build
+npm audit --audit-level=high
 ```
 
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+Dependency changes must keep `package-lock.json` in sync and preserve `npm ci`.
+
+Pull requests to `main` must pass `.github/workflows/ci.yml`. Changes that affect generated pages must also be checked after merge through the GitHub Pages deployment workflow.
 
 ## Content and diagrams
 
-Blog posts are authored as Markdown in the Astro content collection. Mermaid diagrams are supported with standard fenced code blocks:
+Create posts only as Markdown files under `src/content/blog/`. A new Markdown post must not require a new Astro page.
+
+Mermaid diagrams are supported with standard fenced code blocks:
 
 ````markdown
 ```mermaid
@@ -27,26 +49,21 @@ Preferred diagram types include `flowchart`, `sequenceDiagram`, `stateDiagram-v2
 
 Accessibility and content rules:
 
-- Always explain the important conclusion of a diagram in nearby prose. A diagram must not be the only place where essential information appears.
+- Explain the important conclusion of a diagram in nearby prose. A diagram must not be the only place where essential information appears.
 - Use meaningful node labels and avoid relying only on color to communicate meaning.
 - Avoid raw HTML or JavaScript in Mermaid labels. Rendering uses Mermaid with `securityLevel: 'strict'`.
-- Keep the Mermaid source in the Markdown article; do not commit generated SVGs for diagrams that can be expressed cleanly in Mermaid.
+- Keep Mermaid source in the Markdown article; do not commit generated SVGs when Mermaid can express the diagram cleanly.
 - Do not add per-post Mermaid scripts, CDN imports, or custom renderers. Mermaid is integrated centrally through `astro-mermaid` in `astro.config.mjs`.
 - Mermaid is rendered client-side only on pages that contain Mermaid blocks; normal Markdown/code fences continue through Astro's standard pipeline.
-- Keep `astro-mermaid` and `mermaid` compatible. `astro-mermaid@2.1.0` declares Mermaid 10/11 support, so Mermaid is intentionally pinned to `11.17.2`. Do not upgrade to Mermaid 12+ until the integration declares/supports it and existing diagrams have been validated.
-- Dependency changes must keep `package-lock.json` in sync and preserve the existing `npm ci` deployment contract.
+- Keep `astro-mermaid` and `mermaid` compatible. `astro-mermaid@2.1.0` declares Mermaid 10/11 support, so Mermaid is intentionally pinned to `11.17.2`. Do not upgrade to Mermaid 12+ until the integration supports it and existing diagrams have been validated.
+
+## Generated output and legacy code
+
+- Never commit `dist/` or copies of generated site HTML/CSS.
+- Static source assets belong in `public/`; generated pages do not.
+- Do not reintroduce the retired custom build/generate scripts.
+- External publishing/syndication belongs to Phase 12 of the v2.1 roadmap. Do not add unofficial browser scraping, session reuse, placeholder API integrations, or automatic cross-posting on merge.
 
 ## Documentation
 
-Full documentation: https://docs.astro.build
-
-Consult these guides before working on related tasks:
-
-- [Adding pages, dynamic routes, or middleware](https://docs.astro.build/en/guides/routing/)
-- [Working with Astro components](https://docs.astro.build/en/basics/astro-components/)
-- [Using React, Vue, Svelte, or other framework components](https://docs.astro.build/en/guides/framework-components/)
-- [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
-- [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
-- [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
-- [Mermaid syntax and diagram types](https://mermaid.js.org/intro/)
-- [astro-mermaid integration](https://github.com/joesaby/astro-mermaid)
+Use the official Astro documentation for routing, content collections, components, and styling, and Mermaid documentation for diagram syntax.

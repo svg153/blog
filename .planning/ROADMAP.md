@@ -25,7 +25,7 @@ flowchart TD
 
 | Phase | Goal | Requirements | Blocked by | Status |
 | --- | --- | --- | --- | --- |
-| 01 | Make Markdown + one dynamic Astro route the only article source; remove generated/legacy artifacts | CORE-01..05 | — | planned |
+| 01 | Make Markdown + one dynamic Astro route the only article source; remove generated/legacy artifacts | CORE-01..05 | — | complete |
 | 02 | Publish valid RSS and sitemap discovery endpoints | FEED-01..04 | 01 | planned |
 | 03 | Add canonical, OpenGraph/Twitter completeness and BlogPosting JSON-LD | SEO-01..05 | 01 | planned |
 | 04 | Generate deterministic per-article social preview cards | OG-01..04 | 03 | planned |

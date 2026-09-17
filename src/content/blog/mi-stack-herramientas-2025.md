@@ -7,8 +7,6 @@ readingTime: "5"
 featured: false
 ---
 
-# Mi stack de herramientas de desarrollo en 2025: lo que uso cada día
-
 Cada año cambio herramientas. No por capricho — porque el flujo de trabajo evoluciona y lo que funcionaba hace dos años ya no encaja. Este año he hecho un cambio más radical que nunca: me mudé de VS Code a Cursor.
 
 En este artículo te cuento mi stack completo, por qué elegí cada herramienta, y qué cambiaría si pudiera empezar de cero.
