@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/validate-lifecycle.mjs && node scripts/validate-discovery.mjs && node scripts/validate-social-cards.mjs && node scripts/validate-seo.mjs && node scripts/validate-taxonomy.mjs && node scripts/validate-article-ux.mjs && node scripts/validate-related-posts.mjs",
+    "build": "astro build && node scripts/validate-content-quality.mjs && node scripts/validate-lifecycle.mjs && node scripts/validate-discovery.mjs && node scripts/validate-social-cards.mjs && node scripts/validate-seo.mjs && node scripts/validate-taxonomy.mjs && node scripts/validate-article-ux.mjs && node scripts/validate-related-posts.mjs",
     "preview": "astro preview",
     "validate:lifecycle": "node scripts/validate-lifecycle.mjs",
     "validate:discovery": "node scripts/validate-discovery.mjs",
@@ -15,7 +15,8 @@
     "validate:seo": "node scripts/validate-seo.mjs",
     "validate:taxonomy": "node scripts/validate-taxonomy.mjs",
     "validate:article-ux": "node scripts/validate-article-ux.mjs",
-    "validate:related-posts": "node scripts/validate-related-posts.mjs"
+    "validate:related-posts": "node scripts/validate-related-posts.mjs",
+    "validate:content-quality": "node scripts/validate-content-quality.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "4.0.19",

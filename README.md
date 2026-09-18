@@ -18,6 +18,7 @@ Personal technical blog built with Astro and deployed as a static site to GitHub
 - **Related posts** are selected deterministically from published content: same series, then shared normalized tags, then recency, with slug as the final tie-break.
 - **Static social cards** are prerendered as deterministic 1200x630 PNGs.
 - **astro-mermaid** renders Mermaid fences in Markdown.
+- **Content quality gate** checks source structure plus generated internal links, anchors, local assets and completed-phase outputs without opinionated prose linting.
 - **GitHub Actions** validates pull requests and deploys `main` to GitHub Pages.
 
 Markdown is the canonical article source. Generated output such as `dist/`, search indexes and generated social-card PNGs must not be committed.
@@ -60,6 +61,7 @@ src/
 
 scripts/
 ├── lib/generated-posts.mjs
+├── validate-content-quality.mjs
 ├── validate-lifecycle.mjs
 ├── validate-discovery.mjs
 ├── validate-social-cards.mjs
@@ -136,7 +138,22 @@ npm run build
 npm audit --audit-level=high
 ```
 
-`npm run build` validates lifecycle/reading-time behavior, RSS/sitemap discovery, generated social cards, canonical/OG/Twitter/JSON-LD metadata, taxonomy/archive consistency, heading/TOC parity, deterministic series behavior and related-post ranking/rendering.
+`npm run build` runs the real Astro build and then validates source structure, generated internal links/anchors, local assets, completed-phase outputs, Mermaid transformation, lifecycle/reading-time behavior, RSS/sitemap discovery, social cards, canonical/OG/Twitter/JSON-LD metadata, taxonomy/archive consistency, heading/TOC parity, deterministic series behavior and related-post ranking/rendering.
+
+### Content quality rules
+
+The structural gate is intentionally small and objective:
+
+- every article must have delimited frontmatter with one `title` and one `date`;
+- article bodies cannot be empty;
+- Markdown articles must not add a `# H1` because the shared layout already owns the page H1;
+- fenced code blocks must close;
+- generated internal links and hash anchors must resolve;
+- generated local images/scripts/styles/icons/preloads must exist;
+- completed public outputs such as RSS/sitemap/default OG card must exist;
+- Mermaid fences must still be transformed by the normal Astro + `astro-mermaid` build.
+
+It deliberately does not score prose, sentence length, tone or wording.
 
 ## Pull requests and deployment
 
