@@ -1,0 +1,82 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "enabledManagers": [
+    "npm",
+    "github-actions"
+  ],
+  "dependencyDashboard": true,
+  "timezone": "Europe/Madrid",
+  "minimumReleaseAge": "3 days",
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 5,
+  "labels": [
+    "dependencies"
+  ],
+  "automerge": false,
+  "platformAutomerge": false,
+  "packageRules": [
+    {
+      "description": [
+        "Group npm patch updates separately from higher-risk changes"
+      ],
+      "matchManagers": [
+        "npm"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "groupName": "npm patch updates"
+    },
+    {
+      "description": [
+        "Group npm minor updates separately from patch and major updates"
+      ],
+      "matchManagers": [
+        "npm"
+      ],
+      "matchUpdateTypes": [
+        "minor"
+      ],
+      "groupName": "npm minor updates"
+    },
+    {
+      "description": [
+        "Group GitHub Actions patch updates separately"
+      ],
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "groupName": "GitHub Actions patch updates"
+    },
+    {
+      "description": [
+        "Group GitHub Actions minor updates separately"
+      ],
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "minor"
+      ],
+      "groupName": "GitHub Actions minor updates"
+    },
+    {
+      "description": [
+        "Major updates always require explicit human review"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": false,
+      "addLabels": [
+        "major-update"
+      ]
+    }
+  ]
+}
