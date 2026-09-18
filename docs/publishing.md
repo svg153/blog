@@ -94,7 +94,7 @@ LINKEDIN_AUTHOR_URN
 LINKEDIN_VERSION
 ```
 
-As of September 18, 2026, LinkedIn documents `202608` as the latest Marketing API version. The version is runtime configuration rather than a hard-coded publishing decision so future sunsets are explicit.
+As of September 18, 2026, LinkedIn documents `202609` as the latest Marketing API version. The version is runtime configuration rather than a hard-coded publishing decision so future sunsets are explicit.
 
 The authenticated member needs the relevant social posting permission; member posting uses `w_member_social`. Organization posting additionally depends on organization permissions/roles.
 
