@@ -34,7 +34,7 @@ flowchart TD
 | 07 | Add draft/publish/update lifecycle and automatic reading time | LIFE-01..06 | 01 | complete |
 | 08 | Recommend related posts deterministically from taxonomy/series | REL-01..04 | 05,07 | complete |
 | 09 | Add durable content-quality checks to PR CI | QUAL-01..06 | 01 | complete |
-| 10 | Add Renovate dependency/action update automation compatible with CI | DEP-01..05 | 09 | planned |
+| 10 | Add Renovate dependency/action update automation compatible with CI | DEP-01..05 | 09 | activation pending (DEP-01) |
 | 11 | Add Pagefind static search plus tag/year filters when useful | SEARCH-01..06 | 05,06 | planned |
 | 12 | Build a canonical-content syndication/export pipeline for DEV, LinkedIn, newsletters and future adapters | PUB-01..10 | 03,07 | planned |
 

@@ -64,10 +64,10 @@
 
 ## Dependency automation
 - [ ] **DEP-01** — Renovate opens dependency update PRs for npm dependencies.
-- [ ] **DEP-02** — Renovate covers GitHub Actions versions.
-- [ ] **DEP-03** — Update grouping keeps reviewable risk boundaries (patch/minor vs major/security).
-- [ ] **DEP-04** — Major updates never auto-merge.
-- [ ] **DEP-05** — Any permitted auto-merge requires repository CI success and conservative policy.
+- [x] **DEP-02** — Renovate covers GitHub Actions versions.
+- [x] **DEP-03** — Update grouping keeps reviewable risk boundaries (patch/minor vs major/security).
+- [x] **DEP-04** — Major updates never auto-merge.
+- [x] **DEP-05** — Any permitted auto-merge requires repository CI success and conservative policy.
 
 ## Search and filtering
 - [ ] **SEARCH-01** — Pagefind indexes only public/published site content after the Astro build.

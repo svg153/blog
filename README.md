@@ -19,6 +19,7 @@ Personal technical blog built with Astro and deployed as a static site to GitHub
 - **Static social cards** are prerendered as deterministic 1200x630 PNGs.
 - **astro-mermaid** renders Mermaid fences in Markdown.
 - **Content quality gate** checks source structure plus generated internal links, anchors, local assets and completed-phase outputs without opinionated prose linting.
+- **Renovate policy** covers npm + GitHub Actions with conservative grouping; auto-merge is explicitly disabled while `main` has no enforced protection/status checks.
 - **GitHub Actions** validates pull requests and deploys `main` to GitHub Pages.
 
 Markdown is the canonical article source. Generated output such as `dist/`, search indexes and generated social-card PNGs must not be committed.
@@ -68,7 +69,8 @@ scripts/
 ├── validate-seo.mjs
 ├── validate-taxonomy.mjs
 ├── validate-article-ux.mjs
-└── validate-related-posts.mjs
+├── validate-related-posts.mjs
+└── validate-renovate-config.mjs
 ```
 
 ## Writing an article
@@ -154,6 +156,22 @@ The structural gate is intentionally small and objective:
 - Mermaid fences must still be transformed by the normal Astro + `astro-mermaid` build.
 
 It deliberately does not score prose, sentence length, tone or wording.
+
+### Dependency automation
+
+`renovate.json` is the repository-owned Renovate contract:
+
+- managers are limited to `npm` and `github-actions`;
+- Dependency Dashboard is enabled;
+- routine releases age for 3 days before update PRs;
+- patch and minor updates are grouped separately per manager;
+- major updates stay explicit/manual and receive a `major-update` label;
+- update noise is capped at 2 PRs/hour and 5 concurrent PRs;
+- `automerge` and `platformAutomerge` are both disabled.
+
+Auto-merge is intentionally disabled because GitHub currently reports `main` as unprotected with no enforced required status checks. The permanent `scripts/validate-renovate-config.mjs` gate rejects attempts to silently enable auto-merge while that is true.
+
+The configuration has been validated with Renovate CLI itself and its local extraction detects both `package.json` and the GitHub Actions workflows. Actual hosted update PRs still require the Renovate GitHub App to have access to this repository.
 
 ## Pull requests and deployment
 
