@@ -4,7 +4,6 @@ description: "La IA ha abaratado tanto construir software que cada vez importa m
 date: "2026-09-16"
 tags: ["AI Agents", "Agent Skills", "Open Source", "GitHub", "Software Engineering"]
 featured: true
-readingTime: "8"
 ---
 
 Cuanto mejor programan los agentes, más importante me parece una pregunta que no tiene nada de nueva:

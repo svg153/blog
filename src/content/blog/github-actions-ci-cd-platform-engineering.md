@@ -3,7 +3,6 @@ title: "GitHub Actions: de CI/CD básico a pipelines de Platform Engineering"
 description: "Cómo evolucioné mis GitHub Actions desde simples tests hasta pipelines de Platform Engineering que automatizan infraestructura, seguridad y despliegues."
 date: "2025-07-03"
 tags: ["DevOps", "GitHub", "CI/CD"]
-readingTime: "6"
 featured: false
 ---
 

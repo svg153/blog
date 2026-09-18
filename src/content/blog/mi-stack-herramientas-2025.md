@@ -3,7 +3,6 @@ title: "Mi stack de herramientas de desarrollo en 2025: lo que uso cada día"
 description: "De VS Code a Cursor, de Jenkins a GitHub Actions — un tour por las herramientas que uso cada día como Platform Engineer y por qué las elegí."
 date: "2025-07-05"
 tags: ["Tool", "DevOps", "Career"]
-readingTime: "5"
 featured: false
 ---
 
