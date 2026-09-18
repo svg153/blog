@@ -85,6 +85,16 @@ Accessibility and content rules:
 - Duplicate order or inconsistent names inside one series are build errors.
 - Keep `scripts/validate-article-ux.mjs` aligned with any heading/TOC/series contract change.
 
+## Content lifecycle
+
+- `src/lib/content-lifecycle.mjs` is the single publication contract. Do not reimplement draft/future filtering in individual pages.
+- Public routes, home, RSS, social cards, taxonomy, archive and series must consume `getPublishedPosts()` before deriving their outputs.
+- Publication dates are validated `YYYY-MM-DD` calendar dates and public eligibility uses the `Europe/Madrid` calendar day, not the CI runner's UTC date.
+- `draft` defaults to `false`; both drafts and future-dated entries must be absent from all production outputs and must not affect tag counts or series previous/next navigation.
+- Draft/future preview is allowed only through the explicit development route `/preview/<slug>/`. Production builds must not generate a preview tree.
+- Reading time comes from canonical `CollectionEntry.body` through `readingTimeForPost()`. Never add or restore manual `readingTime` frontmatter.
+- Keep `scripts/validate-lifecycle.mjs` and generated-output validators aligned with lifecycle changes. When changing filtering, test both a draft and a future-dated entry across the complete production output.
+
 ## Generated output and legacy code
 
 - Never commit `dist/` or copies of generated site HTML/CSS/PNG assets.
