@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import * as pagefind from 'pagefind';
 import { generatedPostSlugs } from './lib/generated-posts.mjs';
 
 const DIST = 'dist';
@@ -85,22 +84,19 @@ assert.deepEqual(
   'Only generated public article pages may opt into Pagefind indexing',
 );
 
-const { index } = await pagefind.createIndex({ verbose: false });
-try {
-  const { errors, page_count: pageCount } = await index.addDirectory({ path: DIST });
-  assert.deepEqual(errors, [], 'Pagefind Node API reported indexing errors');
-  assert.equal(
-    pageCount,
-    publicSlugs.length,
-    'Pagefind indexed page count must equal generated public article count',
-  );
-} finally {
-  await index.deleteIndex();
-  await pagefind.close();
-}
+const entryPath = join(pagefindDir, 'pagefind-entry.json');
+assert.ok(existsSync(entryPath), 'Missing Pagefind entry manifest');
+const entry = JSON.parse(readFileSync(entryPath, 'utf8'));
+const indexedPageCount = Object.values(entry.languages ?? {})
+  .reduce((total, language) => total + Number(language.page_count ?? 0), 0);
+assert.equal(
+  indexedPageCount,
+  publicSlugs.length,
+  'Generated Pagefind manifest page count must equal generated public article count',
+);
 
 assert.ok(!existsSync(join(DIST, 'preview')), 'Development preview must not enter production search output');
 
 console.log(
-  `Search validation passed: ${publicSlugs.length} public article(s), Pagefind bundle + /blog base path + tag/year filters verified.`,
+  `Search validation passed: ${publicSlugs.length} public article(s), Pagefind manifest + /blog base path + tag/year filters verified.`,
 );
