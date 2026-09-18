@@ -1,0 +1,51 @@
+name: Phase 10 Renovate proof
+
+on:
+  push:
+    branches: [ ci/renovate-automation ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  validate-renovate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Renovate branch
+        uses: actions/checkout@v6
+        with:
+          ref: ci/renovate-automation
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Repository policy validation
+        run: node scripts/validate-renovate-config.mjs
+
+      - name: Validate with Renovate 44.93.0
+        run: npx --yes --package renovate@44.93.0 -- renovate-config-validator --strict
+
+      - name: Extract dependencies with real Renovate
+        shell: bash
+        run: |
+          set -euo pipefail
+          LOG_LEVEL=debug npx --yes --package renovate@44.93.0 -- renovate --platform=local --dry-run=extract > /tmp/renovate-extract.log 2>&1
+          cat /tmp/renovate-extract.log
+
+          grep -E -q 'package\.json|npm' /tmp/renovate-extract.log
+          grep -E -q 'github-actions|\.github/workflows|actions/checkout|actions/setup-node' /tmp/renovate-extract.log
+
+      - name: Remove temporary proof workflow after success
+        shell: bash
+        run: |
+          rm .github/workflows/phase10-renovate-proof.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/phase10-renovate-proof.yml
+          git commit -m "test: remove completed Phase 10 Renovate proof"
+          git push origin HEAD:ci/renovate-automation
