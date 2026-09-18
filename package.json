@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && pagefind --site dist && node scripts/validate-content-quality.mjs && node scripts/validate-search.mjs && node scripts/validate-lifecycle.mjs && node scripts/validate-discovery.mjs && node scripts/validate-social-cards.mjs && node scripts/validate-seo.mjs && node scripts/validate-taxonomy.mjs && node scripts/validate-article-ux.mjs && node scripts/validate-related-posts.mjs && node scripts/validate-renovate-config.mjs",
+    "build": "astro build && pagefind --site dist && node scripts/validate-content-quality.mjs && node scripts/validate-search.mjs && node scripts/validate-lifecycle.mjs && node scripts/validate-discovery.mjs && node scripts/validate-social-cards.mjs && node scripts/validate-seo.mjs && node scripts/validate-taxonomy.mjs && node scripts/validate-article-ux.mjs && node scripts/validate-related-posts.mjs && node scripts/validate-publishing.mjs && node scripts/validate-renovate-config.mjs",
     "preview": "astro preview",
     "validate:lifecycle": "node scripts/validate-lifecycle.mjs",
     "validate:discovery": "node scripts/validate-discovery.mjs",
@@ -18,7 +18,9 @@
     "validate:related-posts": "node scripts/validate-related-posts.mjs",
     "validate:content-quality": "node scripts/validate-content-quality.mjs",
     "validate:renovate": "node scripts/validate-renovate-config.mjs",
-    "validate:search": "node scripts/validate-search.mjs"
+    "validate:search": "node scripts/validate-search.mjs",
+    "publish": "node scripts/publish.mjs",
+    "validate:publishing": "node scripts/validate-publishing.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "4.0.19",
