@@ -55,12 +55,12 @@
 - [x] **REL-04** — Related results are deterministic for a fixed content collection.
 
 ## Quality gates
-- [ ] **QUAL-01** — PR CI validates content/frontmatter in addition to `npm ci`, audit and Astro build.
-- [ ] **QUAL-02** — Broken internal links are detected before merge.
-- [ ] **QUAL-03** — Missing local image/static-asset references are detected before merge.
-- [ ] **QUAL-04** — Markdown checks catch useful structural problems without enforcing noisy prose/style opinions.
-- [ ] **QUAL-05** — Generated RSS/sitemap/search outputs required by completed phases are smoke-tested in CI.
-- [ ] **QUAL-06** — Mermaid article rendering remains covered by the normal Astro build path.
+- [x] **QUAL-01** — PR CI validates content/frontmatter in addition to `npm ci`, audit and Astro build.
+- [x] **QUAL-02** — Broken internal links are detected before merge.
+- [x] **QUAL-03** — Missing local image/static-asset references are detected before merge.
+- [x] **QUAL-04** — Markdown checks catch useful structural problems without enforcing noisy prose/style opinions.
+- [x] **QUAL-05** — Generated RSS/sitemap/search outputs required by completed phases are smoke-tested in CI.
+- [x] **QUAL-06** — Mermaid article rendering remains covered by the normal Astro build path.
 
 ## Dependency automation
 - [ ] **DEP-01** — Renovate opens dependency update PRs for npm dependencies.

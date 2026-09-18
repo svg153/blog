@@ -106,6 +106,20 @@ Accessibility and content rules:
 - Keep `scripts/validate-related-posts.mjs` aligned with ranking changes and preserve fixtures proving draft/future exclusion and deterministic tie-breaking.
 - Article-heading validation must stay scoped to `data-post-body`; headings from surrounding UI components are not Markdown content headings.
 
+## Content quality gates
+
+- `scripts/validate-content-quality.mjs` is part of the normal `npm run build` path used by PR CI.
+- Keep checks objective and low-noise. Do not introduce subjective prose/style scoring, sentence-length rules or tone enforcement.
+- Astro Content Collections remain responsible for the typed frontmatter schema. The quality gate adds structural source checks and validates the generated site.
+- Markdown article bodies must not contain a top-level `# H1`; `PostLayout.astro` owns the page H1.
+- Fenced code blocks must close and article bodies must not be empty.
+- Generated internal links must resolve to an existing output; hash links must resolve to an ID in the target HTML.
+- Local generated asset references must resolve to files in `dist/`.
+- RSS, sitemap and other outputs from completed phases must remain smoke-tested. If Pagefind output is later introduced, extend the existing conditional Pagefind check rather than creating a separate quality system.
+- Mermaid remains validated through the real Astro build. Source articles with Mermaid fences must produce the Mermaid marker in generated article HTML.
+- When changing a quality rule, prove its failure mode with a temporary fixture/workflow and remove that fixture afterwards.
+- Keep the gate fast enough for normal PR CI.
+
 ## Generated output and legacy code
 
 - Never commit `dist/` or copies of generated site HTML/CSS/PNG assets.
