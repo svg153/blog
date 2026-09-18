@@ -98,7 +98,7 @@ assert.ok(devDescriptor.headers['api-key'].includes('[runtime:'));
 assert.ok(linkedinDescriptor.headers.Authorization.includes('[runtime:'));
 assert.equal(devDescriptor.url, DEV_ENDPOINT);
 assert.equal(linkedinDescriptor.url, LINKEDIN_ENDPOINT);
-assert.equal(LINKEDIN_CURRENT_VERSION, '202608');
+assert.equal(LINKEDIN_CURRENT_VERSION, '202609');
 assert.equal(linkedInManualPayload(first.channels.linkedin).mode, 'manual-ready');
 
 const secret = 'super-secret-value';
@@ -123,7 +123,7 @@ const linkedinResult = await publishLinkedIn(first.channels.linkedin, {
   env: {
     LINKEDIN_ACCESS_TOKEN: 'real-linkedin-secret',
     LINKEDIN_AUTHOR_URN: 'urn:li:person:test-user',
-    LINKEDIN_VERSION: '202608',
+    LINKEDIN_VERSION: '202609',
   },
   fetchImpl: async (url, options) => {
     fetchCalls.push({ provider: 'linkedin', url, options });
@@ -135,7 +135,7 @@ const linkedinResult = await publishLinkedIn(first.channels.linkedin, {
 });
 assert.equal(linkedinResult.externalId, 'urn:li:share:123');
 assert.equal(fetchCalls[1].options.headers.Authorization, 'Bearer real-linkedin-secret');
-assert.equal(fetchCalls[1].options.headers['Linkedin-Version'], '202608');
+assert.equal(fetchCalls[1].options.headers['Linkedin-Version'], '202609');
 assert.equal(fetchCalls[1].options.headers['X-Restli-Protocol-Version'], '2.0.0');
 
 const initial = emptyProvenance();
