@@ -185,7 +185,12 @@ for (const htmlPath of htmlFiles) {
   const html = readFileSync(htmlPath, 'utf8');
   const currentPublicPath = publicPathForHtml(htmlPath);
 
-  for (const tag of tags(html, 'a')) {
+  const navigableHtml = html.replace(
+    /<script\\b[^>]*type=["']text\\/pagefind-template["'][^>]*>[\\s\\S]*?<\\/script>/giu,
+    '',
+  );
+
+  for (const tag of tags(navigableHtml, 'a')) {
     const href = getAttr(tag, 'href');
     if (!href) continue;
 
