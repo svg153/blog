@@ -1,0 +1,223 @@
+name: Phase 09 quality gate proof
+
+on:
+  push:
+    branches: [ ci/content-quality-gates ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prove-gates:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout quality branch
+        uses: actions/checkout@v6
+        with:
+          ref: ci/content-quality-gates
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Clean install
+        run: npm ci
+
+      - name: Baseline build
+        run: npm run build
+
+      - name: Prove invalid frontmatter/date fails
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > src/content/blog/__quality-invalid-frontmatter.md <<'EOF'
+          ---
+          title: "Quality invalid frontmatter"
+          description: "Temporary negative fixture"
+          date: "2026-02-30"
+          tags: ["Quality"]
+          ---
+          
+          ## Heading one
+          ## Heading two
+          ## Heading three
+          ## Heading four
+          EOF
+
+          rm -rf dist .astro
+          if npm run build > /tmp/frontmatter.log 2>&1; then
+            echo "Invalid frontmatter unexpectedly passed"
+            exit 1
+          fi
+          grep -E -q 'valid YYYY-MM-DD|InvalidContentEntryDataError|date' /tmp/frontmatter.log
+          rm src/content/blog/__quality-invalid-frontmatter.md
+
+      - name: Prove broken internal link fails
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > src/content/blog/__quality-broken-link.md <<'EOF'
+          ---
+          title: "Quality broken link"
+          description: "Temporary negative fixture"
+          date: "2026-09-18"
+          tags: ["Quality"]
+          ---
+          
+          [Broken route](/blog/__definitely-missing-route__/)
+          
+          ## Heading one
+          ## Heading two
+          ## Heading three
+          ## Heading four
+          EOF
+
+          rm -rf dist .astro
+          if npm run build > /tmp/link.log 2>&1; then
+            echo "Broken internal link unexpectedly passed"
+            exit 1
+          fi
+          grep -q 'broken internal link' /tmp/link.log
+          rm src/content/blog/__quality-broken-link.md
+
+      - name: Prove missing local asset fails
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > src/content/blog/__quality-missing-asset.md <<'EOF'
+          ---
+          title: "Quality missing asset"
+          description: "Temporary negative fixture"
+          date: "2026-09-18"
+          tags: ["Quality"]
+          ---
+          
+          ![Missing asset](/blog/__definitely-missing-asset__.png)
+          
+          ## Heading one
+          ## Heading two
+          ## Heading three
+          ## Heading four
+          EOF
+
+          rm -rf dist .astro
+          if npm run build > /tmp/asset.log 2>&1; then
+            echo "Missing local asset unexpectedly passed"
+            exit 1
+          fi
+          grep -q 'missing local asset' /tmp/asset.log
+          rm src/content/blog/__quality-missing-asset.md
+
+      - name: Prove Markdown H1 fails
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > src/content/blog/__quality-h1.md <<'EOF'
+          ---
+          title: "Quality H1"
+          description: "Temporary negative fixture"
+          date: "2026-09-18"
+          tags: ["Quality"]
+          ---
+          
+          # Duplicate page H1
+          
+          ## Heading one
+          ## Heading two
+          ## Heading three
+          ## Heading four
+          EOF
+
+          rm -rf dist .astro
+          if npm run build > /tmp/h1.log 2>&1; then
+            echo "Markdown H1 unexpectedly passed"
+            exit 1
+          fi
+          grep -q 'do not add Markdown H1' /tmp/h1.log
+          rm src/content/blog/__quality-h1.md
+
+      - name: Prove unclosed fence fails
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > src/content/blog/__quality-fence.md <<'EOF'
+          ---
+          title: "Quality fence"
+          description: "Temporary negative fixture"
+          date: "2026-09-18"
+          tags: ["Quality"]
+          ---
+          
+          ## Heading one
+          ## Heading two
+          ## Heading three
+          ## Heading four
+          
+          ```text
+          this fence never closes
+          EOF
+
+          rm -rf dist .astro
+          if npm run build > /tmp/fence.log 2>&1; then
+            echo "Unclosed fence unexpectedly passed"
+            exit 1
+          fi
+          grep -q 'unclosed fenced code block' /tmp/fence.log
+          rm src/content/blog/__quality-fence.md
+
+      - name: Prove required output smoke test fails
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf dist .astro
+          npm run build
+          rm dist/rss.xml
+          if node scripts/validate-content-quality.mjs > /tmp/output.log 2>&1; then
+            echo "Missing required output unexpectedly passed"
+            exit 1
+          fi
+          grep -q 'Missing completed-phase output: dist/rss.xml' /tmp/output.log
+
+      - name: Prove Mermaid remains on real Astro path
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > src/content/blog/__quality-mermaid.md <<'EOF'
+          ---
+          title: "Quality Mermaid"
+          description: "Temporary positive fixture"
+          date: "2026-09-18"
+          tags: ["Quality"]
+          ---
+          
+          ## Heading one
+          
+          ```mermaid
+          flowchart LR
+            A[Source] --> B[Astro]
+            B --> C[Mermaid]
+          ```
+          
+          ## Heading two
+          ## Heading three
+          ## Heading four
+          EOF
+
+          rm -rf dist .astro
+          npm run build
+          grep -E -q 'class="[^"]*mermaid[^"]*"' dist/posts/__quality-mermaid/index.html
+          rm src/content/blog/__quality-mermaid.md
+
+      - name: Remove temporary proof workflow after success
+        shell: bash
+        run: |
+          rm .github/workflows/phase09-quality-proof.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/phase09-quality-proof.yml
+          git commit -m "test: remove completed Phase 09 proof workflow"
+          git push origin HEAD:ci/content-quality-gates
