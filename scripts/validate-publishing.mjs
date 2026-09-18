@@ -1,5 +1,13 @@
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import {
+  existsSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+} from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { loadSourceArticle, parseSourceArticle } from './lib/source-article.mjs';
 import {
@@ -165,7 +173,8 @@ assert.ok(existsSync('docs/publishing.md'), 'Provider capability documentation i
 assert.ok(existsSync('data/publication-provenance.json'), 'Versioned publication provenance file is required');
 
 const goldenPath = 'scripts/fixtures/publishing/use-contribute-fork-build.dry-run.json';
-if (existsSync(goldenPath)) {
+assert.ok(existsSync(goldenPath), 'Committed dry-run golden output is required');
+{
   const golden = JSON.parse(readFileSync(goldenPath, 'utf8'));
   const current = {
     mode: 'dry-run',
@@ -196,4 +205,72 @@ if (existsSync(goldenPath)) {
   assert.deepEqual(current, golden, 'Dry-run golden output changed; regenerate and review intentionally');
 }
 
-console.log('Publishing validation passed: deterministic payloads, overrides, provider requests, redaction, idempotency and workflow isolation verified.');
+const cliEnv = { ...process.env };
+for (const key of [
+  'DEV_API_KEY',
+  'LINKEDIN_ACCESS_TOKEN',
+  'LINKEDIN_AUTHOR_URN',
+  'LINKEDIN_VERSION',
+]) {
+  delete cliEnv[key];
+}
+
+const runCli = (args) =>
+  spawnSync(process.execPath, ['scripts/publish.mjs', ...args], {
+    cwd: process.cwd(),
+    env: cliEnv,
+    encoding: 'utf8',
+  });
+
+const cliDryRun = runCli(['--slug', article.slug, '--dry-run']);
+assert.equal(cliDryRun.status, 0, `CLI dry-run failed: ${cliDryRun.stderr}`);
+assert.deepEqual(
+  JSON.parse(cliDryRun.stdout),
+  JSON.parse(readFileSync(goldenPath, 'utf8')),
+  'Actual CLI dry-run must exactly match committed golden output',
+);
+
+const exportDir = mkdtempSync(join(tmpdir(), 'svg153-publishing-'));
+try {
+  const exported = runCli([
+    '--slug',
+    article.slug,
+    '--export-dir',
+    exportDir,
+  ]);
+  assert.equal(exported.status, 0, `CLI export failed: ${exported.stderr}`);
+  for (const file of [
+    `${article.slug}.dev.json`,
+    `${article.slug}.linkedin.json`,
+    `${article.slug}.newsletter.json`,
+    `${article.slug}.newsletter.md`,
+  ]) {
+    assert.ok(existsSync(join(exportDir, file)), `CLI export missing ${file}`);
+  }
+} finally {
+  rmSync(exportDir, { recursive: true, force: true });
+}
+
+const missingLinkedIn = runCli([
+  '--slug',
+  article.slug,
+  '--channel',
+  'linkedin',
+  '--publish',
+]);
+assert.notEqual(missingLinkedIn.status, 0, 'LinkedIn publish without runtime configuration must fail closed');
+assert.match(missingLinkedIn.stderr, /Missing runtime credential\/configuration: LINKEDIN_ACCESS_TOKEN/u);
+assert.match(missingLinkedIn.stderr, /manual-ready/u, 'Missing LinkedIn config must still expose the manual-ready fallback');
+assert.ok(!missingLinkedIn.stderr.includes('real-linkedin-secret'));
+
+const publishAll = runCli([
+  '--slug',
+  article.slug,
+  '--channel',
+  'all',
+  '--publish',
+]);
+assert.notEqual(publishAll.status, 0, 'Publish-all must be rejected');
+assert.match(publishAll.stderr, /exactly one API-backed channel/u);
+
+console.log('Publishing validation passed: deterministic/golden dry-run, export, overrides, provider requests, redaction, idempotency, manual fallback and workflow isolation verified.');
