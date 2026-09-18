@@ -32,14 +32,16 @@ jobs:
           mkdir -p scripts/fixtures/publishing
           node scripts/publish.mjs             --slug use-contribute-fork-build             --dry-run             > scripts/fixtures/publishing/use-contribute-fork-build.dry-run.json
 
+      - name: Remove temporary workflow before safety validation
+        run: rm .github/workflows/phase12-generate-golden.yml
+
       - name: Verify golden and full repository build
         run: |
           node scripts/validate-publishing.mjs
           npm run build
 
-      - name: Commit reviewed golden and remove generator
+      - name: Commit reviewed golden and removed generator
         run: |
-          rm .github/workflows/phase12-generate-golden.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add scripts/fixtures/publishing/use-contribute-fork-build.dry-run.json .github/workflows/phase12-generate-golden.yml
