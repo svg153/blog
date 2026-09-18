@@ -1,0 +1,135 @@
+name: Phase 07 lifecycle leak test
+
+on:
+  push:
+    branches: [ feat/content-lifecycle ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  lifecycle-leak-test:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout lifecycle branch
+        uses: actions/checkout@v6
+        with:
+          ref: feat/content-lifecycle
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Clean install
+        run: npm ci
+
+      - name: Inject unpublished fixtures
+        shell: bash
+        run: |
+          cat > src/content/blog/__lifecycle-draft.md <<'EOF'
+          ---
+          title: "LIFECYCLE_DRAFT_TITLE"
+          description: "LIFECYCLE_DRAFT_DESCRIPTION"
+          date: "2026-09-17"
+          draft: true
+          tags: ["Lifecycle Draft"]
+          series:
+            id: "lifecycle-fixture"
+            name: "Lifecycle Fixture"
+            order: 1
+          ---
+          
+          LIFECYCLE_DRAFT_MARKER
+          
+          ## Draft heading one
+          ## Draft heading two
+          ## Draft heading three
+          ## Draft heading four
+          EOF
+
+          cat > src/content/blog/__lifecycle-future.md <<'EOF'
+          ---
+          title: "LIFECYCLE_FUTURE_TITLE"
+          description: "LIFECYCLE_FUTURE_DESCRIPTION"
+          date: "2099-01-01"
+          tags: ["Lifecycle Future"]
+          series:
+            id: "lifecycle-fixture"
+            name: "Lifecycle Fixture"
+            order: 2
+          ---
+          
+          LIFECYCLE_FUTURE_MARKER
+          
+          ## Future heading one
+          ## Future heading two
+          ## Future heading three
+          ## Future heading four
+          EOF
+
+      - name: Production build with fixtures present
+        run: npm run build
+
+      - name: Assert unpublished content cannot leak
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test ! -e dist/posts/__lifecycle-draft
+          test ! -e dist/posts/__lifecycle-future
+          test ! -e dist/og/__lifecycle-draft.png
+          test ! -e dist/og/__lifecycle-future.png
+          test ! -e dist/tags/lifecycle-draft
+          test ! -e dist/tags/lifecycle-future
+          test ! -e dist/series/lifecycle-fixture
+          test ! -e dist/preview
+
+          if grep -R -n -E 'LIFECYCLE_(DRAFT|FUTURE)_(TITLE|DESCRIPTION|MARKER)' dist; then
+            echo "Unpublished fixture leaked into production output"
+            exit 1
+          fi
+
+          if grep -R -n -E '__lifecycle-(draft|future)|lifecycle-fixture|lifecycle-(draft|future)' dist/rss.xml dist/sitemap-0.xml dist/index.html dist/tags/index.html dist/archive/index.html dist/series/index.html; then
+            echo "Unpublished fixture leaked into a public discovery surface"
+            exit 1
+          fi
+
+      - name: Verify explicit development preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run dev -- --host 127.0.0.1 > /tmp/blog-dev.log 2>&1 &
+          DEV_PID=$!
+          trap 'kill "$DEV_PID" 2>/dev/null || true' EXIT
+
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4321/blog/ > /dev/null; then
+              break
+            fi
+            sleep 1
+          done
+
+          curl --fail --silent http://127.0.0.1:4321/blog/preview/__lifecycle-draft/ > /tmp/draft-preview.html
+          curl --fail --silent http://127.0.0.1:4321/blog/preview/__lifecycle-future/ > /tmp/future-preview.html
+
+          grep -q 'LIFECYCLE_DRAFT_TITLE' /tmp/draft-preview.html
+          grep -q 'LIFECYCLE_DRAFT_MARKER' /tmp/draft-preview.html
+          grep -q 'data-preview-banner' /tmp/draft-preview.html
+
+          grep -q 'LIFECYCLE_FUTURE_TITLE' /tmp/future-preview.html
+          grep -q 'LIFECYCLE_FUTURE_MARKER' /tmp/future-preview.html
+          grep -q 'data-preview-banner' /tmp/future-preview.html
+
+      - name: Remove temporary test workflow after success
+        shell: bash
+        run: |
+          rm .github/workflows/phase07-lifecycle-leak-test.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/phase07-lifecycle-leak-test.yml
+          git commit -m "test: remove completed Phase 07 leak workflow"
+          git push origin HEAD:feat/content-lifecycle
