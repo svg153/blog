@@ -95,6 +95,17 @@ Accessibility and content rules:
 - Reading time comes from canonical `CollectionEntry.body` through `readingTimeForPost()`. Never add or restore manual `readingTime` frontmatter.
 - Keep `scripts/validate-lifecycle.mjs` and generated-output validators aligned with lifecycle changes. When changing filtering, test both a draft and a future-dated entry across the complete production output.
 
+## Related posts
+
+- `src/lib/related-posts.mjs` is the only recommendation-ranking contract. Do not duplicate scoring logic in layouts/components.
+- Candidate posts must pass the shared lifecycle filter and the current article must always be excluded.
+- Ranking is lexicographic and intentionally has no arbitrary weights: same series first, then shared normalized tag count, then publication recency, then slug as the final deterministic tie-break.
+- Shared tags are compared through the same `tagSlug()` normalization used by taxonomy.
+- Keep the default rendered result bounded to three unless the product requirement changes deliberately.
+- `RelatedPosts.astro` may explain the relation to readers, but presentation labels must not change ranking.
+- Keep `scripts/validate-related-posts.mjs` aligned with ranking changes and preserve fixtures proving draft/future exclusion and deterministic tie-breaking.
+- Article-heading validation must stay scoped to `data-post-body`; headings from surrounding UI components are not Markdown content headings.
+
 ## Generated output and legacy code
 
 - Never commit `dist/` or copies of generated site HTML/CSS/PNG assets.

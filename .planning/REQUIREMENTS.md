@@ -49,10 +49,10 @@
 - [x] **LIFE-06** — Existing articles migrate without losing their public URLs or publication dates.
 
 ## Related content
-- [ ] **REL-01** — Article pages can show a bounded related-post set.
-- [ ] **REL-02** — Related scoring prefers same series, then shared normalized tags, then recency.
-- [ ] **REL-03** — Current article, drafts and future content are never recommended.
-- [ ] **REL-04** — Related results are deterministic for a fixed content collection.
+- [x] **REL-01** — Article pages can show a bounded related-post set.
+- [x] **REL-02** — Related scoring prefers same series, then shared normalized tags, then recency.
+- [x] **REL-03** — Current article, drafts and future content are never recommended.
+- [x] **REL-04** — Related results are deterministic for a fixed content collection.
 
 ## Quality gates
 - [ ] **QUAL-01** — PR CI validates content/frontmatter in addition to `npm ci`, audit and Astro build.

@@ -32,7 +32,7 @@ flowchart TD
 | 05 | Turn tags into navigable taxonomy and add chronological archive | TAX-01..05 | 01 | complete |
 | 06 | Add article TOC/heading anchors and ordered series navigation | UX-01..05 | 05 | complete |
 | 07 | Add draft/publish/update lifecycle and automatic reading time | LIFE-01..06 | 01 | complete |
-| 08 | Recommend related posts deterministically from taxonomy/series | REL-01..04 | 05,07 | planned |
+| 08 | Recommend related posts deterministically from taxonomy/series | REL-01..04 | 05,07 | complete |
 | 09 | Add durable content-quality checks to PR CI | QUAL-01..06 | 01 | planned |
 | 10 | Add Renovate dependency/action update automation compatible with CI | DEP-01..05 | 09 | planned |
 | 11 | Add Pagefind static search plus tag/year filters when useful | SEARCH-01..06 | 05,06 | planned |
