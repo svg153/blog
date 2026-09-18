@@ -78,16 +78,16 @@
 - [x] **SEARCH-06** — Search index generation is validated by CI and excluded from source control.
 
 ## Publishing pipeline
-- [ ] **PUB-01** — Markdown/frontmatter remains canonical; external publication state is explicit metadata/provenance rather than copied article files.
-- [ ] **PUB-02** — A provider-neutral payload contract represents canonical URL, title, excerpt/body, tags and channel-specific overrides.
-- [ ] **PUB-03** — A dry-run/export command produces reviewable payloads without credentials or network mutation.
-- [ ] **PUB-04** — DEV Community publication uses its supported API and sets canonical URL semantics correctly.
-- [ ] **PUB-05** — LinkedIn publication uses a supported API when explicitly configured, otherwise produces a manual-ready payload with no scraping fallback.
-- [ ] **PUB-06** — Newsletter delivery is provider-neutral first; concrete adapters require a documented supported API/connector.
-- [ ] **PUB-07** — Channel-specific copy can be explicitly overridden while deterministic defaults remain available.
-- [ ] **PUB-08** — Credentials are runtime-only, redacted from logs and never stored in content/repository files.
-- [ ] **PUB-09** — Idempotency/provenance prevents accidental duplicate publication attempts.
-- [ ] **PUB-10** — Merge/deploy does not automatically cross-post by default; mutation requires explicit invocation/review.
+- [x] **PUB-01** — Markdown/frontmatter remains canonical; external publication state is explicit metadata/provenance rather than copied article files.
+- [x] **PUB-02** — A provider-neutral payload contract represents canonical URL, title, excerpt/body, tags and channel-specific overrides.
+- [x] **PUB-03** — A dry-run/export command produces reviewable payloads without credentials or network mutation.
+- [x] **PUB-04** — DEV Community publication uses its supported API and sets canonical URL semantics correctly.
+- [x] **PUB-05** — LinkedIn publication uses a supported API when explicitly configured, otherwise produces a manual-ready payload with no scraping fallback.
+- [x] **PUB-06** — Newsletter delivery is provider-neutral first; concrete adapters require a documented supported API/connector.
+- [x] **PUB-07** — Channel-specific copy can be explicitly overridden while deterministic defaults remain available.
+- [x] **PUB-08** — Credentials are runtime-only, redacted from logs and never stored in content/repository files.
+- [x] **PUB-09** — Idempotency/provenance prevents accidental duplicate publication attempts.
+- [x] **PUB-10** — Merge/deploy does not automatically cross-post by default; mutation requires explicit invocation/review.
 
 ## Traceability
 | Phase | Requirements |
