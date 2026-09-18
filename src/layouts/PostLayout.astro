@@ -81,7 +81,10 @@ const showToc = headings.length >= 4;
   modifiedTime={updatedDate ?? date}
   tags={tags}
 >
-  <article class="post-article">
+  <article
+    class="post-article"
+    {...(!isPreview ? { 'data-pagefind-body': '' } : {})}
+  >
     {isPreview && (
       <aside class="preview-banner" role="status" data-preview-banner>
         Vista previa local: este artículo no forma parte necesariamente del sitio publicado.
@@ -96,7 +99,16 @@ const showToc = headings.length >= 4;
           {series.position}/{series.total}
         </p>
       )}
-      <h1>{title}</h1>
+      <h1 data-pagefind-meta={!isPreview ? 'title' : undefined}>{title}</h1>
+      {!isPreview && (
+        <div class="pagefind-metadata" data-pagefind-ignore aria-hidden="true">
+          <span data-pagefind-meta="description">{description ?? ''}</span>
+          <span data-pagefind-meta="tags">{tags.join(' · ')}</span>
+          <span data-pagefind-meta="year" data-pagefind-filter="year">{date.slice(0, 4)}</span>
+          <span data-pagefind-meta="date" data-pagefind-sort="date">{date}</span>
+          {tags.map((tag) => <span data-pagefind-filter="tag">{tag}</span>)}
+        </div>
+      )}
       <div class="post-meta">
         <time datetime={date}>{formattedDate}</time>
         {readingTime && <span class="meta-sep">·</span>}
@@ -110,7 +122,7 @@ const showToc = headings.length >= 4;
     </header>
 
     {showToc && (
-      <details class="article-toc" data-article-toc open>
+      <details class="article-toc" data-article-toc data-pagefind-ignore open>
         <summary>En este artículo</summary>
         <ol>
           {headings.map((heading) => (
@@ -131,6 +143,7 @@ const showToc = headings.length >= 4;
 
     {series && (
       <nav
+        data-pagefind-ignore
         class="series-navigation"
         aria-label={`Navegación de la serie ${series.name}`}
         data-series-id={series.id}
@@ -157,7 +170,9 @@ const showToc = headings.length >= 4;
       </nav>
     )}
 
-    <RelatedPosts entries={related} />
+    <div data-pagefind-ignore>
+      <RelatedPosts entries={related} />
+    </div>
   </article>
 
   <script is:inline data-heading-anchor-script>
@@ -183,6 +198,7 @@ const showToc = headings.length >= 4;
 <style>
   .post-article { max-width: var(--max-width); margin: 0 auto; }
   .preview-banner { margin-bottom: 1.25rem; padding: 0.85rem 1rem; border: 1px solid #d29922; border-radius: 8px; background: rgba(210, 153, 34, 0.08); color: var(--color-heading); font-size: 0.9rem; }
+  .pagefind-metadata { display: none; }
   .post-header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--color-border); }
   .post-header h1 { font-size: 2rem; margin-bottom: 0.75rem; line-height: 1.2; }
   .series-kicker { display: flex; gap: 0.45rem; flex-wrap: wrap; color: var(--color-text-secondary); font-size: 0.85rem; margin-bottom: 0.6rem; }

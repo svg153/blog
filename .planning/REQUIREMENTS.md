@@ -70,12 +70,12 @@
 - [x] **DEP-05** — Any permitted auto-merge requires repository CI success and conservative policy.
 
 ## Search and filtering
-- [ ] **SEARCH-01** — Pagefind indexes only public/published site content after the Astro build.
-- [ ] **SEARCH-02** — Search works under the `/blog` GitHub Pages base path.
-- [ ] **SEARCH-03** — Search UI is keyboard-accessible, mobile-usable and progressively enhanced.
-- [ ] **SEARCH-04** — Search results expose useful title/description/tag context.
-- [ ] **SEARCH-05** — Tag/year filters compose with browsing/search without an external service.
-- [ ] **SEARCH-06** — Search index generation is validated by CI and excluded from source control.
+- [x] **SEARCH-01** — Pagefind indexes only public/published site content after the Astro build.
+- [x] **SEARCH-02** — Search works under the `/blog` GitHub Pages base path.
+- [x] **SEARCH-03** — Search UI is keyboard-accessible, mobile-usable and progressively enhanced.
+- [x] **SEARCH-04** — Search results expose useful title/description/tag context.
+- [x] **SEARCH-05** — Tag/year filters compose with browsing/search without an external service.
+- [x] **SEARCH-06** — Search index generation is validated by CI and excluded from source control.
 
 ## Publishing pipeline
 - [ ] **PUB-01** — Markdown/frontmatter remains canonical; external publication state is explicit metadata/provenance rather than copied article files.

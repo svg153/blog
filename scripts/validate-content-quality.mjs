@@ -185,7 +185,12 @@ for (const htmlPath of htmlFiles) {
   const html = readFileSync(htmlPath, 'utf8');
   const currentPublicPath = publicPathForHtml(htmlPath);
 
-  for (const tag of tags(html, 'a')) {
+  const navigableHtml = html.replace(
+    /<script\b[^>]*type=["']text\/pagefind-template["'][^>]*>[\s\S]*?<\/script>/giu,
+    '',
+  );
+
+  for (const tag of tags(navigableHtml, 'a')) {
     const href = getAttr(tag, 'href');
     if (!href) continue;
 
@@ -265,9 +270,19 @@ assert.ok(!existsSync(join(DIST, 'preview')), 'Development preview routes must n
 
 const pagefindDir = join(DIST, 'pagefind');
 if (existsSync(pagefindDir)) {
+  for (const file of [
+    'pagefind.js',
+    'pagefind-component-ui.js',
+    'pagefind-component-ui.css',
+  ]) {
+    assert.ok(
+      existsSync(join(pagefindDir, file)),
+      `Pagefind directory exists but ${file} is missing`,
+    );
+  }
   assert.ok(
-    existsSync(join(pagefindDir, 'pagefind.js')),
-    'Pagefind directory exists but pagefind.js is missing',
+    existsSync(join(DIST, 'search', 'index.html')),
+    'Pagefind output exists but the search page is missing',
   );
 }
 
