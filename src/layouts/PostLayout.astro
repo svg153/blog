@@ -127,6 +127,7 @@ const showToc = headings.length >= 4;
     <div class="post-body" data-post-body>
       <slot />
     </div>
+    <span hidden data-post-body-end></span>
 
     {series && (
       <nav
