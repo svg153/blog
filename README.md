@@ -19,6 +19,7 @@ Personal technical blog built with Astro and deployed as a static site to GitHub
 - **Static social cards** are prerendered as deterministic 1200x630 PNGs.
 - **astro-mermaid** renders Mermaid fences in Markdown.
 - **Content quality gate** checks source structure plus generated internal links, anchors, local assets and completed-phase outputs without opinionated prose linting.
+- **Pagefind static search** indexes only published article HTML after the Astro build, with tag/year filters and a search UI at `/blog/search/`.
 - **Renovate policy** covers npm + GitHub Actions with conservative grouping; auto-merge is explicitly disabled while `main` has no enforced protection/status checks.
 - **GitHub Actions** validates pull requests and deploys `main` to GitHub Pages.
 
@@ -48,6 +49,7 @@ src/
     ├── about.astro
     ├── archive.astro
     ├── rss.xml.js
+    ├── search.astro              # Pagefind Component UI + no-JS fallback navigation
     ├── posts/[slug].astro
     ├── preview/[slug].astro   # Development only
     ├── tags/
@@ -70,6 +72,7 @@ scripts/
 ├── validate-taxonomy.mjs
 ├── validate-article-ux.mjs
 ├── validate-related-posts.mjs
+├── validate-search.mjs
 └── validate-renovate-config.mjs
 ```
 
@@ -140,7 +143,22 @@ npm run build
 npm audit --audit-level=high
 ```
 
-`npm run build` runs the real Astro build and then validates source structure, generated internal links/anchors, local assets, completed-phase outputs, Mermaid transformation, lifecycle/reading-time behavior, RSS/sitemap discovery, social cards, canonical/OG/Twitter/JSON-LD metadata, taxonomy/archive consistency, heading/TOC parity, deterministic series behavior and related-post ranking/rendering.
+`npm run build` runs the real Astro build, generates the Pagefind index, and then validates source structure, generated internal links/anchors, local assets, completed-phase outputs, Mermaid transformation, lifecycle/reading-time behavior, RSS/sitemap discovery, social cards, canonical/OG/Twitter/JSON-LD metadata, taxonomy/archive consistency, heading/TOC parity, deterministic series behavior, related-post ranking/rendering and search index scope/configuration.
+
+### Static search
+
+The production search lives at `/blog/search/`. Pagefind is generated from `dist/` after Astro finishes, and only article pages marked with `data-pagefind-body` enter the index.
+
+Search results carry title, description, tags, year and date metadata. Tag and year filters are generated statically by Pagefind; the browser does not call an external search service.
+
+Because the Pagefind bundle only exists after a production build, test the real search locally with:
+
+```bash
+npm run build
+npm run preview
+```
+
+The search page still exposes normal links to Tags and Archive when JavaScript is unavailable.
 
 ### Content quality rules
 

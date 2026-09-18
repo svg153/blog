@@ -131,6 +131,18 @@ Accessibility and content rules:
 - Renovate's hosted GitHub App is an external prerequisite for actual update PR creation. A valid repository config alone is not evidence that DEP-01 is active.
 - Keep a minimum release age and PR concurrency limits conservative unless repository maintenance volume justifies a documented change.
 
+## Static search
+
+- Pagefind runs after `astro build`; generated `dist/pagefind/` output is never committed.
+- Only public article pages may opt into indexing with `data-pagefind-body`. Do not mark home, search, taxonomy, archive, series, about or development preview pages.
+- Keep title/description/tags/year/date search metadata derived from the canonical article props. Do not add a separate search metadata registry.
+- Tags may have multiple `data-pagefind-filter="tag"` values; year is the `year` filter and publication date is available as `date` sort metadata.
+- Keep `/search/` configured explicitly with `base-url="/blog/"` and `bundle-path="/blog/pagefind/"` so GitHub Pages subpath hosting works.
+- Search UI must remain keyboard-usable/mobile-safe and preserve ordinary HTML links to Tags/Archive as the no-JS browsing path.
+- `scripts/validate-search.mjs` must continue checking bundle assets, /blog path configuration, opt-in scope and generated Pagefind manifest page count.
+- Lifecycle changes must prove drafts/future posts cannot create indexed pages. Never bypass `getPublishedPosts()` to feed search.
+- Keep Pagefind pinned/reviewed through the normal dependency update policy.
+
 ## Generated output and legacy code
 
 - Never commit `dist/` or copies of generated site HTML/CSS/PNG assets.
