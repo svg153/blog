@@ -186,7 +186,7 @@ for (const htmlPath of htmlFiles) {
   const currentPublicPath = publicPathForHtml(htmlPath);
 
   const navigableHtml = html.replace(
-    /<script\\b[^>]*type=["']text\\/pagefind-template["'][^>]*>[\\s\\S]*?<\\/script>/giu,
+    /<script\b[^>]*type=["']text\/pagefind-template["'][^>]*>[\s\S]*?<\/script>/giu,
     '',
   );
 
