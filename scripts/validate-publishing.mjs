@@ -14,6 +14,7 @@ import {
   LINKEDIN_ENDPOINT,
   describeDevRequest,
   describeLinkedInRequest,
+  describeNewsletterExport,
   linkedInManualPayload,
   publishDev,
   publishLinkedIn,
@@ -170,31 +171,27 @@ if (existsSync(goldenPath)) {
     mode: 'dry-run',
     schemaVersion: first.schemaVersion,
     canonical: first.canonical,
-    channels: {
-      dev: {
+    channels: [
+      {
         channel: 'dev',
         capability: 'supported-api',
         fingerprint: first.channels.dev.fingerprint,
         request: describeDevRequest(first.channels.dev),
       },
-      linkedin: {
+      {
         channel: 'linkedin',
         capability: 'supported-api-when-configured',
         fingerprint: first.channels.linkedin.fingerprint,
         apiRequest: describeLinkedInRequest(first.channels.linkedin),
         manual: linkedInManualPayload(first.channels.linkedin),
       },
-      newsletter: {
+      {
         channel: 'newsletter',
         capability: 'provider-neutral-export',
         fingerprint: first.channels.newsletter.fingerprint,
-        export: {
-          transport: 'provider-neutral-export',
-          mode: 'export-only',
-          payload: first.channels.newsletter.payload,
-        },
+        export: describeNewsletterExport(first.channels.newsletter),
       },
-    },
+    ],
   };
   assert.deepEqual(current, golden, 'Dry-run golden output changed; regenerate and review intentionally');
 }
