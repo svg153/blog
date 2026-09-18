@@ -1,5 +1,6 @@
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { basename, extname, join } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { generatedPostSlugs } from './lib/generated-posts.mjs';
 import assert from 'node:assert/strict';
 
 const DIST = 'dist';
@@ -27,11 +28,10 @@ assert.ok(
   `Sitemap index must reference ${canonicalSitemap}`,
 );
 
-const postFiles = readdirSync('src/content/blog').filter((file) => extname(file) === '.md');
-assert.ok(postFiles.length > 0, 'Expected at least one Markdown article');
+const postSlugs = generatedPostSlugs();
+assert.ok(postSlugs.length > 0, 'Expected at least one generated public article');
 
-for (const file of postFiles) {
-  const slug = basename(file, '.md');
+for (const slug of postSlugs) {
   const canonicalUrl = `${ORIGIN}${BASE}posts/${slug}/`;
   assert.ok(rss.includes(`<link>${canonicalUrl}</link>`), `RSS missing ${canonicalUrl}`);
   assert.ok(sitemap.includes(`<loc>${canonicalUrl}</loc>`), `Sitemap missing ${canonicalUrl}`);
@@ -40,4 +40,4 @@ for (const file of postFiles) {
 assert.ok(!rss.includes(`${ORIGIN}/posts/`), 'RSS contains a post URL without the /blog base path');
 assert.ok(!sitemap.includes(`${ORIGIN}/posts/`), 'Sitemap contains a post URL without the /blog base path');
 
-console.log(`Discovery validation passed for ${postFiles.length} article(s).`);
+console.log(`Discovery validation passed for ${postSlugs.length} public article(s).`);

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { basename, extname, join } from 'node:path';
+import { join } from 'node:path';
+import { generatedPostSlugs } from './lib/generated-posts.mjs';
 import {
   CARD_HEIGHT,
   CARD_WIDTH,
@@ -46,8 +47,8 @@ const jsonLd = (html) => {
 
 assert.ok(existsSync(OG_DIR), 'Missing generated dist/og directory');
 
-const postFiles = readdirSync('src/content/blog').filter((file) => extname(file) === '.md');
-const expectedFiles = new Set(['default.png', ...postFiles.map((file) => `${basename(file, '.md')}.png`)]);
+const postSlugs = generatedPostSlugs();
+const expectedFiles = new Set(['default.png', ...postSlugs.map((slug) => `${slug}.png`)]);
 const generatedFiles = readdirSync(OG_DIR).filter((file) => file.endsWith('.png'));
 
 for (const file of expectedFiles) {
@@ -65,8 +66,7 @@ assert.deepEqual(
   'Generated social-card set must match the canonical Markdown article set plus default.png',
 );
 
-for (const file of postFiles) {
-  const slug = basename(file, '.md');
+for (const slug of postSlugs) {
   const htmlPath = join('dist', 'posts', slug, 'index.html');
   const html = readFileSync(htmlPath, 'utf8');
   const expectedImage = `${ORIGIN}${BASE}og/${slug}.png`;
@@ -105,4 +105,4 @@ const stressDimensions = pngDimensions(stressPath);
 assert.equal(stressDimensions.width, CARD_WIDTH);
 assert.equal(stressDimensions.height, CARD_HEIGHT);
 
-console.log(`Social card validation passed for ${postFiles.length} article card(s) plus fallback; deterministic stress render passed.`);
+console.log(`Social card validation passed for ${postSlugs.length} public article card(s) plus fallback; deterministic stress render passed.`);

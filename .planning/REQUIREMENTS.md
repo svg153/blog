@@ -41,12 +41,12 @@
 - [x] **UX-05** — Series navigation/pages expose ordered previous/next entries while excluding unpublished content.
 
 ## Content lifecycle
-- [ ] **LIFE-01** — Frontmatter supports `draft` with a safe default.
-- [ ] **LIFE-02** — Frontmatter models publication and optional update dates with validated date types.
-- [ ] **LIFE-03** — Production routes/listings/feeds/search exclude drafts and future-dated posts.
-- [ ] **LIFE-04** — Development has an explicit way to preview draft content without weakening production filtering.
-- [ ] **LIFE-05** — Reading time is calculated from article source/content, not manually maintained.
-- [ ] **LIFE-06** — Existing articles migrate without losing their public URLs or publication dates.
+- [x] **LIFE-01** — Frontmatter supports `draft` with a safe default.
+- [x] **LIFE-02** — Frontmatter models publication and optional update dates with validated date types.
+- [x] **LIFE-03** — Production routes/listings/feeds/search exclude drafts and future-dated posts.
+- [x] **LIFE-04** — Development has an explicit way to preview draft content without weakening production filtering.
+- [x] **LIFE-05** — Reading time is calculated from article source/content, not manually maintained.
+- [x] **LIFE-06** — Existing articles migrate without losing their public URLs or publication dates.
 
 ## Related content
 - [ ] **REL-01** — Article pages can show a bounded related-post set.

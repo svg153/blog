@@ -30,7 +30,8 @@ export interface Props {
   date: string;
   updatedDate?: string;
   tags?: string[];
-  readingTime?: string;
+  readingTime?: number;
+  isPreview?: boolean;
   headings?: Heading[];
   series?: SeriesContext;
 }
@@ -43,6 +44,7 @@ const {
   updatedDate,
   tags = [],
   readingTime,
+  isPreview = false,
   headings = [],
   series,
 } = Astro.props;
@@ -63,13 +65,18 @@ const showToc = headings.length >= 4;
 <Layout
   title={title}
   description={description}
-  ogImage={`/og/${slug}.png`}
+  ogImage={isPreview ? '/og/default.png' : `/og/${slug}.png`}
   isArticle={true}
   publishedTime={date}
   modifiedTime={updatedDate ?? date}
   tags={tags}
 >
   <article class="post-article">
+    {isPreview && (
+      <aside class="preview-banner" role="status" data-preview-banner>
+        Vista previa local: este artículo no forma parte necesariamente del sitio publicado.
+      </aside>
+    )}
     <header class="post-header">
       {series && (
         <p class="series-kicker">
@@ -162,6 +169,7 @@ const showToc = headings.length >= 4;
 
 <style>
   .post-article { max-width: var(--max-width); margin: 0 auto; }
+  .preview-banner { margin-bottom: 1.25rem; padding: 0.85rem 1rem; border: 1px solid #d29922; border-radius: 8px; background: rgba(210, 153, 34, 0.08); color: var(--color-heading); font-size: 0.9rem; }
   .post-header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--color-border); }
   .post-header h1 { font-size: 2rem; margin-bottom: 0.75rem; line-height: 1.2; }
   .series-kicker { display: flex; gap: 0.45rem; flex-wrap: wrap; color: var(--color-text-secondary); font-size: 0.85rem; margin-bottom: 0.6rem; }

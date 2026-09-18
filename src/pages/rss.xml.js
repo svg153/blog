@@ -1,11 +1,12 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { SITE } from '@config';
+import { getPublishedPosts } from '../lib/content-lifecycle.mjs';
 
 const withTrailingSlash = (value) => (value.endsWith('/') ? value : `${value}/`);
 
 export async function GET(context) {
-  const posts = (await getCollection('blog')).sort(
+  const posts = getPublishedPosts(await getCollection('blog')).sort(
     (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
   );
   const base = withTrailingSlash(import.meta.env.BASE_URL);

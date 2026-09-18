@@ -4,7 +4,6 @@ description: "SEP-2640 convierte Skills over MCP en una extensión oficial: qué
 date: "2026-09-14"
 tags: ["MCP", "Agent Skills", "AI Agents", "Platform Engineering"]
 featured: true
-readingTime: "10"
 ---
 
 Durante mucho tiempo hemos explicado MCP con una idea bastante sencilla: conectar un agente con las capacidades de un servicio.

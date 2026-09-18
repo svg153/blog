@@ -4,7 +4,6 @@ description: "Cómo pasé de escribir un post de LinkedIn a contar toda la histo
 date: "2025-07-02"
 tags: ["AI", "Agents", "DevOps"]
 featured: true
-readingTime: "8"
 ---
 
 Hace unas horas empecé a escribir lo que iba a ser un post de LinkedIn. Una idea rápida, algo ligero. Pero me encontré escribiendo esto — un artículo completo sobre mi viaje con el desarrollo agéntico. Y creo que eso dice algo importante sobre lo que está pasando.

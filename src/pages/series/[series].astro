@@ -4,9 +4,10 @@ import { getCollection } from 'astro:content';
 import Layout from '@layouts/Layout.astro';
 import { buildSeries } from '../../lib/series.mjs';
 import { postSlug } from '../../lib/taxonomy.mjs';
+import { getPublishedPosts } from '../../lib/content-lifecycle.mjs';
 
 export async function getStaticPaths() {
-  const groups = buildSeries(await getCollection('blog'));
+  const groups = buildSeries(getPublishedPosts(await getCollection('blog')));
   return groups.map((group) => ({
     params: { series: group.id },
     props: { group },
