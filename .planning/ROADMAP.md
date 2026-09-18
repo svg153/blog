@@ -36,7 +36,7 @@ flowchart TD
 | 09 | Add durable content-quality checks to PR CI | QUAL-01..06 | 01 | complete |
 | 10 | Add Renovate dependency/action update automation compatible with CI | DEP-01..05 | 09 | activation pending (DEP-01) |
 | 11 | Add Pagefind static search plus tag/year filters when useful | SEARCH-01..06 | 05,06 | complete |
-| 12 | Build a canonical-content syndication/export pipeline for DEV, LinkedIn, newsletters and future adapters | PUB-01..10 | 03,07 | planned |
+| 12 | Build a canonical-content syndication/export pipeline for DEV, LinkedIn, newsletters and future adapters | PUB-01..10 | 03,07 | complete |
 
 ## Phase exit criteria
 
@@ -121,4 +121,4 @@ flowchart TD
 
 ## Milestone exit
 
-A new article can be authored once as Markdown, validated before merge, rendered through a single route, discovered via RSS/sitemap/search/taxonomy, shared with correct social/SEO metadata, navigated through related/series structures, and exported or explicitly syndicated to supported channels while the canonical blog remains authoritative.
+A new article can be authored once as Markdown, validated before merge, rendered through a single route, discovered via RSS/sitemap/search/taxonomy, shared with correct social/SEO metadata, navigated through related/series structures, and exported or explicitly syndicated to supported channels while the canonical blog remains authoritative. The only remaining v2.1 exit dependency is observing actual hosted Renovate PR activity for DEP-01.

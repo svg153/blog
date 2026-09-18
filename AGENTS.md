@@ -143,6 +143,22 @@ Accessibility and content rules:
 - Lifecycle changes must prove drafts/future posts cannot create indexed pages. Never bypass `getPublishedPosts()` to feed search.
 - Keep Pagefind pinned/reviewed through the normal dependency update policy.
 
+## Publishing and syndication
+
+- Markdown/frontmatter remains the canonical publication source. Do not create provider-specific copies of article source.
+- Use `scripts/publish.mjs` and the shared helpers under `scripts/lib/`; do not add independent provider scripts with their own parsing/payload rules.
+- Dry-run is the default. `--export-dir` must remain network-free.
+- Network mutation requires explicit `--publish` and exactly one API-backed channel. Do not add publish-all, automatic merge/deploy publishing, or a force/idempotency bypass.
+- DEV uses the supported Forem v1 article API with `canonical_url`; keep DEV tags normalized/deduplicated and within the provider maximum.
+- LinkedIn uses the supported Posts API only when runtime token/author/version configuration exists. Missing configuration must retain a manual-ready fallback. Never add browser scraping, cookies or session reuse.
+- Newsletter remains provider-neutral until a concrete adapter is backed by a documented supported API/connector.
+- Provider-specific copy belongs only in the optional strict `publishing` frontmatter block. Credentials and external IDs/state never belong in article frontmatter.
+- Runtime credentials are environment-only and known secret values must be redacted from CLI errors. Request descriptors/golden fixtures use runtime placeholders, never credentials.
+- `data/publication-provenance.json` is the versioned, credential-free duplicate guard. A channel + slug with existing provenance must fail closed.
+- Keep the committed dry-run golden under `scripts/fixtures/publishing/` generated from the real CLI and update it only after reviewing an intentional payload change.
+- `scripts/validate-publishing.mjs` must continue testing deterministic output, real CLI dry-run/export, provider requests through fake fetch, redaction, provenance/idempotency, manual fallback and the absence of publishing calls from GitHub Actions.
+- Provider capability/configuration belongs in `docs/publishing.md`. Keep API versions/endpoints current before changing a live adapter.
+
 ## Generated output and legacy code
 
 - Never commit `dist/` or copies of generated site HTML/CSS/PNG assets.

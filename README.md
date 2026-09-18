@@ -21,6 +21,7 @@ Personal technical blog built with Astro and deployed as a static site to GitHub
 - **Content quality gate** checks source structure plus generated internal links, anchors, local assets and completed-phase outputs without opinionated prose linting.
 - **Pagefind static search** indexes only published article HTML after the Astro build, with tag/year filters and a search UI at `/blog/search/`.
 - **Renovate policy** covers npm + GitHub Actions with conservative grouping; auto-merge is explicitly disabled while `main` has no enforced protection/status checks.
+- **Publishing pipeline** derives deterministic DEV, LinkedIn and newsletter payloads from canonical Markdown; dry-run/export is network-free and API mutation is explicit.
 - **GitHub Actions** validates pull requests and deploys `main` to GitHub Pages.
 
 Markdown is the canonical article source. Generated output such as `dist/`, search indexes and generated social-card PNGs must not be committed.
@@ -63,7 +64,13 @@ src/
         └── [slug].png.ts
 
 scripts/
-├── lib/generated-posts.mjs
+├── lib/
+│   ├── generated-posts.mjs
+│   ├── provenance.mjs
+│   ├── publishing-core.mjs
+│   ├── publishing-providers.mjs
+│   └── source-article.mjs
+├── publish.mjs
 ├── validate-content-quality.mjs
 ├── validate-lifecycle.mjs
 ├── validate-discovery.mjs
@@ -73,6 +80,7 @@ scripts/
 ├── validate-article-ux.mjs
 ├── validate-related-posts.mjs
 ├── validate-search.mjs
+├── validate-publishing.mjs
 └── validate-renovate-config.mjs
 ```
 
@@ -143,7 +151,7 @@ npm run build
 npm audit --audit-level=high
 ```
 
-`npm run build` runs the real Astro build, generates the Pagefind index, and then validates source structure, generated internal links/anchors, local assets, completed-phase outputs, Mermaid transformation, lifecycle/reading-time behavior, RSS/sitemap discovery, social cards, canonical/OG/Twitter/JSON-LD metadata, taxonomy/archive consistency, heading/TOC parity, deterministic series behavior, related-post ranking/rendering and search index scope/configuration.
+`npm run build` runs the real Astro build, generates the Pagefind index, and then validates source structure, generated internal links/anchors, local assets, completed-phase outputs, Mermaid transformation, lifecycle/reading-time behavior, RSS/sitemap discovery, social cards, canonical/OG/Twitter/JSON-LD metadata, taxonomy/archive consistency, heading/TOC parity, deterministic series behavior, related-post ranking/rendering, search index scope/configuration and the publishing pipeline safety/idempotency contract.
 
 ### Static search
 
@@ -201,6 +209,31 @@ Pull requests to `main` run:
 
 A push to `main` builds and deploys ignored `dist/` output through GitHub Pages Actions.
 
-## Publishing roadmap
+## Publishing and syndication
 
-The canonical source remains this blog. External syndication/export is intentionally deferred to the v2.1 publishing phase so mutation remains explicit, reviewable and canonical-URL preserving.
+Markdown remains canonical. The publishing CLI reads the same source article and generates deterministic channel payloads without copying article content into provider-specific source files.
+
+The safe default is a network-free dry-run:
+
+```bash
+npm run publish -- --slug use-contribute-fork-build
+```
+
+Reviewable exports are also network-free:
+
+```bash
+npm run publish -- --slug use-contribute-fork-build --export-dir publication-exports
+```
+
+Network mutation is never implicit. It requires one explicit API-backed channel plus `--publish`:
+
+```bash
+npm run publish -- --slug use-contribute-fork-build --channel dev --publish
+npm run publish -- --slug use-contribute-fork-build --channel linkedin --publish
+```
+
+There is no publish-all mode and no force flag to bypass provenance/idempotency. Successful API publication records a credential-free channel/slug fingerprint and external ID/URL in `data/publication-provenance.json`; subsequent publication of the same channel + slug is blocked.
+
+DEV uses the supported Forem v1 article API and preserves the blog canonical URL. LinkedIn uses the supported Posts API only when runtime OAuth/author/version configuration is present; dry-run/export always provides manual-ready copy and there is no browser/session scraping fallback. Newsletter output is provider-neutral until a documented provider API/connector is deliberately selected.
+
+Provider details, environment variables, frontmatter overrides and safety rules are documented in [`docs/publishing.md`](docs/publishing.md).
