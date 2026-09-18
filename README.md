@@ -15,6 +15,7 @@ Personal technical blog built with Astro and deployed as a static site to GitHub
 - **Chronological archive** exposes `/blog/archive/`.
 - **Article navigation** uses Astro-generated heading IDs for TOCs and deep links.
 - **Optional series metadata** drives ordered series pages and previous/next navigation.
+- **Related posts** are selected deterministically from published content: same series, then shared normalized tags, then recency, with slug as the final tie-break.
 - **Static social cards** are prerendered as deterministic 1200x630 PNGs.
 - **astro-mermaid** renders Mermaid fences in Markdown.
 - **GitHub Actions** validates pull requests and deploys `main` to GitHub Pages.
@@ -27,11 +28,13 @@ Markdown is the canonical article source. Generated output such as `dist/`, sear
 src/
 ├── components/
 │   ├── PostCard.astro
+│   ├── RelatedPosts.astro
 │   └── TagLink.astro
 ├── content/blog/              # Canonical Markdown articles
 ├── content.config.ts          # Frontmatter/lifecycle schema
 ├── lib/
 │   ├── content-lifecycle.mjs  # Publication filtering + reading time
+│   ├── related-posts.mjs      # Deterministic recommendation ranking
 │   ├── series.mjs             # Series ordering/navigation
 │   ├── social-card.mjs        # Deterministic SVG -> PNG renderer
 │   └── taxonomy.mjs           # Tag normalization + post ordering
@@ -62,7 +65,8 @@ scripts/
 ├── validate-social-cards.mjs
 ├── validate-seo.mjs
 ├── validate-taxonomy.mjs
-└── validate-article-ux.mjs
+├── validate-article-ux.mjs
+└── validate-related-posts.mjs
 ```
 
 ## Writing an article
@@ -132,7 +136,7 @@ npm run build
 npm audit --audit-level=high
 ```
 
-`npm run build` validates lifecycle/reading-time behavior, RSS/sitemap discovery, generated social cards, canonical/OG/Twitter/JSON-LD metadata, taxonomy/archive consistency, heading/TOC parity and deterministic series behavior.
+`npm run build` validates lifecycle/reading-time behavior, RSS/sitemap discovery, generated social cards, canonical/OG/Twitter/JSON-LD metadata, taxonomy/archive consistency, heading/TOC parity, deterministic series behavior and related-post ranking/rendering.
 
 ## Pull requests and deployment
 

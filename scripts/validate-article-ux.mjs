@@ -8,8 +8,15 @@ const attr = (tag, name) => {
   return match?.[1];
 };
 
+const articleBody = (html) => {
+  const start = html.indexOf('data-post-body');
+  const end = html.indexOf('data-post-body-end');
+  assert.ok(start >= 0 && end > start, 'Article body markers are missing or invalid');
+  return html.slice(start, end);
+};
+
 const headings = (html) =>
-  [...html.matchAll(/<h([23])\b([^>]*)>/giu)].map((match) => ({
+  [...articleBody(html).matchAll(/<h([23])\b([^>]*)>/giu)].map((match) => ({
     depth: Number(match[1]),
     id: attr(match[0], 'id'),
   }));

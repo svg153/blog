@@ -3,6 +3,7 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import PostLayout from '@layouts/PostLayout.astro';
 import { buildSeries, seriesContextForPost } from '../../lib/series.mjs';
 import { getPublishedPosts, readingTimeForPost } from '../../lib/content-lifecycle.mjs';
+import { relatedPostsFor } from '../../lib/related-posts.mjs';
 
 export async function getStaticPaths() {
   const posts = getPublishedPosts(await getCollection('blog'));
@@ -13,6 +14,7 @@ export async function getStaticPaths() {
     props: {
       post,
       seriesContext: seriesContextForPost(seriesGroups, post),
+      related: relatedPostsFor(post, posts),
     },
   }));
 }
@@ -32,12 +34,20 @@ interface SeriesContext {
   next?: SeriesLink;
 }
 
+interface RelatedEntry {
+  post: CollectionEntry<'blog'>;
+  sameSeries: boolean;
+  sharedTagCount: number;
+  sharedTags: string[];
+}
+
 interface Props {
   post: CollectionEntry<'blog'>;
   seriesContext?: SeriesContext;
+  related?: RelatedEntry[];
 }
 
-const { post, seriesContext } = Astro.props;
+const { post, seriesContext, related = [] } = Astro.props;
 const { Content, headings } = await render(post);
 const articleHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 const readingTime = readingTimeForPost(post);
@@ -53,6 +63,7 @@ const readingTime = readingTimeForPost(post);
   readingTime={readingTime}
   headings={articleHeadings}
   series={seriesContext}
+  related={related}
 >
   <Content />
 </PostLayout>
