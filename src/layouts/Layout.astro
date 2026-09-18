@@ -128,6 +128,7 @@ const structuredDataJson = blogPosting
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <link rel="alternate" type="application/rss+xml" title={`${SITE.title} — Blog`} href={rssPath} />
     <link rel="sitemap" href={sitemapPath} />
+    <slot name="head" />
 
     {structuredDataJson && (
       <script type="application/ld+json" set:html={structuredDataJson} />
@@ -139,6 +140,7 @@ const structuredDataJson = blogPosting
         <a href={base} class="nav-logo">Sergio Valverde</a>
         <ul class="nav-links">
           <li><a href={base}>Blog</a></li>
+          <li><a href={`${base}search/`}>Buscar</a></li>
           <li><a href={`${base}about/`}>Sobre mí</a></li>
           <li><a href="https://github.com/svg153" target="_blank" rel="noopener">GitHub</a></li>
           <li><a href="https://linkedin.com/in/svg153" target="_blank" rel="noopener">LinkedIn</a></li>

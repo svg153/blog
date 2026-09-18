@@ -1,0 +1,183 @@
+---
+import Layout from '@layouts/Layout.astro';
+
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const pagefindBundle = `${base}pagefind/`;
+---
+
+<Layout
+  title="Buscar"
+  description="Busca artículos del blog por texto, tag o año."
+>
+  <Fragment slot="head">
+    <link
+      rel="stylesheet"
+      href={`${pagefindBundle}pagefind-component-ui.css`}
+    />
+    <script
+      type="module"
+      src={`${pagefindBundle}pagefind-component-ui.js`}
+    ></script>
+  </Fragment>
+
+  <section class="search-page">
+    <header class="search-header">
+      <h1>Buscar</h1>
+      <p>
+        Busca dentro de los artículos publicados y combina el texto con filtros por tag o año.
+      </p>
+    </header>
+
+    <pagefind-config
+      base-url={base}
+      bundle-path={pagefindBundle}
+      lang="es"
+      faceted
+      preload
+    ></pagefind-config>
+
+    <div class="search-controls">
+      <pagefind-input
+        placeholder="Buscar artículos…"
+        autofocus
+      ></pagefind-input>
+
+      <div class="search-filters" aria-label="Filtros de búsqueda">
+        <pagefind-filter-dropdown
+          filter="tag"
+          label="Tag"
+          sort="alphabetical"
+          wrap
+        ></pagefind-filter-dropdown>
+        <pagefind-filter-dropdown
+          filter="year"
+          label="Año"
+          sort="count-desc"
+          single-select
+        ></pagefind-filter-dropdown>
+      </div>
+    </div>
+
+    <div class="search-status" aria-live="polite">
+      <pagefind-summary></pagefind-summary>
+    </div>
+
+    <pagefind-results>
+      <script type="text/pagefind-template">
+        <li class="search-result">
+          <article>
+            <h2>
+              <a href="{{ url | safeUrl }}">{{ meta.title }}</a>
+            </h2>
+            {{#if meta.description}}
+              <p class="search-description">{{ meta.description }}</p>
+            {{/if}}
+            <p class="search-context">
+              {{ meta.year }}
+              {{#if meta.tags}} · {{ meta.tags }}{{/if}}
+            </p>
+            {{#if excerpt}}
+              <p class="search-excerpt">{{+ excerpt +}}</p>
+            {{/if}}
+          </article>
+        </li>
+      </script>
+    </pagefind-results>
+
+    <aside class="search-fallback">
+      <h2>Explorar sin búsqueda</h2>
+      <p>
+        La navegación normal no depende de JavaScript:
+        <a href={`${base}tags/`}>explora por tags</a>
+        o consulta el
+        <a href={`${base}archive/`}>archivo cronológico</a>.
+      </p>
+      <noscript>
+        <p>
+          La búsqueda de texto necesita JavaScript, pero Tags, Archivo y todos los artículos
+          siguen siendo enlaces HTML normales.
+        </p>
+      </noscript>
+    </aside>
+  </section>
+</Layout>
+
+<style>
+  .search-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .search-header p,
+  .search-context,
+  .search-fallback {
+    color: var(--color-text-secondary);
+  }
+
+  .search-controls {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .search-filters {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .search-status {
+    min-height: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  pagefind-results {
+    display: block;
+    margin-top: 0.5rem;
+  }
+
+  .search-result article {
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .search-result h2 {
+    margin: 0 0 0.35rem;
+    font-size: 1.2rem;
+  }
+
+  .search-description,
+  .search-context,
+  .search-excerpt {
+    margin-bottom: 0.45rem;
+  }
+
+  .search-context {
+    font-size: 0.82rem;
+  }
+
+  .search-fallback {
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .search-fallback h2 {
+    font-size: 1.05rem;
+  }
+
+  @media (max-width: 640px) {
+    .search-filters {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    pagefind-filter-dropdown {
+      width: 100%;
+    }
+  }
+</style>
