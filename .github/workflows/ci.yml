@@ -31,5 +31,5 @@ jobs:
       - name: Audit high and critical vulnerabilities
         run: npm audit --audit-level=high
 
-      - name: Build with Astro
+      - name: Build and validate content
         run: npm run build
