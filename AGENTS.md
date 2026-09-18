@@ -120,6 +120,17 @@ Accessibility and content rules:
 - When changing a quality rule, prove its failure mode with a temporary fixture/workflow and remove that fixture afterwards.
 - Keep the gate fast enough for normal PR CI.
 
+## Dependency automation
+
+- `renovate.json` is the only repository Renovate policy.
+- Keep `enabledManagers` restricted to `npm` and `github-actions` unless a deliberate new dependency surface is introduced.
+- Keep routine npm/Actions patch and minor updates in separate reviewable groups; do not group major changes with low-risk updates.
+- Major updates are always manual.
+- `automerge` and `platformAutomerge` must remain `false` while `main` is unprotected or required status-check enforcement cannot be verified.
+- Do not bypass `scripts/validate-renovate-config.mjs`. Any future auto-merge proposal must first establish enforced CI/branch protection and then update the validator/documentation in the same PR.
+- Renovate's hosted GitHub App is an external prerequisite for actual update PR creation. A valid repository config alone is not evidence that DEP-01 is active.
+- Keep a minimum release age and PR concurrency limits conservative unless repository maintenance volume justifies a documented change.
+
 ## Generated output and legacy code
 
 - Never commit `dist/` or copies of generated site HTML/CSS/PNG assets.
