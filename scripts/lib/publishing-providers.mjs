@@ -1,6 +1,6 @@
 export const DEV_ENDPOINT = 'https://dev.to/api/articles';
 export const LINKEDIN_ENDPOINT = 'https://api.linkedin.com/rest/posts';
-export const LINKEDIN_CURRENT_VERSION = '202608';
+export const LINKEDIN_CURRENT_VERSION = '202609';
 
 const requireValue = (value, name) => {
   if (!value) throw new Error(`Missing runtime credential/configuration: ${name}`);
@@ -102,7 +102,7 @@ export const publishLinkedIn = async (
     throw new Error('LINKEDIN_AUTHOR_URN must be a person or organization URN');
   }
   if (!/^\d{6}$/u.test(version)) {
-    throw new Error('LINKEDIN_VERSION must use YYYYMM format (current documented version: 202608)');
+    throw new Error('LINKEDIN_VERSION must use YYYYMM format (current documented version: 202609)');
   }
 
   const request = describeLinkedInRequest(channelPlan, { author, version });
