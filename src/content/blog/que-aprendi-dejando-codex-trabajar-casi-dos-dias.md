@@ -1,6 +1,6 @@
 ---
-title: "Qué aprendí dejando a Codex trabajar casi dos días sobre un roadmap real"
-description: "Retrospectiva de un loop autónomo de desarrollo: qué funcionó, dónde apareció la burocracia automática y por qué terminé separando el workflow personal del enterprise."
+title: "Qué aprendí tras casi 58 horas dejando a Codex recorrer un roadmap real"
+description: "Retrospectiva de casi 58 horas acumuladas de ejecución autónoma en dos tiradas: qué funcionó, dónde apareció la burocracia automática y por qué terminé separando el workflow personal del enterprise."
 date: "2026-09-23"
 tags: ["AI", "Agents", "Codex", "GitHub"]
 featured: true
@@ -8,7 +8,11 @@ featured: true
 
 Durante los últimos días he estado probando hasta dónde puede llegar un agente de desarrollo cuando deja de trabajar en tareas aisladas y empieza a recorrer un roadmap de forma autónoma.
 
-El experimento acabó siendo bastante más largo de lo previsto. Una de las sesiones se mantuvo abierta durante **1 día y 20 horas** y, después de restablecer el uso disponible, el trabajo continuó otras **14 horas**.
+El experimento acabó siendo bastante más largo de lo previsto y, en realidad, ocurrió en **dos tiradas distintas**.
+
+La primera duró **unas 14 horas**, hasta que Codex se cayó y la aplicación terminó cerrándose. Después lo volví a arrancar y la segunda tirada llegó a **1 día, 19 horas, 55 minutos y 12 segundos**.
+
+Sumando ambas, fueron **casi 58 horas acumuladas de ejecución**. La cifra total es aproximada porque la primera tirada rondó las 14 horas; la segunda sí quedó registrada por el temporizador.
 
 En el panel de uso aparecieron **829,3 millones de tokens procesados el 22 de septiembre** y GitHub registró **1.259 contribuciones ese mismo día**.
 
@@ -217,7 +221,7 @@ Esa distinción importa.
 
 ## Dejar trabajar al agente no es la parte difícil
 
-Después de casi dos días de ejecución, mi conclusión no es que necesitemos agentes capaces de permanecer activos todavía más tiempo.
+Después de **casi 58 horas acumuladas en dos tiradas**, mi conclusión no es que necesitemos agentes capaces de permanecer activos todavía más tiempo.
 
 Eso llegará casi por inercia a medida que mejoren los modelos, las herramientas y la memoria.
 
