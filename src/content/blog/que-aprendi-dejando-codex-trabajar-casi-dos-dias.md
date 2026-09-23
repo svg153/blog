@@ -14,9 +14,11 @@ La primera duró **unas 14 horas**, hasta que Codex se cayó y la aplicación te
 
 Sumando ambas, fueron **casi 58 horas acumuladas de ejecución**. La cifra total es aproximada porque la primera tirada rondó las 14 horas; la segunda sí quedó registrada por el temporizador.
 
-En el panel de uso aparecieron **829,3 millones de tokens procesados el 22 de septiembre** y GitHub registró **1.259 contribuciones ese mismo día**.
+Al revisar correctamente los dos días de calendario que cubrió el experimento, el panel de uso muestra **869 millones de tokens el 21 de septiembre** y **1.033,4 millones el 22**. En conjunto son **1.902,4 millones de tokens**, aproximadamente **1,9 mil millones**, entre ambos días.
 
-Son cifras llamativas, pero no son la conclusión del experimento. Tampoco las interpreto como una medida directa de productividad: el contador de tiempo no equivale necesariamente a tiempo de cómputo efectivo, los tokens del panel no prueban por sí solos que todo perteneciese a un único loop y el contador de contribuciones de GitHub tampoco mide valor entregado.
+En GitHub ocurre algo parecido: aparecen **746 contribuciones el 21 de septiembre** y **1.259 el 22**, es decir, **2.005 contribuciones entre ambos días**.
+
+Son cifras llamativas, pero no son la conclusión del experimento. Tampoco las interpreto como una medida directa de productividad: el contador de tiempo no equivale necesariamente a tiempo de cómputo efectivo, los tokens del panel no permiten atribuir cada unidad a una operación concreta del loop y el contador de contribuciones de GitHub tampoco mide valor entregado.
 
 Lo realmente interesante apareció al revisar **cómo había trabajado el agente durante tantas horas**.
 
