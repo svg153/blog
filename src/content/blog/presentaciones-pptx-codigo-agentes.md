@@ -2,7 +2,7 @@
 title: "¿Seguiremos haciendo presentaciones con PPTX?"
 description: "De slides como código a pequeños bloques animados generados por agentes: cómo ha cambiado mi forma de hacer presentaciones y qué formato puede venir después."
 date: "2026-09-28"
-draft: true
+draft: false
 tags: ["AI", "Presentations", "Agents", "Developer Experience"]
 featured: false
 ---
