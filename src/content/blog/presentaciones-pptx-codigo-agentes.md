@@ -21,26 +21,21 @@ Una de las primeras que tengo publicada es de 2019, para mis compañeros de GMV,
 
 Tampoco era algo especialmente nuevo. Para entonces ya llevaba años existiendo reveal.js y había bastante ecosistema alrededor de la idea de hacer slides con HTML, Markdown o código. Por eso no creo que la evolución sea simplemente "PowerPoint y después llegaron las presentaciones con código". Las dos cosas llevan mucho tiempo conviviendo y resuelven problemas algo distintos.
 
-Y en mi caso tampoco fue una prueba puntual de 2019. En 2023, por ejemplo, ya estaba utilizando Slidev para charlas como [**GitHub: Un repositorio para controlarlos a todos**](https://svg153.github.io/talks/madrid-dotnet-github/), que preparé para MadridDotNet. Ese mismo año también utilicé el mismo enfoque para un [directo de Codely](https://svg153.github.io/talks/codely_safe-settings_directo/), y sigo manteniendo varias charlas de este tipo dentro de mi repositorio de `talks`.
+Y en mi caso tampoco fue una prueba puntual de 2019. En 2023, por ejemplo, ya estaba utilizando Slidev para una charla en MadridDotNet y también para un directo de Codely. Más adelante monté otro deck bastante más grande sobre Git, GitHub, GitHub Actions y CI/CD que empezó utilizando **Marp** y después migré a **Slidev** cuando empecé a necesitar más componentes, layouts, demos y capacidad de extender la presentación.
 
-Más adelante monté otro deck bastante más grande sobre Git, GitHub, GitHub Actions y CI/CD. Ese repositorio empezó utilizando **Marp**, porque seguía siendo una manera muy sencilla de tener Markdown como fuente principal, y después lo migré a **Slidev** cuando empecé a necesitar más componentes, layouts, demos y capacidad de extender la presentación. Ahora ese deck incluso puede exportarse otra vez a PDF y PPTX, lo que me parece curioso porque al final terminas volviendo al formato tradicional, pero como formato de salida y no como fuente de verdad.
-
-Ese repositorio todavía lo tengo privado, así que no tiene sentido poner aquí un enlace que al lector no le vaya a funcionar, pero para mí es otro ejemplo bastante claro de cómo ha ido cambiando el flujo: **MDX Deck, Marp, Slidev... la herramienta concreta ha ido cambiando, pero la idea de guardar la presentación como código se ha mantenido**.
+Ese deck incluso puede exportarse otra vez a PDF y PPTX, lo que me parece curioso porque al final terminas volviendo al formato tradicional, pero como formato de salida y no como fuente de verdad. La herramienta concreta ha ido cambiando, pero la idea de guardar la presentación como código se ha mantenido.
 
 Lo que sí me parece que ha cambiado bastante es lo fácil que resulta combinar esas presentaciones con otras piezas.
 
-## Algunas de mis presentaciones y experimentos
+## Algunos ejemplos que tengo publicados
 
-Por si alguien quiere ver ejemplos reales y no solo la idea, estas son algunas de las que tengo publicadas:
+Por si alguien quiere ver ejemplos reales y no solo la idea, dejo aquí únicamente proyectos que tengo publicados de forma explícita:
 
 - [Docker demo / workshop, 2019](https://github.com/svg153/docker-demo/tree/main/simple-binary), hecha con MDX Deck.
-- [GitHub: Un repositorio para controlarlos a todos](https://svg153.github.io/talks/madrid-dotnet-github/), MadridDotNet 2023, hecha con Slidev.
-- [Codely directo](https://svg153.github.io/talks/codely_safe-settings_directo/), también publicada como presentación web.
-- [De Copilot al AI SDLC: lo difícil no es comprar las licencias](https://svg153.github.io/talks/netcoreconf-madrid-2026-ai-sdlc/), otra de las charlas que mantengo como código.
-- [DevDays Design System](https://githubcommunity.es/devdays-design-system/), el sistema visual que estoy utilizando ahora para no depender del PPTX original.
+- [DevDays Design System](https://github.com/ghspain/devdays-design-system), el sistema visual que estoy utilizando ahora para no depender del PPTX original.
 - [`slidev-archify-explorer`](https://github.com/svg153/slidev-archify-explorer), el componente que he terminado creando para poder explorar diagramas de Archify desde una presentación Slidev.
 
-Y seguramente esta lista siga creciendo, porque una de las ventajas de tratar las presentaciones así es precisamente que dejan de ser ficheros que desaparecen en una carpeta después de la charla y pasan a ser pequeños proyectos que puedes reutilizar, evolucionar o mezclar con otros.
+La idea es ir llevando también las charlas que ya se hayan impartido y que tenga sentido compartir a un espacio público separado del material privado de preparación. Me parece bastante mejor eso que convertir sin más un repositorio de trabajo en público, porque ahí se pueden mezclar notas, research, guiones, referencias o material que nunca estuvo pensado para publicarse.
 
 ## De slides como código a vídeo como código
 
