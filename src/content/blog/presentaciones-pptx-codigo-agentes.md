@@ -73,20 +73,6 @@ Hay además otra consecuencia que me parece incluso más interesante. Si ya teng
 
 Del mismo origen podría terminar sacando una versión para hablar en un escenario, un PDF para enviar después, una web interactiva, un vídeo con voz, varios clips cortos para redes o una versión reducida para explicar una única idea. El contenido y el sistema visual serían los mismos; lo que cambiaría sería el formato que genero para cada contexto.
 
-```mermaid
-flowchart LR
-  A[Contenido + contexto] --> B[Design system]
-  B --> C[Slides]
-  B --> D[Web]
-  B --> E[PDF]
-  B --> F[Vídeo]
-  B --> G[Bloques animados]
-  H[Agente] --> C
-  H --> D
-  H --> F
-  H --> G
-```
-
 Por eso creo que la pregunta ya no es únicamente si dentro de unos años seguiremos utilizando PPTX. Lo mismo seguimos utilizándolo, porque para muchos casos seguirá siendo la opción más práctica. La pregunta que me parece más interesante es **si seguiremos entendiendo la presentación como un único artefacto que diseñamos a mano y después reutilizamos para todo**.
 
 ¿Seguiremos enviándonos PPTX? ¿Generaremos directamente HTML o slides con código? ¿Utilizaremos pequeños vídeos o animaciones por bloques mientras el ponente sigue controlando el ritmo? ¿O simplemente tendremos una fuente común y generaremos en cada momento el formato que mejor nos venga?
