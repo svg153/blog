@@ -1,6 +1,6 @@
 ---
 title: "¿Seguiremos haciendo presentaciones con PPTX?"
-description: "De slides como código a pequeños bloques animados generados por agentes: cómo ha cambiado mi forma de hacer presentaciones y qué formato puede venir después."
+description: "De MDX Deck, Marp y Slidev a presentaciones HTML, vídeo con código y bloques animados generados por agentes: cómo ha cambiado mi forma de preparar charlas y qué puede venir después."
 date: "2026-09-28"
 draft: false
 tags: ["AI", "Presentations", "Agents", "Developer Experience"]
@@ -21,7 +21,26 @@ Una de las primeras que tengo publicada es de 2019, para mis compañeros de GMV,
 
 Tampoco era algo especialmente nuevo. Para entonces ya llevaba años existiendo reveal.js y había bastante ecosistema alrededor de la idea de hacer slides con HTML, Markdown o código. Por eso no creo que la evolución sea simplemente "PowerPoint y después llegaron las presentaciones con código". Las dos cosas llevan mucho tiempo conviviendo y resuelven problemas algo distintos.
 
+Y en mi caso tampoco fue una prueba puntual de 2019. En 2023, por ejemplo, ya estaba utilizando Slidev para charlas como [**GitHub: Un repositorio para controlarlos a todos**](https://svg153.github.io/talks/madrid-dotnet-github/), que preparé para MadridDotNet. Ese mismo año también utilicé el mismo enfoque para un [directo de Codely](https://svg153.github.io/talks/codely_safe-settings_directo/), y sigo manteniendo varias charlas de este tipo dentro de mi repositorio de `talks`.
+
+Más adelante monté otro deck bastante más grande sobre Git, GitHub, GitHub Actions y CI/CD. Ese repositorio empezó utilizando **Marp**, porque seguía siendo una manera muy sencilla de tener Markdown como fuente principal, y después lo migré a **Slidev** cuando empecé a necesitar más componentes, layouts, demos y capacidad de extender la presentación. Ahora ese deck incluso puede exportarse otra vez a PDF y PPTX, lo que me parece curioso porque al final terminas volviendo al formato tradicional, pero como formato de salida y no como fuente de verdad.
+
+Ese repositorio todavía lo tengo privado, así que no tiene sentido poner aquí un enlace que al lector no le vaya a funcionar, pero para mí es otro ejemplo bastante claro de cómo ha ido cambiando el flujo: **MDX Deck, Marp, Slidev... la herramienta concreta ha ido cambiando, pero la idea de guardar la presentación como código se ha mantenido**.
+
 Lo que sí me parece que ha cambiado bastante es lo fácil que resulta combinar esas presentaciones con otras piezas.
+
+## Algunas de mis presentaciones y experimentos
+
+Por si alguien quiere ver ejemplos reales y no solo la idea, estas son algunas de las que tengo publicadas:
+
+- [Docker demo / workshop, 2019](https://github.com/svg153/docker-demo/tree/main/simple-binary), hecha con MDX Deck.
+- [GitHub: Un repositorio para controlarlos a todos](https://svg153.github.io/talks/madrid-dotnet-github/), MadridDotNet 2023, hecha con Slidev.
+- [Codely directo](https://svg153.github.io/talks/codely_safe-settings_directo/), también publicada como presentación web.
+- [De Copilot al AI SDLC: lo difícil no es comprar las licencias](https://svg153.github.io/talks/netcoreconf-madrid-2026-ai-sdlc/), otra de las charlas que mantengo como código.
+- [DevDays Design System](https://githubcommunity.es/devdays-design-system/), el sistema visual que estoy utilizando ahora para no depender del PPTX original.
+- [`slidev-archify-explorer`](https://github.com/svg153/slidev-archify-explorer), el componente que he terminado creando para poder explorar diagramas de Archify desde una presentación Slidev.
+
+Y seguramente esta lista siga creciendo, porque una de las ventajas de tratar las presentaciones así es precisamente que dejan de ser ficheros que desaparecen en una carpeta después de la charla y pasan a ser pequeños proyectos que puedes reutilizar, evolucionar o mezclar con otros.
 
 ## De slides como código a vídeo como código
 
@@ -32,6 +51,18 @@ La idea me parecía muy potente, aunque tenía una barrera bastante clara. Si qu
 En 2026 se hicieron bastante conocidas las skills de Remotion para agentes y ahí cambió parte de la experiencia. Ya no era solo "aprende el SDK y programa el vídeo", sino que podías darle a un agente una idea, contexto y unas reglas de estilo para que fuese construyendo el proyecto. La propia documentación actual de Remotion ya plantea el uso de coding agents como una de las formas de crear vídeo.
 
 Después apareció [HyperFrames](https://github.com/heygen-com/hyperframes), que lleva esta idea por otro camino. En vez de utilizar React como formato principal, trabaja sobre HTML, CSS y JavaScript y está pensado directamente para que un agente pueda generar y editar esas composiciones. No lo veo tanto como "el sustituto de Remotion", sino como otra señal de que **media as code** está empezando a ser mucho más accesible para los agentes.
+
+## También están apareciendo herramientas hechas directamente para agentes
+
+Y aquí hay otra evolución que me parece interesante, porque ya no estamos hablando solo de coger una herramienta existente y ponerle un agente delante.
+
+Un ejemplo es [OpenSlides](https://github.com/YuxiangChai/OpenSlides), un workspace local-first que genera y edita presentaciones `reveal.js` a partir de prompts, ficheros, búsquedas web o incluso análisis de datos. Puedes trabajar visualmente sobre la presentación o bajar al HTML directamente, guardar versiones y, al final, descargar el deck como un **HTML standalone**.
+
+Esa última parte me parece especialmente interesante. Durante la edición OpenSlides sí mantiene proyecto, assets, historial y contexto por separado, así que no diría que absolutamente todo el proceso sea "un único fichero". Pero el artefacto que terminas compartiendo sí puede volver a ser algo tan simple como un HTML que abres en un navegador. Es casi el extremo contrario al PPTX: sigues teniendo un fichero fácil de mover, pero por debajo tienes HTML, CSS, JavaScript y todo lo que eso permite hacer.
+
+También me ha llamado la atención [`present`](https://github.com/glebis/claude-skills/tree/main/present), una skill del repositorio de Claude Code de Gleb Kalinin. En este caso no se limita a generar las slides, sino que monta una presentación HTML interactiva con **modo artículo y modo presentación**, animaciones, imágenes opcionales y narración sincronizada con **ElevenLabs**. Es decir, el mismo contenido puede funcionar como documento para leer y como presentación narrada.
+
+El repositorio la plantea principalmente como una skill para Claude Code, aunque al final gran parte de la lógica está expresada en `SKILL.md` y scripts, así que el patrón es trasladable a otros agentes. No asumiría que simplemente copiándola vaya a funcionar igual en cualquier runtime, porque también depende de herramientas, rutas y APIs concretas, pero conceptualmente me parece otra señal importante: **la presentación empieza a convertirse en un workflow que un agente sabe ejecutar, no solamente en un formato de archivo**.
 
 ## Lo que estoy haciendo ahora con la presentación
 
@@ -67,6 +98,8 @@ Por eso me interesa más un formato intermedio. **¿Y si una slide fuese en real
 
 Al final no sería exactamente PowerPoint, pero tampoco sería un vídeo. Sería algo entre **slide, web, animación y vídeo**, y probablemente la frontera entre esas cosas importaría cada vez menos.
 
+De hecho, herramientas como OpenSlides o skills como `present` me hacen pensar que esto puede ir todavía un paso más allá. Una misma pieza podría ser navegable durante una charla, reproducirse sola con voz cuando la compartes después o convertirse en algo más parecido a una web si el usuario quiere explorarla por su cuenta. El contenido sería el mismo, pero la forma de consumirlo podría cambiar dependiendo del contexto.
+
 ## Quizá el artefacto final deje de ser "la presentación"
 
 Hay además otra consecuencia que me parece incluso más interesante. Si ya tengo el contenido, el contexto, el design system, los diagramas, los datos y los componentes, ¿por qué generar únicamente una presentación?
@@ -75,4 +108,4 @@ Del mismo origen podría terminar sacando una versión para hablar en un escenar
 
 Por eso creo que la pregunta ya no es únicamente si dentro de unos años seguiremos utilizando PPTX. Lo mismo seguimos utilizándolo, porque para muchos casos seguirá siendo la opción más práctica. La pregunta que me parece más interesante es **si seguiremos entendiendo la presentación como un único artefacto que diseñamos a mano y después reutilizamos para todo**.
 
-¿Seguiremos enviándonos PPTX? ¿Generaremos directamente HTML o slides con código? ¿Utilizaremos pequeños vídeos o animaciones por bloques mientras el ponente sigue controlando el ritmo? ¿O simplemente tendremos una fuente común y generaremos en cada momento el formato que mejor nos venga?
+¿Seguiremos enviándonos PPTX? ¿Generaremos directamente HTML o slides con código? ¿Utilizaremos pequeños vídeos o animaciones por bloques mientras el ponente sigue controlando el ritmo? ¿Tendremos presentaciones que, cuando las compartamos, se conviertan en una experiencia narrada? ¿O simplemente tendremos una fuente común y generaremos en cada momento el formato que mejor nos venga?
