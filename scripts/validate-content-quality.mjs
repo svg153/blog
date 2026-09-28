@@ -12,6 +12,7 @@ import {
   resolve,
   sep,
 } from 'node:path';
+import { isPublished } from '../src/lib/content-lifecycle.mjs';
 
 const DIST = 'dist';
 const CONTENT_DIR = join('src', 'content', 'blog');
@@ -39,6 +40,19 @@ const getAttr = (tag, name) => {
 
 const tags = (html, tagName) =>
   [...html.matchAll(new RegExp(`<${tagName}\\b[^>]*>`, 'giu'))].map((match) => match[0]);
+
+const scalarFrontmatterValue = (frontmatter, field) => {
+  const match = frontmatter.match(new RegExp(`^${field}\\s*:\\s*(.+?)\\s*$`, 'mu'));
+  if (!match) return undefined;
+  return match[1].trim().replace(/^(["'])(.*)\1$/u, '$2');
+};
+
+const lifecycleEntryFromFrontmatter = (frontmatter) => ({
+  data: {
+    date: scalarFrontmatterValue(frontmatter, 'date'),
+    draft: scalarFrontmatterValue(frontmatter, 'draft') === 'true',
+  },
+});
 
 const publicPathForHtml = (path) => {
   const rel = relative(DIST, path).split(sep).join('/');
@@ -127,6 +141,7 @@ for (const path of sourceFiles) {
   const frontmatter = lines.slice(1, frontmatterEnd).join('\n');
   assert.equal((frontmatter.match(/^title\s*:/gmu) ?? []).length, 1, `${path}: expected exactly one title field`);
   assert.equal((frontmatter.match(/^date\s*:/gmu) ?? []).length, 1, `${path}: expected exactly one date field`);
+  const shouldGeneratePublicPage = isPublished(lifecycleEntryFromFrontmatter(frontmatter));
 
   const bodyLines = lines.slice(frontmatterEnd + 1);
   assert.ok(bodyLines.join('\n').trim().length > 0, `${path}: article body must not be empty`);
@@ -165,7 +180,16 @@ for (const path of sourceFiles) {
     mermaidSourceFiles += 1;
     const slug = path.split(/[\\/]/u).at(-1).replace(/\.md$/u, '');
     const htmlPath = join(DIST, 'posts', slug, 'index.html');
-    assert.ok(existsSync(htmlPath), `${path}: Mermaid article did not generate a public page`);
+
+    if (!shouldGeneratePublicPage) {
+      assert.ok(
+        !existsSync(htmlPath),
+        `${path}: draft/future Mermaid article unexpectedly generated a public page`,
+      );
+      continue;
+    }
+
+    assert.ok(existsSync(htmlPath), `${path}: published Mermaid article did not generate a public page`);
     const html = readFileSync(htmlPath, 'utf8');
     assert.match(
       html,
