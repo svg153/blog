@@ -1,106 +1,157 @@
 ---
-title: "Del Copilot al AI SDLC: la arquitectura que hace útil a la IA"
-description: "Un recorrido práctico por contexto, delegación, gobernanza, verificación y feedback para integrar agentes en el ciclo de desarrollo sin confundir una demo con una plataforma."
+title: "De Copilot al AI SDLC: lo difícil no es comprar las licencias"
+description: "Qué necesita un sistema de desarrollo para trabajar con IA: contexto, permisos, evidencia y feedback, con un recorrido por un repositorio público de ejemplo."
 date: "2026-10-27"
 draft: false
 tags: ["AI", "Agents", "Architecture", "DevOps", "GitHub"]
 featured: false
 ---
 
-Comprar licencias, habilitar modelos o probar un coding agent suele ser la parte fácil. Lo difícil empieza cuando queremos que la IA participe en el ciclo de desarrollo real de una organización: que entienda el contexto, trabaje con límites claros, produzca cambios verificables y aprenda de lo que ocurre después del merge.
+Cuando una organización quiere empezar a trabajar con IA, una de las primeras decisiones suele ser comprar licencias, habilitar modelos o arrancar un piloto de coding agents.
 
-Ese salto no se resuelve instalando otra herramienta en el IDE. Es un problema de **arquitectura del sistema de desarrollo**.
+Y está bien. Pero, preparando con Diego Rodríguez Varela la charla para NetCoreConf Madrid 2026, acabamos volviendo una y otra vez a una pregunta: **¿qué cambia realmente en el sistema de desarrollo cuando añadimos esas herramientas?**
 
-En la charla de NetCoreConf Madrid 2026 lo resumí así: la IA puede acelerar una interacción, pero el valor organizativo aparece cuando conectamos contexto, flujo, controles y aprendizaje. Este artículo desarrolla esa idea y la aterriza en un repositorio de ejemplo que se puede inspeccionar y ejecutar localmente: [AI-SDLC-26/ai-sdlc-journey](https://github.com/AI-SDLC-26/ai-sdlc-journey).
+Porque una cosa es que una persona pueda generar código más rápido. Otra distinta es que el equipo entregue mejor, que los cambios se puedan revisar y que la organización aprenda de lo que ocurre después.
 
-## De una herramienta a un sistema
+Para aterrizar la conversación usamos un caso público, [AI-SDLC-26/ai-sdlc-journey](https://github.com/AI-SDLC-26/ai-sdlc-journey). Es una demo pequeña, pero precisamente por eso permite seguir una idea desde la especificación hasta el código sin confundirla con una plataforma de producción.
 
-Conviene separar tres niveles que a menudo mezclamos:
+## Una pregunta antes de hablar de herramientas
 
-| Nivel | Pregunta | Qué tendría que mejorar |
+Hagamos un ejercicio. Mañana quitamos la licencia o cambiamos de proveedor. ¿Qué queda?
+
+Si lo único que permanece son algunos prompts que cada persona recuerda, probablemente hemos comprado una experiencia útil, pero no hemos construido mucha capacidad compartida.
+
+Si quedan especificaciones más claras, decisiones registradas, tests, instrucciones reutilizables y una forma de medir el resultado, entonces hay algo que el equipo puede conservar y mejorar aunque cambie el modelo.
+
+Esto no es una crítica a Copilot ni a ninguna otra herramienta. Es una forma de separar tres niveles:
+
+| Nivel | Pregunta | Señal que buscaría |
 | --- | --- | --- |
-| Herramienta | ¿La persona recibe ayuda? | Menos fricción en una tarea |
-| Flujo | ¿El equipo entrega mejor? | Menos esperas, retrabajo y sorpresas |
-| Sistema | ¿La organización aprende? | Cambios seguros y decisiones trazables |
+| Herramienta | ¿La persona recibe ayuda en una tarea? | Menos fricción al trabajar |
+| Flujo | ¿El equipo mueve mejor el cambio? | Menos esperas, retrabajo y sorpresas |
+| Sistema | ¿La organización aprende y puede repetirlo? | Decisiones trazables y cambios seguros |
 
-Un copiloto vive principalmente en el primer nivel. Un AI SDLC conecta los tres. Si el agente propone código más deprisa pero la revisión sigue siendo el cuello de botella, quizá solo hayamos movido la espera. Si el cambio llega a producción pero nunca vuelve como evidencia al backlog, tampoco hemos cerrado el ciclo.
+Una mejora en el primer nivel no garantiza una mejora en los otros dos. Podemos generar código más rápido y terminar con más PRs esperando revisión. Podemos ahorrar tiempo escribiendo una función y perderlo intentando entender una issue ambigua.
 
-Por eso la pregunta no es «¿cuántos agentes tenemos?», sino **qué transiciones del SDLC queremos mejorar y cómo sabremos que han mejorado**.
+[DORA plantea en su informe de 2025](https://dora.dev/research/2025/dora-report/) que la IA actúa como un amplificador de las fortalezas y debilidades existentes en una organización. Me parece una forma útil de mirar el problema, no una ley que garantice un resultado para todos los equipos. Si los requisitos, los permisos o la revisión ya son un problema, añadir IA no hace que desaparezcan.
 
-## El contexto es una pieza de arquitectura
+## El contexto también es arquitectura
 
-Un agente solo puede razonar sobre lo que encuentra, interpreta y puede comprobar. El repositorio, por tanto, no es únicamente código: también contiene contexto operativo.
+Cuando hablamos de arquitectura solemos pensar en servicios, APIs, bases de datos y despliegues. Pero si queremos que personas y agentes trabajen juntos, también importa dónde está la intención y cómo se encuentra.
 
-Para que una tarea sea delegable, el agente —y la persona que revisa— necesita reconstruir al menos cinco cosas:
+En la charla organizamos ese contexto en cinco capas:
 
-- **Intención:** qué problema resolvemos y para quién.
-- **Restricciones:** qué queda fuera y qué no se debe tocar.
-- **Decisiones:** qué alternativas se eligieron y quién es responsable.
-- **Criterios y ejemplos:** cómo reconocer el resultado esperado.
-- **Evidencia:** qué pruebas o comprobaciones permiten aceptar el cambio.
+1. **Intención:** qué problema intentamos resolver, para quién y con qué resultado esperado.
+2. **Decisiones:** límites, alternativas descartadas, ADRs y responsables.
+3. **Procedimiento:** instrucciones, skills y workflows que explican cómo trabajar.
+4. **Evidencia:** tests, comprobaciones de seguridad, observabilidad y métricas.
+5. **Código:** implementación, contratos y dependencias.
 
-Esto no significa convertir cada cambio en una montaña de Markdown ni construir un grafo del código por reflejo. Una especificación ayuda cuando reduce ambigüedad; un ADR sirve cuando conserva una decisión que alguien podría necesitar revisar. Si esos documentos no tienen owner o están desactualizados, versionamos contexto incorrecto.
+El código sigue siendo fundamental. Lo que cambia es que ya no puede ser la única fuente de verdad operativa.
 
-La regla práctica es empezar por el contexto mínimo útil y observable. Añadamos sistemas de búsqueda, RAG o grafos solo cuando un problema real de descubrimiento lo justifique.
+Pensemos en alguien que llega por primera vez a un servicio. Si una decisión importante solo existe en la cabeza de otra persona, esa persona nueva no puede consultarla. Para un agente ocurre lo mismo. Y si encuentra tres documentos contradictorios, darle más contexto no ha resuelto el problema: ahora tiene tres posibles respuestas.
 
-## Delegar es diseñar límites, no regalar autonomía
+Por eso creo que una spec o un ADR son útiles cuando hacen explícita una decisión que necesitamos entender o comprobar. No porque todas las tareas deban producir más Markdown. Una spec obsoleta es contexto incorrecto con apariencia de autoridad.
 
-La autonomía es un presupuesto de riesgo. Depende de la acción, de su alcance y de lo reversible que sea. Leer un archivo, proponer un parche, modificar una configuración de producción y publicar un cambio externo no deberían recibir los mismos permisos ni los mismos gates.
+Antes de montar RAG o un grafo de conocimiento, preguntaría algo más básico: ¿qué fuente manda?, ¿quién la mantiene?, ¿cómo sabemos que sigue vigente? Si no podemos responder eso, retrieval solo nos ayudará a encontrar antes la misma confusión.
 
-Un contrato de tarea puede hacer explícito:
+## El handoff es donde se ve el sistema
 
-- qué resultado se busca;
-- qué repositorios, archivos y herramientas puede usar el agente;
-- qué operaciones requieren aprobación humana;
-- qué pruebas y evidencias debe devolver;
-- cuándo debe detenerse y escalar una duda.
+Una tarea no empieza y termina en el IDE. Hay una intención, criterios de aceptación, decisiones de implementación, código, revisión y una consecuencia en el producto o en la operación.
 
-El principio de mínimo privilegio también aplica al agente. Y que el agente explique por qué cree que algo funciona no sustituye a una prueba independiente.
-
-## Una arquitectura que devuelve información al trabajo
-
-Una forma sencilla de visualizar el sistema es seguir la tarea desde su intención hasta el feedback de producción:
+Una representación simplificada sería esta:
 
 ```mermaid
 flowchart LR
-  I[Intent and context] --> S[Spec and acceptance criteria]
-  S --> A[Human-agent work with explicit boundaries]
-  A --> V[Build tests security and review]
-  V --> D[Deploy and operate]
-  D --> F[Outcomes incidents cost and feedback]
-  F --> I
+  I[Intencion y contexto] --> S[Spec y criterios]
+  S --> B[Trabajo humano y agente]
+  B --> V[Tests seguridad y revision]
+  V --> L[Resultado y aprendizaje]
+  L --> I
 ```
 
-El diagrama no implica que todo deba automatizarse. Representa las preguntas que no podemos perder entre un handoff y el siguiente: ¿seguimos resolviendo el problema correcto?, ¿qué evidencia hace falta?, ¿quién acepta el riesgo residual?, ¿qué aprendimos al operar el cambio?
+El dibujo no dice que cada fase necesite un agente. Tampoco significa que despliegue y observación desaparezcan: son fuentes de señales para comprobar qué pasó después del cambio.
 
-La verificación debe ser proporcional al impacto. Un cambio pequeño puede requerir pruebas enfocadas y una revisión ligera; uno de alto riesgo puede exigir análisis de amenazas, aprobación explícita y una estrategia de rollback. Los tests elevan la confianza, pero no demuestran por sí solos que un cambio sea seguro ni que mejore el resultado de usuario.
+La pregunta en cada transición es si la siguiente persona o herramienta recibe lo necesario para continuar. ¿La issue explica el problema? ¿La spec tiene criterios verificables? ¿La revisión sabe qué riesgo debe aceptar? ¿Lo que hemos aprendido vuelve a la siguiente tarea?
 
-## Gobernar modelos y coste sin confundir actividad con valor
+Si aceleramos solo una estación, podemos mover el cuello de botella en lugar de eliminarlo. Para mí, esta es la diferencia entre medir una herramienta y entender el flujo completo.
 
-Cuando una organización incorpora varios modelos y agentes, necesita saber qué se usa, dónde, con qué permisos y a qué coste. Un gateway o plano de control puede ayudar a centralizar selección de modelos, cuotas, límites y atribución.
+## No es autonomía total, es delegación diseñada
 
-Pero medir tokens o llamadas solo mide actividad. No nos dice si el equipo entregó antes, si bajó el retrabajo o si los cambios fueron mejores. Para evaluar un piloto hace falta definir un denominador ligado al resultado: coste por cambio aceptado, tiempo hasta una entrega validada, defectos o intervención humana, según el flujo.
+Una de las conversaciones más interesantes de la charla es la de los permisos. Solemos hablar de si confiamos o no en un agente, pero esa pregunta es demasiado general.
 
-Tampoco conviene empezar por una plataforma enorme. Primero elijamos una tarea repetible y de bajo riesgo, establezcamos una comparación razonable y acordemos de antemano qué resultado permitiría continuar, cambiar el enfoque o parar.
+No es lo mismo leer un repositorio público que leer datos de clientes. Tampoco es lo mismo proponer un cambio en una rama que hacer merge o desplegar en producción. La acción puede parecer similar, pero cambian el alcance, el impacto y la facilidad de volver atrás.
 
-## Un ejemplo deliberadamente acotado
+Por eso me gusta pensar en la autonomía como un presupuesto de riesgo. No es una fórmula para calcular una puntuación exacta, sino una conversación sobre **qué puede hacer el agente, dónde puede hacerlo y cómo recuperamos el control**.
 
-El repositorio público [AI-SDLC-26/ai-sdlc-journey](https://github.com/AI-SDLC-26/ai-sdlc-journey) ayuda a discutir estas ideas con artefactos concretos. Es una demo local-first con una API ASP.NET Core y una SPA React/Vite; su README describe autenticación JWT de demostración, endpoints protegidos, tests para API y SPA e instrucciones para ejecutarlos.
+Un contrato sencillo para una tarea podría responder:
 
-También incluye una especificación del flujo de usuarios —[plan y contratos de `001-users-table`](https://github.com/AI-SDLC-26/ai-sdlc-journey/tree/main/specs/001-users-table)— junto con tareas y material de planificación. Eso permite recorrer un ciclo pequeño: intención, especificación, implementación, pruebas y revisión.
+```yaml
+objetivo: proponer un cambio para una tarea concreta
+contexto: spec y archivos relevantes
+permitido: leer y proponer cambios en una rama
+prohibido: acceder a secretos o desplegar
+evidencia: tests y resumen de limites
+decision_humana: revisar y aceptar el cambio
+```
 
-El límite importa tanto como la capacidad: los usuarios son datos mock, las credenciales son conocidas y el propio repositorio se presenta como demo. No es una plataforma de agentes lista para producción ni demuestra por sí sola gobierno empresarial, coste por consumidor, permisos efectivos o feedback operativo. Que esos elementos no aparezcan en el árbol revisado tampoco equivale a una auditoría de seguridad; simplemente marca preguntas que requerirían evidencia adicional.
+Es un ejemplo para ordenar preguntas, no un estándar ni una configuración que por sí sola imponga permisos. La parte importante es comprobar que la plataforma, las credenciales y las herramientas hacen cumplir esos límites.
 
-Ese tipo de honestidad hace que una demo sea más útil, no menos. Podemos separar lo que ya está materializado de lo que todavía es una hipótesis y proponer incrementos pequeños, reversibles y con criterio de salida.
+Si una instrucción dice «no tocar producción» pero el agente dispone de una credencial que sí puede hacerlo, tenemos una intención escrita, no una frontera de seguridad. El mínimo privilegio debe vivir en los sistemas que conceden acceso, no en esperar que el modelo se autocontrole.
 
-## Por dónde empezaría el lunes
+Y con la evidencia ocurre algo parecido. Que el agente explique que todo está bien puede ayudar a entender su propuesta, pero no sustituye a ejecutar tests, revisar el diff o comprobar seguridad. Un cambio pequeño y reversible puede admitir una revisión ligera. Un cambio de alto impacto puede necesitar más evidencia, una persona responsable y un rollback real.
 
-1. Elegiría un único caso repetible, de bajo riesgo y con un owner.
-2. Escribiría el resultado esperado, los límites y la evidencia mínima.
-3. Compararía el flujo con y sin asistencia, sin atribuir cada mejora a la IA de antemano.
-4. Revisaría calidad, retrabajo, seguridad, coste y percepción del equipo.
-5. Actualizaría el contexto y decidiría explícitamente: continuar, cambiar o parar.
+## Un caso concreto: de la issue a la tabla de usuarios
 
-El objetivo no es maximizar autonomía ni desplegar más agentes. Es diseñar un SDLC capaz de trabajar con IA: con contexto accesible, delegación acotada, evidencia verificable y un bucle que devuelva lo aprendido al siguiente cambio.
+Aquí es donde el repositorio de ejemplo resulta útil. [AI-SDLC Journey](https://github.com/AI-SDLC-26/ai-sdlc-journey) contiene una API ASP.NET Core, una SPA con React y Vite, instrucciones, especificaciones y pruebas.
 
-**La licencia puede reducir una fricción. La arquitectura del sistema determina si esa ayuda se convierte en una capacidad sostenible.**
+En lugar de quedarnos en la lista de carpetas, podemos seguir una tarea concreta. La instantánea que usamos para preparar la charla corresponde al commit [`9ea3b9d` del 3 de octubre de 2026](https://github.com/AI-SDLC-26/ai-sdlc-journey/tree/9ea3b9d7fb356b17d51a05cfc4c837ff12a4bdf6):
+
+1. La [spec de la tabla de usuarios](https://github.com/AI-SDLC-26/ai-sdlc-journey/blob/9ea3b9d7fb356b17d51a05cfc4c837ff12a4bdf6/specs/001-users-table/spec.md) parte de una issue y aclara comportamientos: ver nombre, rol y estado, mostrar un estado vacío y redirigir a quien no esté autenticado.
+2. El [plan](https://github.com/AI-SDLC-26/ai-sdlc-journey/blob/9ea3b9d7fb356b17d51a05cfc4c837ff12a4bdf6/specs/001-users-table/plan.md) concreta la solución: una ruta protegida en la SPA, un endpoint `/api/users`, datos en memoria y una tabla HTML sin añadir otra librería.
+3. El [contrato de API](https://github.com/AI-SDLC-26/ai-sdlc-journey/blob/9ea3b9d7fb356b17d51a05cfc4c837ff12a4bdf6/specs/001-users-table/contracts/users-api.yaml) documenta la autenticación bearer, la respuesta y el modo vacío para validar ese escenario de forma determinista.
+4. El plan identifica implementación y pruebas para API y SPA. Eso permite preguntar si los escenarios de la spec realmente tienen evidencia, en vez de asumirlo porque hay un documento.
+
+Hay un detalle que me parece importante: en esa instantánea la spec sigue marcada como **Draft**. El material del proyecto recoge resultados de pruebas históricos, pero eso no equivale a afirmar que acabamos de ejecutar la CI ni que todo siga pasando hoy.
+
+También hay que decir qué no demuestra el ejemplo. Es una demo local-first con usuarios mock y credenciales de demostración. En la revisión de esa instantánea no localizamos un gateway de modelos, presupuesto por consumidor ni un bucle conectado a feedback real de producción. Tampoco verificamos de extremo a extremo los permisos efectivos de cada agente.
+
+Eso no convierte el repositorio en una mala demo. Significa que debemos separar **lo implementado**, **lo documentado como intención** y **lo que no hemos encontrado**. Y no encontrar algo en una revisión no equivale a haber hecho una auditoría de seguridad completa.
+
+## ¿Cuándo tiene sentido un gateway?
+
+Cuando empezamos a hablar de varios modelos y agentes aparece enseguida una caja nueva en el diagrama: el gateway.
+
+Puede ser útil para centralizar identidad, cuotas, routing, políticas y telemetría. Pero también introduce operación, configuración, coste, latencia y decisiones sobre qué datos se registran.
+
+Para una única aplicación y un único modelo puede ser complejidad que todavía no necesitamos. Si varios equipos consumen distintos proveedores y necesitamos atribuir consumo o aplicar políticas comunes, la conversación cambia. La decisión debería partir de esa necesidad, no de querer añadir una capa más a la arquitectura.
+
+Lo mismo con las métricas. Tokens, llamadas y latencia ayudan a entender actividad y coste, pero no dicen por sí solos si el cambio aportó valor. Necesitamos relacionarlos con algo más: cambios aceptados y mantenidos, tiempo de revisión, retrabajo, defectos, incidentes o una hipótesis validada.
+
+Y también importa la percepción del equipo. Si la gente teme que registrar retrabajo se interprete como un fracaso, el dashboard puede acabar mostrando lo que queremos ver en lugar de lo que está pasando.
+
+## Medir antes de declarar victoria
+
+Hay un dato de la charla que ayuda a poner esta conversación en contexto. En un [ensayo controlado de METR sobre herramientas disponibles a principios de 2025](https://metr.org/Early_2025_AI_Experienced_OS_Devs_Study-paper.pdf), 16 desarrolladores open source experimentados realizaron 246 tareas en proyectos maduros que conocían bien. En ese entorno concreto, permitir herramientas de IA se asoció con un 19 % más de tiempo de finalización.
+
+No creo que la conclusión sea «la IA ralentiza a los desarrolladores». El estudio tiene una población, unos proyectos y unas herramientas concretas. Lo que sí nos recuerda es que una intuición de productividad puede fallar y que conviene medir el flujo propio antes de celebrar o descartar una iniciativa.
+
+Para un piloto elegiría una tarea repetible y de bajo riesgo. Definiría su spec, sus permisos, la evidencia necesaria y cómo compararemos los resultados. Después miraría tiempo, calidad, retrabajo, seguridad, coste y percepción del equipo. Y acordaría de antemano qué nos llevaría a continuar, cambiar el experimento o pararlo.
+
+Parar con evidencia no tiene por qué ser un fracaso. También puede ser la decisión que evita escalar una hipótesis que todavía no funciona.
+
+## Lo que me llevaría al lunes
+
+Si tuviera que convertir todo esto en un primer paso, no empezaría comprando una plataforma ni creando un agente para cada fase.
+
+Empezaría por una tarea concreta:
+
+1. Identificar el problema, el owner y el criterio de éxito.
+2. Poner junto al código el contexto y las restricciones que necesita quien vaya a trabajar en ella.
+3. Acotar herramientas y permisos según el riesgo.
+4. Definir qué evidencia se revisará y quién toma la decisión.
+5. Observar qué ocurrió después y actualizar la spec, el ADR o el backlog si hemos aprendido algo.
+
+A partir de ahí podemos ampliar la delegación cuando haya razones y evidencia para hacerlo.
+
+La licencia puede resolver una fricción individual. Pero el AI SDLC que queremos construir es el sistema completo que rodea esa ayuda: el contexto que compartimos, los límites que hacemos cumplir y la forma en que comprobamos y aprendemos de los cambios.
