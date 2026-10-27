@@ -2,7 +2,7 @@
 title: "Del Copilot al AI SDLC: la arquitectura que hace útil a la IA"
 description: "Un recorrido práctico por contexto, delegación, gobernanza, verificación y feedback para integrar agentes en el ciclo de desarrollo sin confundir una demo con una plataforma."
 date: "2026-10-27"
-draft: true
+draft: false
 tags: ["AI", "Agents", "Architecture", "DevOps", "GitHub"]
 featured: false
 ---
