@@ -1,0 +1,20 @@
+name: svg153-writing-style
+origin: https://github.com/svg153/skills
+origin_path: skills/svg153-writing-style
+category: creative
+status: active
+sync:
+  enabled: false
+  interval: manual
+  strategy: local
+  authoritative: local
+tags:
+  - agent-skills
+  - chatgpt
+  - codex
+  - writing-style
+  - voice
+  - spanish
+  - linkedin
+  - technical-writing
+  - social-media

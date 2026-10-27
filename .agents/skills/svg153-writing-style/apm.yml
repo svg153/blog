@@ -1,0 +1,9 @@
+name: svg153-writing-style
+version: "1.1.0"
+description: Natural Spanish writing style for svg153, preserving conversational technical cadence without artificial typos or AI-style copy.
+license: MIT
+includes: auto
+dependencies:
+  apm: []
+  mcp: []
+scripts: {}

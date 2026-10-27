@@ -1,0 +1,70 @@
+lockfile_version: '1'
+apm_version: 0.29.1
+dependencies:
+- repo_url: svg153/skills
+  name: svg153-writing-style
+  host: github.com
+  resolved_commit: b29bd7b4b75f134ca9721ef7ce80824b79d6b02f
+  version: 1.1.0
+  virtual_path: skills/svg153-writing-style
+  is_virtual: true
+  package_type: hybrid
+  deployed_files:
+  - .agents/skills/svg153-writing-style
+  - .agents/skills/svg153-writing-style/SKILL.md
+  - .agents/skills/svg153-writing-style/apm.yml
+  - .agents/skills/svg153-writing-style/metadata.yaml
+  - .agents/skills/svg153-writing-style/references/style-examples.md
+  deployed_file_hashes:
+    .agents/skills/svg153-writing-style/SKILL.md: sha256:b23b06436d8342d0f25cc6f2fa653a3b78df85f2ebf8910d4a624721722b462c
+    .agents/skills/svg153-writing-style/apm.yml: sha256:fb6156a5b55219bbf8703ec41fe5666106d90dbd26cc925c88f0ba7f0dcbc84c
+    .agents/skills/svg153-writing-style/metadata.yaml: sha256:b14e8f44e01a298f5fd0424c7c56d0374c37f704f68d81adea748a7887d32fb6
+    .agents/skills/svg153-writing-style/references/style-examples.md: sha256:7e45517499b7581bc9db049916416ba94ac5b319752b0bdce4b50849a9abb412
+  content_hash: sha256:fb0924d88871357b3f80c8a98432efa89917f48d168f9f9c5d2a7c6185f863a4
+  declared_license: MIT
+deployments:
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/svg153-writing-style
+  runtime: null
+  scope: project
+  owners:
+  - svg153/skills/skills/svg153-writing-style
+  active_owner: svg153/skills/skills/svg153-writing-style
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/svg153-writing-style/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - svg153/skills/skills/svg153-writing-style
+  active_owner: svg153/skills/skills/svg153-writing-style
+  content_hash: sha256:b23b06436d8342d0f25cc6f2fa653a3b78df85f2ebf8910d4a624721722b462c
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/svg153-writing-style/apm.yml
+  runtime: null
+  scope: project
+  owners:
+  - svg153/skills/skills/svg153-writing-style
+  active_owner: svg153/skills/skills/svg153-writing-style
+  content_hash: sha256:fb6156a5b55219bbf8703ec41fe5666106d90dbd26cc925c88f0ba7f0dcbc84c
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/svg153-writing-style/metadata.yaml
+  runtime: null
+  scope: project
+  owners:
+  - svg153/skills/skills/svg153-writing-style
+  active_owner: svg153/skills/skills/svg153-writing-style
+  content_hash: sha256:b14e8f44e01a298f5fd0424c7c56d0374c37f704f68d81adea748a7887d32fb6
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/svg153-writing-style/references/style-examples.md
+  runtime: null
+  scope: project
+  owners:
+  - svg153/skills/skills/svg153-writing-style
+  active_owner: svg153/skills/skills/svg153-writing-style
+  content_hash: sha256:7e45517499b7581bc9db049916416ba94ac5b319752b0bdce4b50849a9abb412
