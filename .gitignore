@@ -25,3 +25,7 @@ pnpm-debug.log*
 
 # reviewable publishing exports
 publication-exports/
+
+
+# APM dependencies
+apm_modules/

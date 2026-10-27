@@ -46,6 +46,7 @@ El contenido canónico está en [`src/content/blog`](src/content/blog). La web s
 La documentación técnica se ha separado del README para que la portada del repositorio esté centrada en el propio blog:
 
 - [Desarrollo, arquitectura y validación](docs/development.md)
+- [Skills del blog y actualización con APM](docs/agent-skills.md)
 - [Publicación y sindicación](docs/publishing.md)
 - [Instrucciones para agentes](AGENTS.md)
 
