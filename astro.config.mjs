@@ -13,6 +13,8 @@ export default defineConfig({
       enableLog: false,
       mermaidConfig: {
         securityLevel: 'strict',
+        layout: 'dagre',
+        look: 'classic',
         fontFamily:
           "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
       },
