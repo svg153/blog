@@ -9,7 +9,7 @@
 1. Create account at https://substack.com/signup
 2. Verify email
 3. Configure newsletter:
-   - Name: "Sergio Valverde — Developer Platforms & AI SDLC"
+   - Name: "Sergio Valverde | Developer Platforms & AI SDLC"
    - Description: "Technical notes on Developer Platforms, GitHub, DevEx and AI-assisted software delivery."
    - Tags: platform-engineering, devops, ai, automation
 
